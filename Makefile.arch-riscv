@@ -1,0 +1,12 @@
+ARCH       = riscv
+
+GCC_PREFIX =
+GCC_PATHS  =
+GCC_FLAGS  = ${CONF} -Wall -O3
+GCC_LIBS   =
+
+include Makefile.conf
+include Makefile
+
+test : all
+	@${LIB_TEST} 1000 | python 

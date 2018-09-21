@@ -1,0 +1,12 @@
+ARCH       = generic
+
+GCC_PREFIX =
+GCC_PATHS  =
+GCC_FLAGS  = ${CONF} -Wall -O3
+GCC_LIBS   =
+
+include Makefile.conf
+include Makefile
+
+test : all
+	@${TEST_TARGET} 1000 4 16 | python 
