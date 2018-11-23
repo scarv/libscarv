@@ -1,8 +1,13 @@
 ARCH       = riscv
 
+export AS       = $(XC_HOME)/work/riscv-binutils-gdb/build/gas/as-new
+export ASFLAGS += -mabi=ilp32 -march=rv32ix
+
+CFLAGS  += -mabi=ilp32 -march=rv32i -nostdlib -nostartfiles
+
 GCC_PREFIX = $(RISCV)/bin/riscv64-unknown-elf-
 GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O2
+GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
 GCC_LIBS   =
 
 include Makefile.conf
