@@ -1,8 +1,8 @@
 ARCH       = riscv
 
-GCC_PREFIX =
+GCC_PREFIX = $(RISCV)/bin/riscv64-unknown-elf-
 GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O3
+GCC_FLAGS  = ${CONF} -Wall -O2
 GCC_LIBS   =
 
 include Makefile.conf

@@ -49,7 +49,7 @@ TEST_SOURCES += $(foreach DIR,${TEST_PATHS},$(wildcard ${DIR}/*.S))
 TEST_TARGET  += ./build/bin/lib${LIB_ID}_test.elf
 
 ${TEST_TARGET} : ${LIB_TARGET} ${TEST_SOURCES} ${TEST_HEADERS}
-	@${GCC_PREFIX}gcc -L ./build/lib -I ./build/include -I ./test ${GCC_PATHS} ${GCC_FLAGS} -o ${@} $(filter %.c, ${^}) -l${LIB_ID}
+	${GCC_PREFIX}gcc -L ./build/lib -I ./build/include -I ./test ${GCC_PATHS} ${GCC_FLAGS} -o ${@} $(filter %.c, ${^}) -l${LIB_ID}
 
 all      :      ${LIB_PATHS} ${LIB_HEADERS} ${LIB_OBJECTS} ${LIB_TARGET} ${TEST_TARGET}
 
