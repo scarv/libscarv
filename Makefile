@@ -18,7 +18,7 @@ $(call include_map,${1},${2},${3}) : ${3}
 endef
 define     lib_rule
 $(call     lib_map,${1},${2},${3}) : ${3}
-	@$${GCC_PREFIX}gcc $$(patsubst %, -I %, $${SRC_PATHS}) $${GCC_PATHS} $${GCC_FLAGS} -c -o $${@} $${<}
+	$${GCC_PREFIX}gcc $$(patsubst %, -I %, $${SRC_PATHS}) $${GCC_PATHS} $${GCC_FLAGS} -c -o $${@} $${<}
 endef
 define     Xlib_rule
 $(call     lib_map,${1},${2},${3}) : ${3}
