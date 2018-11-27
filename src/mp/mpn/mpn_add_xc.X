@@ -19,6 +19,8 @@ l_y_is_max:
     xc.gpr2xcr c3, zero
     # c3 = Carry out/in
 
+    beqz    t1, mpn_add_done
+
 mpn_add_x_loop:
     xc.gpr2xcr  c0, zero        #
     bgeu        t0, a2, .+8     #   c0 = i < l_x ? x[i] : 0
@@ -40,6 +42,7 @@ mpn_add_x_loop:
 
     bltu        t0, t1, mpn_add_x_loop
 
-    xc.xcr2gpr  a0, c3          # Move a0 <= c3
-    
+mpn_add_done:
+    xc.xcr2gpr  a0, c3          # Move a0 <= c3    
     ret
+
