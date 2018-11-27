@@ -1,6 +1,7 @@
 ARCH       = riscv
 
 export AS       = $(XC_HOME)/work/riscv-binutils-gdb/build/gas/as-new
+export OBJDUMP  = $(XC_HOME)/work/riscv-binutils-gdb/build/binutils/objdump
 export ASFLAGS += -mabi=ilp32 -march=rv32ix
 
 CFLAGS  += -mabi=ilp32 -march=rv32i -nostdlib -nostartfiles
@@ -12,6 +13,14 @@ GCC_LIBS   =
 
 include Makefile.conf
 include Makefile
+
+DISASM = $(addprefix build/disasm/,$(notdir $(LIB_OBJECTS:%.o=%.dis)))
+
+./build/disasm/%.dis : ./build/lib/%.o
+	@mkdir -p $(dir $@)
+	$(OBJDUMP) -D $< > $@
+
+disasm: $(DISASM)
 
 test : all
 	@${LIB_TEST} 1000 | python 
