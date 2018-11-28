@@ -35,7 +35,7 @@ mpn_add_x_loop:
     addi        a1, a1, 4       # Increment source pointers
     addi        a3, a3, 4
 
-    xc.st.w     c2, 4(a0)       # Store result back
+    xc.st.w     c2, 0(a0)       # Store result back
 
     addi        t0, t0, 1       # Increment loop counter.
     addi        a0, a0, 0x4     # Increment result pointer.
