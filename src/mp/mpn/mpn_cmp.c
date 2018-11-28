@@ -1,5 +1,6 @@
 #include "mpn_cmp.h"
 
+#if !defined( CONF_MP_MPN_CMP_EXTERN )
 int mpn_cmp( const limb_t* x, int l_x, 
              const limb_t* y, int l_y ) {
 
@@ -24,6 +25,7 @@ int mpn_cmp( const limb_t* x, int l_x,
                                                                   
   return 0;
 }
+#endif
 
 int mpn_cmp_1( const limb_t* x, int l_x, const limb_t  y        ) {
   return mpn_cmp( x, l_x, &y, 1 );

@@ -1,5 +1,6 @@
 #include "mrz_red.h"
 
+#if !defined( CONF_MP_MRZ_RED_EXTERN ) 
 void mrz_red( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x ) {
   limb_t u, R[ 2 * ctx->l_N + 2 ], *Rp = R, d_0 = 0, d_1 = 0, d_2 = 0, c = 0;
 
@@ -49,3 +50,4 @@ void mrz_red( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x ) {
     mpn_sub_n( r, r, ctx->N, ctx->l_N + 1 );
   }
 }
+#endif
