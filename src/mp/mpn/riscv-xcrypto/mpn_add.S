@@ -1,7 +1,7 @@
 
 .section .text
-.global mpn_add_xc
-mpn_add_xc:
+.global mpn_add
+mpn_add:
     # a0 = limb_t * r
     # a1 = limb_t * x
     # a2 = int      l_x

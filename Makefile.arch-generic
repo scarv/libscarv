@@ -1,9 +1,18 @@
 ARCH       = generic
 
+CFLAGS     += 
+
 GCC_PREFIX =
 GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O3
+GCC_FLAGS  = ${CONF} -Wall -O3 ${CFLAGS}
+AS_FLAGS   =
 GCC_LIBS   =
+
+AS         = ${GCC_PREFIX}as
+CC         = ${GCC_PREFIX}gcc
+AR         = ${GCC_PREFIX}ar
+OBJDUMP    = ${GCC_PREFIX}objdump
+OBJCOPY    = ${GCC_PREFIX}objcopy
 
 include Makefile.conf
 include Makefile
