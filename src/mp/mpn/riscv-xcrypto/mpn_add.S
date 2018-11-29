@@ -8,7 +8,7 @@ mpn_add:
     # a3 = limb_t * y
     # a4 = int      l_y
     mv      t1, a4
-    ble     a4, a2, l_y_is_max
+    bge     a4, a2, l_y_is_max
     mv      t1, a2
 
 l_y_is_max:
