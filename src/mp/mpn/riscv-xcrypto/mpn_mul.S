@@ -9,9 +9,6 @@ mpn_mul:
     # a3 = limb_t * y
     # a4 = int      l_y
     
-    li          t0, 0xFFFFFFFF
-    xc.gpr2xcr  c15, t0
-    
     # Auxilliary storage on the stack.
     addi        sp, sp, -4          # sp = end of aux array R
 
@@ -27,7 +24,6 @@ mpn_mul:
         addi    t2, t2, 4           # r ++
         blt     t2, sp, .clear_r
     sub     t2, sp, t1              # t2 = start of aux array R
-    #mv      t2, a0
 
     # Start computation loop
     beqz    a4, .mpn_mul_finish
@@ -38,14 +34,15 @@ mpn_mul:
         beqz a2, .mpn_mul_outer_finish
         mv          t1, zero                # t1 = inner loop counter
         xc.gpr2xcr  c0, zero                # C  = 0
+            
+        # Load inputs to MUL function
+        slli    t3, t0, 2               #          
+        add     t3, t3, a3              #          
+        xc.ld.w c2, 0(t3)               # c2 = y[j]
         
         .mpn_mul_inner:
-            
-            # Load inputs to MUL function
-            slli    t3, t0, 2               #            \
-            add     t3, t3, a3              #             |- Lift out later
-            xc.ld.w c2, 0(t3)               # c2 = y[j]  /
 
+            # Load inputs to MUL function
             slli    t3, t1, 2               #
             add     t3, t3, a1              #
             xc.ld.w c3, 0(t3)               # c3 = x[i]
@@ -97,6 +94,5 @@ mpn_mul:
         blt  t4, t3, .mpn_cpy_back
     
     addi        sp, sp, 4
-    xc.gpr2xcr  c15, zero
     ret
 
