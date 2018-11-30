@@ -27,7 +27,10 @@ mpn_mul:
 
     # Start computation loop
     beqz    a4, .mpn_mul_finish
-    mv      t0, zero                        # t0 = outer loop counter
+    mv      t0, zero                # t0 = outer loop counter
+
+    slli    t5, a4, 2               # Word aligned l_y
+    slli    t6, a2, 2               # Word aligned l_x
 
     .mpn_mul_outer:
         
@@ -36,19 +39,16 @@ mpn_mul:
         xc.gpr2xcr  c7, zero                # C  = 0
             
         # Load inputs to MUL function
-        slli    t3, t0, 2               #          
-        add     t3, t3, a3              #          
+        add     t3, t0, a3              #          
         xc.ld.w c2, 0(t3)               # c2 = y[j]
         
         .mpn_mul_inner:
 
             # Load inputs to MUL function
-            slli    t3, t1, 2               #
-            add     t3, t3, a1              #
+            add     t3, t1, a1              #
             xc.ld.w c3, 0(t3)               # c3 = x[i]
 
             add     t3, t0, t1              # t3 = i+j = t0+t1
-            slli    t3, t3, 2               # word align
             add     t3, t3, t2              # t3 = addr of R[i+j]
             xc.ld.w c4, 0(t3)               # c4 = R[j+i]
 
@@ -59,19 +59,18 @@ mpn_mul:
             # Store results back to carry and aux Result array
             xc.st.w c6, 0(t3)               # R[j+i] = low word 
 
-            addi    t1, t1, 1
-            blt     t1, a2, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
+            addi    t1, t1, 4
+            blt     t1, t6, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
 
         .mpn_mul_outer_finish:
 
         # R[j+l_x] = c
-        add     t3, t0, a2
-        slli    t3, t3, 2
+        add     t3, t0, t6
         add     t3, t3, t2                  # t3 = addr of R[j+l_x]
         xc.st.w c7, 0(t3)                   # R[j+l_x] = C
 
-        addi    t0, t0, 1
-        blt     t0, a4, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
+        addi    t0, t0, 4
+        blt     t0, t5, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
 
     .mpn_mul_finish:
 
