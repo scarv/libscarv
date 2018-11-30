@@ -23,6 +23,8 @@ include Makefile
 # Externally defined assembly functions.
 #
 conf += -DCONF_MP_MPN_ADD_EXTERN
+conf += -DCONF_MP_MPN_SUB_EXTERN
+conf += -DCONF_MP_MPN_MUL_EXTERN
 
 DISASM = $(addprefix build/disasm/,$(notdir $(LIB_OBJECTS:%.o=%.dis)))
 
