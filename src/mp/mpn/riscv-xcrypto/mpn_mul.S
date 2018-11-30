@@ -61,7 +61,7 @@ mpn_mul:
 
             # Store results back to carry and aux Result array
             xc.st.w c6, 0(t3)               # R[j+i] = low word 
-            xc.bop  c0, c7, c7, 0x2         # c0 = c7
+            xc.bop  c0, c7, c7, 0xA         # c0 = c7
 
             addi    t1, t1, 1
             blt     t1, a2, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
