@@ -33,7 +33,7 @@ mpn_mul:
         
         beqz a2, .mpn_mul_outer_finish
         mv          t1, zero                # t1 = inner loop counter
-        xc.gpr2xcr  c0, zero                # C  = 0
+        xc.gpr2xcr  c7, zero                # C  = 0
             
         # Load inputs to MUL function
         slli    t3, t0, 2               #          
@@ -53,12 +53,11 @@ mpn_mul:
             xc.ld.w c4, 0(t3)               # c4 = R[j+i]
 
             # Compute (y[i] * x[i]) + R[i+j] + C
-            xc.mmul.3 (c6,c7), c2, c3, c4
-            xc.macc.1 (c6,c7), c0
+            xc.mmul.3 (c6,c7), c2, c3, c7
+            xc.macc.1 (c6,c7), c4
 
             # Store results back to carry and aux Result array
             xc.st.w c6, 0(t3)               # R[j+i] = low word 
-            xc.bop  c0, c7, c7, 0xA         # c0 = c7
 
             addi    t1, t1, 1
             blt     t1, a2, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
@@ -69,7 +68,7 @@ mpn_mul:
         add     t3, t0, a2
         slli    t3, t3, 2
         add     t3, t3, t2                  # t3 = addr of R[j+l_x]
-        xc.st.w c0, 0(t3)                   # R[j+l_x] = C
+        xc.st.w c7, 0(t3)                   # R[j+l_x] = C
 
         addi    t0, t0, 1
         blt     t0, a4, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
