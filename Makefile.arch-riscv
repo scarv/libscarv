@@ -7,7 +7,7 @@ CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)
 GCC_PREFIX = $(RISCV)/bin/riscv64-unknown-elf-
 GCC_PATHS  =
 GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
-AS_FLAGS   =
+AS_FLAGS   = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)
 GCC_LIBS   =
 
 AS         = ${GCC_PREFIX}as
@@ -18,6 +18,11 @@ OBJCOPY    = ${GCC_PREFIX}objcopy
 
 include Makefile.conf
 include Makefile
+
+#
+# Externally defined assembly functions.
+#
+conf += -DCONF_MP_MPN_MUL_EXTERN
 
 test : all
 	@${LIB_TEST} 1000 4 16 | python 
