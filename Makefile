@@ -7,7 +7,9 @@
                 ./src/mp/mpz \
                 ./src/mp/mrz \
                 ./src/mp/limb \
-                ./src/mp/limb/${ARCH}
+                ./src/mp/limb/${ARCH} \
+                ./src/keccak \
+                ./src/keccak/${ARCH}
 
  SRC_HEADERS += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.h))
  SRC_SOURCES += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.c))
