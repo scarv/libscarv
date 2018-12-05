@@ -115,3 +115,79 @@ KeccakP400_theta:
 
     ret
 .endfunc
+
+
+#
+# Auxiliary storage for rho function
+.data
+rho_offsets:
+.hword  0
+.hword  1
+.hword 14
+.hword 12
+.hword 11
+.hword  4
+.hword 12
+.hword  6
+.hword  7
+.hword  4
+.hword  3
+.hword 10
+.hword 11
+.hword  9
+.hword  7
+.hword  9
+.hword 13
+.hword 15
+.hword  5
+.hword  8
+.hword  2
+.hword  2
+.hword 13
+.hword  8
+.hword 14
+
+.text
+
+.func KeccakP400_rho_asm
+.global KeccakP400_rho_asm
+KeccakP400_rho_asm:
+    # Arguments:
+    # - a0 - tKeccakLane * A
+    
+    la  a1, rho_offsets
+    li  t0, 0
+    li  t2, 5
+    li  a6, 25
+
+    .rho_0:
+    
+        li  t1, 0
+
+        .rho_1:
+        
+            add  t3, t1, t0         # t3 = x + 5*y
+            slli t4, t3, 1          # t4 = halfword aligned x+5y
+
+            add  t5, a0, t4         # t5 = &A[x+5y]
+            add  t6, a1, t4         # t6 = &rho_offsets[x+5y]
+
+            lhu  a2, 0(t5)          # a2 = A[x+5y]
+            lhu  a3, 0(t6)          # a3 = rho_offsets[x+5y]
+
+            sll  a4, a2, a3         # a4 = A[x+5y] << rho_offsets[x+5y]
+            neg  a3, a3
+            andi a3, a3, 15
+            srl  a2, a2, a3         # a4 = A[x+5y] >> (16-rho_offsets[x+5y])
+            or   a2, a2, a4
+
+            sh   a2, 0(t5)
+            
+            addi  t1, t1, 5
+            bltu  t1, a6, .rho_1
+        
+        addi t0, t0, 1
+        bltu t0, t2, .rho_0
+
+    ret
+.endfunc
