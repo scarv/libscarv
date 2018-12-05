@@ -201,9 +201,9 @@ pi_aux:
 
 .text
 
-.func KeccakP400_pi_asm
-.global KeccakP400_pi_asm
-KeccakP400_pi_asm:
+.func KeccakP400_pi
+.global KeccakP400_pi
+KeccakP400_pi:
     # Arguments:
     # - a0 - tKeccakLane * A
     
