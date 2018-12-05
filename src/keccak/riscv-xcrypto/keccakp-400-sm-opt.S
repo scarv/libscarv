@@ -252,3 +252,77 @@ KeccakP400_pi:
     
     ret
 .endfunc
+
+
+
+#
+# Auxiliary storage for chi function
+.data
+chi_aux:
+.fill 10, 8, 0
+
+.text
+
+.func KeccakP400_chi_asm
+.global KeccakP400_chi_asm
+KeccakP400_chi_asm:
+    # Arguments:
+    # - a0 - tKeccakLane * A
+
+    la  a1, chi_aux
+    
+    li  t0, 0                           # y = 0
+    li  t2, 10
+    li  t3, 50
+
+    .chi_0:
+        
+        li t1, 0                        # x = 0
+        .chi_1:
+
+            addi    a3, t1, 2           # a3 = (x+1)
+            addi    a4, t1, 4           # a4 = (x+2)
+
+            remu    a3, a3, t2          # a3 = (x+1) % 5
+            remu    a4, a4, t2          # a4 = (x+2) % 5
+            
+            add     a2, t0, t1          # a2 = x+5y
+            add     a3, a3, t0          # a3 = ((x+1)%5) + 5y
+            add     a4, a4, t0          # a4 = ((x+2)%5) + 5y
+
+            add     a2, a2, a0          # a2 = &A[index(x  , y)]
+            add     a3, a3, a0          # a3 = &A[index(x+1, y)]
+            add     a4, a4, a0          # a4 = &A[index(x+2, y)]
+
+            xc.ld.hu c0,(0), 0(a2)          # c0 =  A[index(x  , y)]
+            xc.ld.hu c1,(0), 0(a3)          # c1 =  A[index(x+1, y)]
+            xc.ld.hu c2,(0), 0(a4)          # c2 =  A[index(x+2, y)]
+
+            xc.bop  c1, c1, c2, 2       # c1 = ~c1 & c2
+            xc.bop  c0, c0, c1, 6       # c0 = c0 ^ c1
+
+            add     t6, t1, a1          # t6 = &chi_aux[x]
+            xc.st.h c0, (0), 0(t6)           # chi_aux[x] = t4 ^ (~t5 & t6)
+
+            addi    t1, t1, 2
+            bltu    t1, t2, .chi_1
+
+        li t1, 0                        # x = 0
+        .chi_2:
+            
+            add      t6, t1, a1         # t6 = &chi_aux[x]
+            xc.ld.hu c0, (0), 0(t6)          # t6 =  chi_aux[x]
+
+            add      t6, t1, t0         # t6 = x+5y
+            add      t6, t6, a0         # t6 = &A[index(x,y)]
+            xc.st.h  c0, (0), 0(t6)          # A[index(x,y)] = chi_aux[x]
+            
+            addi    t1, t1, 2
+            bltu    t1, t2, .chi_2
+
+        addi t0, t0, 10
+        bltu t0, t3, .chi_0
+
+    ret
+
+.endfunc
