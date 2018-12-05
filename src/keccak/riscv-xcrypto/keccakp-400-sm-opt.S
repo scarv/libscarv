@@ -139,9 +139,9 @@ rho_offsets:
 
 .text
 
-.func KeccakP400_rho_asm
-.global KeccakP400_rho_asm
-KeccakP400_rho_asm:
+.func KeccakP400_rho
+.global KeccakP400_rho
+KeccakP400_rho:
     # Arguments:
     # - a0 - tKeccakLane * A
     

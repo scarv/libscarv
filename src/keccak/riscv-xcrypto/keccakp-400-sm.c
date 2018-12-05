@@ -20,6 +20,7 @@ void KeccakP400_theta(tKeccakLane *A)
 }
 */
 
+/*
 void KeccakP400_rho(tKeccakLane *A)
 {
     unsigned int x, y;
@@ -31,6 +32,7 @@ void KeccakP400_rho(tKeccakLane *A)
         }
     }
 }
+*/
 
 void KeccakP400_pi(tKeccakLane *A)
 {
