@@ -53,6 +53,7 @@ void KeccakP400_pi(tKeccakLane *A)
 }
 */
 
+/*
 void KeccakP400_chi(tKeccakLane *A)
 {
     unsigned int x, y;
@@ -65,6 +66,7 @@ void KeccakP400_chi(tKeccakLane *A)
             A[index(x, y)] = C[x];
     }
 }
+*/
 
 void KeccakP400_iota(tKeccakLane *A, unsigned int indexRound)
 {

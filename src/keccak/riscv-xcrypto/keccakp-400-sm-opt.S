@@ -263,9 +263,9 @@ chi_aux:
 
 .text
 
-.func KeccakP400_chi_asm
-.global KeccakP400_chi_asm
-KeccakP400_chi_asm:
+.func KeccakP400_chi
+.global KeccakP400_chi
+KeccakP400_chi:
     # Arguments:
     # - a0 - tKeccakLane * A
 
