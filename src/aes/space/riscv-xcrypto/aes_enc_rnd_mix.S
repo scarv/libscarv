@@ -5,9 +5,6 @@ aes_enc_rnd_mix:
     # a0 =  uint32_t * s 
 
 	mv   t6, zero
-	#addi t5, t5, 0xFF
-	#slli t5, t5, 8
-	#addi t5, t5, 0xFF
 	li	 t6, 0xFFFF0000
 	srli t5, t6, 16
 
@@ -39,19 +36,9 @@ aes_enc_rnd_mix:
 	xc.aesmix.enc c6, c2, c3
 	xc.aesmix.enc c7, c3, c2
 
-	xc.xcr2gpr  t1, c4
-	xc.xcr2gpr  t2, c5
-	xc.xcr2gpr  t3, c6
-	xc.xcr2gpr  t4, c7
-	
-	sw t1, 0(a0)
-	sw t2, 4(a0)
-	sw t3, 8(a0)
-	sw t4, 12(a0)
-
-#	xc.st.w c4, 0(a0)
-#	xc.st.w c5, 4(a0)
-#	xc.st.w c6, 8(a0)
-#	xc.st.w c7, 12(a0)
+	xc.st.w c4, 0(a0)
+	xc.st.w c5, 4(a0)
+	xc.st.w c6, 8(a0)
+	xc.st.w c7, 12(a0)
 
 	ret

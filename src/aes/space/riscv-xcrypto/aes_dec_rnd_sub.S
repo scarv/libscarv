@@ -1,7 +1,7 @@
 
 .section .text
-.global aes_enc_rnd_sub
-aes_enc_rnd_sub:
+.global aes_dec_rnd_sub
+aes_dec_rnd_sub:
     # a0 =  uint32_t * s 
 	
 	li 	 t5, 0x00FF00FF
@@ -29,10 +29,10 @@ aes_enc_rnd_sub:
 	xc.gpr2xcr  c2, t1
 	xc.gpr2xcr  c3, t2
 
-	xc.aessub.enc c4, c0, c1
-	xc.aessub.enc c5, c1, c0
-	xc.aessub.enc c6, c2, c3
-	xc.aessub.enc c7, c3, c2
+	xc.aessub.dec c4, c0, c1
+	xc.aessub.dec c5, c1, c0
+	xc.aessub.dec c6, c2, c3
+	xc.aessub.dec c7, c3, c2
 
 	xc.st.w c4, 0(a0)
 	xc.st.w c5, 4(a0)

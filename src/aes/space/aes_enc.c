@@ -38,9 +38,12 @@ uint8_t AES_ENC_SBOX[] = {
 #endif
 
 #if defined( CONF_AES_ROUND_SPLIT )
+
+#if !defined( CONF_AES_ENC_INIT_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_enc_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_key( s, rk );
 }
+#endif
 
 #if !defined( CONF_AES_ENC_ITER_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
@@ -51,11 +54,14 @@ void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
 }
 #endif
 
+#if !defined( CONF_AES_ENC_FINI_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_sub( s     );
   aes_enc_rnd_row( s     );
   aes_enc_rnd_key( s, rk );
 }
+#endif
+
 #endif
 
 void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc ) {

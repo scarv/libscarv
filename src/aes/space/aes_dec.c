@@ -38,22 +38,30 @@ uint8_t AES_DEC_SBOX[] = {
 #endif
 
 #if defined( CONF_AES_ROUND_SPLIT )
+
+#if !defined( CONF_AES_DEC_INIT_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_dec_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_key( s, rk );
   aes_dec_rnd_row( s     );
   aes_dec_rnd_sub( s     );
 }
+#endif
 
+#if !defined( CONF_AES_DEC_ITER_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_dec_rnd_iter( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_key( s, rk );
   aes_dec_rnd_mix( s     );
   aes_dec_rnd_row( s     );
   aes_dec_rnd_sub( s     );
 }
+#endif
 
+#if !defined( CONF_AES_DEC_FINI_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
 void aes_dec_rnd_fini( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_key( s, rk );
 }
+#endif
+
 #endif
 
 void aes_dec_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc ) {
