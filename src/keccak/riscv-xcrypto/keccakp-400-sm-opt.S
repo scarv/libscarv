@@ -25,22 +25,20 @@ KeccakP400_theta:
     # First loop - inner loop unrolled
     .theta_0:
         
-        li  t1, 0               # C[x] = 0
-
-        lhu t2, 0 (t6)           # load A[x+5*0]
-        xor t1, t1, t2
-        lhu t2, 10(t6)          # load A[x+5*1]
-        xor t1, t1, t2
-        lhu t2, 20(t6)          # load A[x+5*2]
-        xor t1, t1, t2
-        lhu t2, 30(t6)          # load A[x+5*3]
-        xor t1, t1, t2
-        lhu t2, 40(t6)          # load A[x+5*4]
-        xor t1, t1, t2
+        xc.ld.hu    c0, (0), 0 (t6)          # load A[x+5*0]
+        xc.ld.hu    c0, (1), 10(t6)          # load A[x+5*1]
+        xc.ld.hu    c1, (0), 20(t6)          # load A[x+5*2]
+        xc.ld.hu    c1, (1), 30(t6)          # load A[x+5*3]
+        xc.ld.hu    c2, (0), 40(t6)          # load A[x+5*4]
+        
+        xc.bop      c0, c0, c1, 0x6          # XOR
+        xc.bop      c0, c0, c2, 0x6          # XOR
+        xc.pperm.w  c1, c0, 2,3,2,3
+        xc.bop      c0, c0, c1, 0x6          # XOR
 
         # t1  = A[x+0*y] ^ A[x+1*y] ^ A[x+2*y] ^ A[x+3*y] ^ A[x+4*y]
 
-        sh  t1, 0(t0)           # C[x] = t1
+        xc.st.h     c0,(0), 0(t0)           # C[x] = t1
 
         addi t0, t0, 2
         addi t6, t6, 2
@@ -61,17 +59,12 @@ KeccakP400_theta:
         slli    a4, a4, 1           
         add     a3, a3, a1          # a3 = &C[(x+1)%5]
         add     a4, a4, a1          # a4 = &C[(x+4)%5]
-
-        lhu     a3, 0(a3)           # a3 =  C[(x+1)%5]
-        lhu     a4, 0(a4)           # a4 =  C[(x+4)%5]
-
-        srli    t2, a3, 15
-        slli    a3, a3, 1
-        xor     a3, a3, t2          # a3 = ROL16(C[(x+1)%5],1)
-
-        xor     a3, a3, a4          # a3 = ROL16(C[(x+1)%5],1) ^ C[(x+4)%5]
-
-        sh      a3, 0(t3)           # D[x] = a3
+ 
+        xc.ld.hu  c0,(0), 0(a3)     # a3 =  C[(x+1)%5]
+        xc.ld.hu  c1,(0), 0(a4)     # a4 =  C[(x+4)%5]
+        xc.prot.i h, c0, c0, 15     # c0 = ROL16(C[(x+1)%5],1)
+        xc.bop    c0, c0, c1, 0x6   # a3 = ROL16(C[(x+1)%5],1) ^ C[(x+4)%5]
+        xc.st.h   c0, (0), 0(t3)    # D[x] = a3
         
         addi    t3, t3, 2
         addi    t0, t0, 1
@@ -87,27 +80,24 @@ KeccakP400_theta:
         add     t4, a5, a2      # t4 = &D[x]
         add     t3, a5, a0      # t3 = &A[x]
 
-        lhu     t4, 0(t4)       # t4 = D[x]
+        xc.ld.hu    c0,(0), 0(t4)   # c1 = D[x]
+        xc.pperm.w  c0, c0, 0,1,0,1
 
-        lhu     t5, 0(t3)       # t5 = A[x + (5*y)] y=0
-        xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 0(t3)
-
-        lhu     t5, 10(t3)      # t5 = A[x + (5*y)] y=1
-        xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 10(t3)
-
-        lhu     t5, 20(t3)      # t5 = A[x + (5*y)] y=2
-        xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 20(t3)
-
-        lhu     t5, 30(t3)      # t5 = A[x + (5*y)] y=3
-        xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 0(t3)
-
-        lhu     t5, 40(t3)      # t5 = A[x + (5*y)] y=4
-        xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 0(t3)
+        xc.ld.hu c1,(0), 0(t3)       # c1 = A[x + (5*y)] y=0
+        xc.ld.hu c1,(1), 10(t3)      # c1 = A[x + (5*y)] y=1
+        xc.bop   c1, c1, c0, 0x6     # c1 = c1 ^ D[x]
+        xc.st.h  c1,(0), 0(t3)
+        xc.st.h  c1,(1), 10(t3)
+        
+        xc.ld.hu c1,(0), 20(t3)      # c1 = A[x + (5*y)] y=2
+        xc.ld.hu c1,(1), 30(t3)      # c1 = A[x + (5*y)] y=3
+        xc.bop   c1, c1, c0, 0x6    # c1 = c1 ^ D[x]
+        xc.st.h  c1,(0), 20(t3)
+        xc.st.h  c1,(1), 30(t3)
+        
+        xc.ld.hu c1,(0), 40(t3)      # c1 = A[x + (5*y)] y=4
+        xc.bop   c1, c1, c0, 0x6    # c1 = c1 ^ D[x]
+        xc.st.h  c1,(0), 40(t3)
 
         addi    a5, a5, 2
         bltu    a5, t1, .theta_2

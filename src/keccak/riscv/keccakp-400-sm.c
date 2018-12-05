@@ -1,7 +1,7 @@
 
 #include "KeccakP-400-SnP.h"
 
-/* - Defined externally
+/*
 void KeccakP400_theta(tKeccakLane *A)
 {
     unsigned int x, y;

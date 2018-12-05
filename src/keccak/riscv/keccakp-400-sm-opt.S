@@ -103,11 +103,11 @@ KeccakP400_theta:
 
         lhu     t5, 30(t3)      # t5 = A[x + (5*y)] y=3
         xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 0(t3)
+        sh      t5, 30(t3)
 
         lhu     t5, 40(t3)      # t5 = A[x + (5*y)] y=4
         xor     t5, t5, t4      # t5 = t5 ^ D[x]
-        sh      t5, 0(t3)
+        sh      t5, 40(t3)
 
         addi    a5, a5, 2
         bltu    a5, t1, .theta_2
