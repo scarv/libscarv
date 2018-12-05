@@ -229,18 +229,16 @@ KeccakP400_pi_asm:
 
     li t0, 0                            # t0 = x = 0
     li t2, 5
+    li a6, 10
     la t6, pi_aux
 
     .pi_1:
         li t1, 0                        # t1 = y = 0
-        li a7, 0                        # a7 = 5y = 0
-        
-        slli    t3, t0, 1               # t3 = 2*x
+        li a7, 0                        # a7 = 10y = 0
 
         .pi_2:
             
             add     t4, a7, t0          # t4 = x+5y
-            slli    t4, t4, 1           # halfword align
             add     t4, t4, t6          # t4 = &pi_aux[x+5y]
             lhu     t5, 0(t4)           # t5 = pi_aux[x+5y]
 
@@ -250,7 +248,7 @@ KeccakP400_pi_asm:
 
             slli    t4, t1, 1           # t4 = 2y
             add     t4, t4, t1          # t4 = 3y
-            add     t4, t4, t3          # t4 = 2x + 3y
+            add     t4, t4, t0          # t4 = 2x + 3y
             remu    t4, t4, t2          # t4 = (2x + 3y) % 5
             mul     t4, t4, t2          # t4 = 5*((2x + 3y)%5)
             add     t4, t4, t1          # t4 = y + 5*((2x + 3y)%5)
@@ -259,12 +257,12 @@ KeccakP400_pi_asm:
             
             sh      t5, 0(t4)
             
-            addi    a7, a7, 5
+            addi    a7, a7, 10
             addi    t1, t1, 1
             bltu    t1, t2, .pi_2
         
-        addi    t0, t0, 1
-        bltu    t0, t2, .pi_1
+        addi    t0, t0, 2
+        bltu    t0, a6, .pi_1
     
     ret
 .endfunc
