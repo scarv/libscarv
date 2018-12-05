@@ -266,3 +266,85 @@ KeccakP400_pi:
     
     ret
 .endfunc
+
+
+
+#
+# Auxiliary storage for chi function
+.data
+chi_aux:
+.fill 10, 8, 0
+
+.text
+
+.func KeccakP400_chi_asm
+.global KeccakP400_chi_asm
+KeccakP400_chi_asm:
+    # Arguments:
+    # - a0 - tKeccakLane * A
+
+    la  a1, chi_aux
+    
+    li  t0, 0                           # y = 0
+    li  t2, 5
+    li  t3, 25
+
+    .chi_0:
+        
+        li t1, 0                        # x = 0
+        .chi_1:
+
+            addi    a3, t1, 1           # a3 = (x+1)
+            addi    a4, t1, 2           # a4 = (x+2)
+
+            remu    a3, a3, t2          # a3 = (x+1) % 5
+            remu    a4, a4, t2          # a4 = (x+2) % 5
+            
+            add     a2, t0, t1          # a2 = x+5y
+            add     a3, a3, t0          # a3 = ((x+1)%5) + 5y
+            add     a4, a4, t0          # a4 = ((x+2)%5) + 5y
+
+            slli    a2, a2, 1           # halfword align
+            slli    a3, a3, 1           # halfword align
+            slli    a4, a4, 1           # halfword align
+
+            add     a2, a2, a0          # a2 = &A[index(x  , y)]
+            add     a3, a3, a0          # a3 = &A[index(x+1, y)]
+            add     a4, a4, a0          # a4 = &A[index(x+2, y)]
+
+            lhu     t4, 0(a2)           # t4 =  A[index(x  , y)]
+            lhu     t5, 0(a3)           # t5 =  A[index(x+1, y)]
+            lhu     t6, 0(a4)           # t6 =  A[index(x+2, y)]
+
+            not     t5, t5
+            and     t5, t5, t6
+            xor     t5, t5, t4
+
+            slli    t6, t1, 1
+            add     t6, t6, a1          # t6 = &chi_aux[x]
+            sh      t5, 0(t6)           # chi_aux[x] = t4 ^ (~t5 & t6)
+
+            addi    t1, t1, 1
+            bltu    t1, t2, .chi_1
+
+        li t1, 0                        # x = 0
+        .chi_2:
+            
+            slli    t6, t1, 1
+            add     t6, t6, a1          # t6 = &chi_aux[x]
+            lhu     t5, 0(t6)           # t6 =  chi_aux[x]
+
+            add     t6, t1, t0          # t6 = x+5y
+            slli    t6, t6, 1
+            add     t6, t6, a0          # t6 = &A[index(x,y)]
+            sh      t5, 0(t6)           # A[index(x,y)] = chi_aux[x]
+            
+            addi    t1, t1, 1
+            bltu    t1, t2, .chi_2
+
+        addi t0, t0, 5
+        bltu t0, t3, .chi_0
+
+    ret
+
+.endfunc
