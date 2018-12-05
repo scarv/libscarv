@@ -191,3 +191,80 @@ KeccakP400_rho:
 
     ret
 .endfunc
+
+
+#
+# Auxiliary storage for pi function
+.data
+pi_aux:
+.fill 50, 8, 0
+
+.text
+
+.func KeccakP400_pi_asm
+.global KeccakP400_pi_asm
+KeccakP400_pi_asm:
+    # Arguments:
+    # - a0 - tKeccakLane * A
+    
+    mv   t0, a0
+    addi t1, t0, 50
+    la   t2, pi_aux
+
+    .pi_0:                          # Copy A to pi_aux
+        lhu t3,  0(t0)
+        sh  t3,  0(t2)
+        lhu t3,  2(t0)
+        sh  t3,  2(t2)
+        lhu t3,  4(t0)
+        sh  t3,  4(t2)
+        lhu t3,  6(t0)
+        sh  t3,  6(t2)
+        lhu t3,  8(t0)
+        sh  t3,  8(t2)
+
+        addi t0, t0, 10
+        addi t2, t2, 10
+        bltu t0, t1, .pi_0
+
+    li t0, 0                            # t0 = x = 0
+    li t2, 5
+    la t6, pi_aux
+
+    .pi_1:
+        li t1, 0                        # t1 = y = 0
+        li a7, 0                        # a7 = 5y = 0
+        
+        slli    t3, t0, 1               # t3 = 2*x
+
+        .pi_2:
+            
+            add     t4, a7, t0          # t4 = x+5y
+            slli    t4, t4, 1           # halfword align
+            add     t4, t4, t6          # t4 = &pi_aux[x+5y]
+            lhu     t5, 0(t4)           # t5 = pi_aux[x+5y]
+
+            # compute index(0*x+1*y, 2*x+3*y)
+            #       = index(      y, 2*x+3*y)
+            #       =         y + 5*((2*x+3*y) %5)
+
+            slli    t4, t1, 1           # t4 = 2y
+            add     t4, t4, t1          # t4 = 3y
+            add     t4, t4, t3          # t4 = 2x + 3y
+            remu    t4, t4, t2          # t4 = (2x + 3y) % 5
+            mul     t4, t4, t2          # t4 = 5*((2x + 3y)%5)
+            add     t4, t4, t1          # t4 = y + 5*((2x + 3y)%5)
+            slli    t4, t4, 1
+            add     t4, t4, a0          # t4 = &A[y + 5*((2x + 3y)%5)]
+            
+            sh      t5, 0(t4)
+            
+            addi    a7, a7, 5
+            addi    t1, t1, 1
+            bltu    t1, t2, .pi_2
+        
+        addi    t0, t0, 1
+        bltu    t0, t2, .pi_1
+    
+    ret
+.endfunc
