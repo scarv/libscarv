@@ -46,17 +46,15 @@ KeccakP400_theta:
 
     # Second loop
     li      t0, 0
-    li      t1, 5
+    li      t1, 10
     mv      t3, a2
 
     .theta_1:
         
-        addi    a3, t0, 1
-        addi    a4, t0, 4
+        addi    a3, t0, 2
+        addi    a4, t0, 8
         remu    a3, a3, t1
         remu    a4, a4, t1
-        slli    a3, a3, 1           
-        slli    a4, a4, 1           
         add     a3, a3, a1          # a3 = &C[(x+1)%5]
         add     a4, a4, a1          # a4 = &C[(x+4)%5]
  
@@ -67,7 +65,7 @@ KeccakP400_theta:
         xc.st.h   c0, (0), 0(t3)    # D[x] = a3
         
         addi    t3, t3, 2
-        addi    t0, t0, 1
+        addi    t0, t0, 2
         bltu    t0, t1, .theta_1
 
     # third loop, inner unrolled
@@ -147,8 +145,8 @@ KeccakP400_rho:
     
     la  a1, rho_offsets
     li  t0, 0
-    li  t2, 5
-    li  a6, 25
+    li  t2, 10
+    li  a6, 50
 
     .rho_0:
     
@@ -157,10 +155,9 @@ KeccakP400_rho:
         .rho_1:
         
             add  t3, t1, t0         # t3 = x + 5*y
-            slli t4, t3, 1          # t4 = halfword aligned x+5y
 
-            add  t5, a0, t4         # t5 = &A[x+5y]
-            add  t6, a1, t4         # t6 = &rho_offsets[x+5y]
+            add  t5, a0, t3         # t5 = &A[x+5y]
+            add  t6, a1, t3         # t6 = &rho_offsets[x+5y]
 
             xc.ld.hu  c2, (0), 0(t5)          # c2 = A[x+5y]
             xc.ld.hu  c3, (0), 0(t6)          # c3 = rho_offsets[x+5y]
@@ -169,10 +166,10 @@ KeccakP400_rho:
 
             xc.st.h   c2,(0), 0(t5)
             
-            addi  t1, t1, 5
+            addi  t1, t1, 10
             bltu  t1, a6, .rho_1
         
-        addi t0, t0, 1
+        addi t0, t0, 2
         bltu t0, t2, .rho_0
 
     ret
