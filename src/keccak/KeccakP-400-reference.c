@@ -181,36 +181,49 @@ void KeccakP400Round(tKeccakLane *state, unsigned int indexRound)
 @brief A reference implementation used to test the accelerated KeccakP400Round
 function.
 */
-void KeccakP400RoundReference(tKeccakLane *state, unsigned int indexRound)
+void KeccakP400RoundReference(tKeccakLane *A, unsigned int indexRound)
 {
-#ifdef KeccakReference
-    displayRoundNumber(3, indexRound);
-#endif
+    unsigned int x, y;
+    tKeccakLane C[5], D[5];
+    tKeccakLane tempA[25];
 
-    KeccakP400_theta_reference(state);
-#ifdef KeccakReference
-    displayStateAsLanes(3, "After theta", state, 400);
-#endif
+    // Theta / Rho / Pi
 
-    KeccakP400_rho_reference(state);
-#ifdef KeccakReference
-    displayStateAsLanes(3, "After rho", state, 400);
-#endif
+    for(x=0; x<5; x++) {
+        C[x] = A[index(x, 0)] ^
+               A[index(x, 1)] ^
+               A[index(x, 2)] ^
+               A[index(x, 3)] ^
+               A[index(x, 4)] ;
+    }
 
-    KeccakP400_pi_reference(state);
-#ifdef KeccakReference
-    displayStateAsLanes(3, "After pi", state, 400);
-#endif
+    for(x=0; x<5; x++) {
+        
+        D[x] = ROL16(C[(x+1)%5], 1) ^ C[(x+4)%5];
 
-    KeccakP400_chi_reference(state);
-#ifdef KeccakReference
-    displayStateAsLanes(3, "After chi", state, 400);
-#endif
+        for(y=0; y<5; y++) {
 
-    KeccakP400_iota_reference(state, indexRound);
-#ifdef KeccakReference
-    displayStateAsLanes(3, "After iota", state, 400);
-#endif
+            tempA[index(0*x+1*y, 2*x+3*y)] = 
+                ROL16 (
+                    A[index(x, y)]^D[x],
+                    KeccakP400RhoOffsets[index(x, y)]
+                );
+        }
+    }
+
+    // Chi
+
+    for(y=0; y<5; y++) {
+        for(x=0; x<5; x++) {
+            A[index(x, y)] =
+                tempA[index(x, y)] ^ 
+                    ((~tempA[index(x+1, y)]) &
+                       tempA[index(x+2, y)]);
+        }
+    }
+
+    // Iota
+    A[index(0, 0)] ^= KeccakP400RoundConstants[indexRound];
 }
 
 /* ---------------------------------------------------------------- */
