@@ -166,33 +166,48 @@ void KeccakP400OnWords(tKeccakLane *state, unsigned int nrRounds)
         KeccakP400Round(state, i);
 }
 
+#ifndef CONF_KECCAKP400_ROUND_EXTERN
 void KeccakP400Round(tKeccakLane *state, unsigned int indexRound)
+{
+    KeccakP400_theta(state);
+    KeccakP400_rho(state);
+    KeccakP400_pi(state);
+    KeccakP400_chi(state);
+    KeccakP400_iota_reference(state, indexRound);
+}
+#endif
+
+/*!
+@brief A reference implementation used to test the accelerated KeccakP400Round
+function.
+*/
+void KeccakP400RoundReference(tKeccakLane *state, unsigned int indexRound)
 {
 #ifdef KeccakReference
     displayRoundNumber(3, indexRound);
 #endif
 
-    KeccakP400_theta(state);
+    KeccakP400_theta_reference(state);
 #ifdef KeccakReference
     displayStateAsLanes(3, "After theta", state, 400);
 #endif
 
-    KeccakP400_rho(state);
+    KeccakP400_rho_reference(state);
 #ifdef KeccakReference
     displayStateAsLanes(3, "After rho", state, 400);
 #endif
 
-    KeccakP400_pi(state);
+    KeccakP400_pi_reference(state);
 #ifdef KeccakReference
     displayStateAsLanes(3, "After pi", state, 400);
 #endif
 
-    KeccakP400_chi(state);
+    KeccakP400_chi_reference(state);
 #ifdef KeccakReference
     displayStateAsLanes(3, "After chi", state, 400);
 #endif
 
-    KeccakP400_iota(state, indexRound);
+    KeccakP400_iota_reference(state, indexRound);
 #ifdef KeccakReference
     displayStateAsLanes(3, "After iota", state, 400);
 #endif

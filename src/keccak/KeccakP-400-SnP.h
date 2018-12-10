@@ -56,6 +56,8 @@ void KeccakP400_OverwriteBytes(void *state, const unsigned char *data, unsigned 
 void KeccakP400_OverwriteWithZeroes(void *state, unsigned int byteCount);
 void KeccakP400_Permute_Nrounds(void *state, unsigned int nrounds);
 void KeccakP400_Permute_20rounds(void *state);
+void KeccakP400RoundReference(tKeccakLane *state, unsigned int indexRound);
+void KeccakP400Round(tKeccakLane *state, unsigned int indexRound);
 void KeccakP400_ExtractBytes(const void *state, unsigned char *data, unsigned int offset, unsigned int length);
 void KeccakP400_ExtractAndAddBytes(const void *state, const unsigned char *input, unsigned char *output, unsigned int offset, unsigned int length);
 

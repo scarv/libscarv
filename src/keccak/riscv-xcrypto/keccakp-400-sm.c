@@ -1,8 +1,8 @@
 
 #include "KeccakP-400-SnP.h"
 
-/*
-void KeccakP400_theta(tKeccakLane *A)
+
+void KeccakP400_theta_reference(tKeccakLane *A)
 {
     unsigned int x, y;
     tKeccakLane C[5], D[5];
@@ -18,24 +18,16 @@ void KeccakP400_theta(tKeccakLane *A)
         for(y=0; y<5; y++)
             A[index(x, y)] ^= D[x];
 }
-*/
 
-/*
-void KeccakP400_rho(tKeccakLane *A)
+void KeccakP400_rho_reference(tKeccakLane *A)
 {
     unsigned int x, y;
 
-    for(x=0; x<5; x++) {
-        for(y=0; y<5; y++) {
-            A[index(x, y)] =
-                ROL16(A[index(x, y)], KeccakP400RhoOffsets[index(x, y)]);
-        }
-    }
+    for(x=0; x<5; x++) for(y=0; y<5; y++)
+        A[index(x, y)] = ROL16(A[index(x, y)], KeccakP400RhoOffsets[index(x, y)]);
 }
-*/
 
-/*
-void KeccakP400_pi(tKeccakLane *A)
+void KeccakP400_pi_reference(tKeccakLane *A)
 {
     unsigned int x, y;
     tKeccakLane tempA[25];
@@ -45,10 +37,8 @@ void KeccakP400_pi(tKeccakLane *A)
     for(x=0; x<5; x++) for(y=0; y<5; y++)
         A[index(0*x+1*y, 2*x+3*y)] = tempA[index(x, y)];
 }
-*/
 
-/*
-void KeccakP400_chi(tKeccakLane *A)
+void KeccakP400_chi_reference(tKeccakLane *A)
 {
     unsigned int x, y;
     tKeccakLane C[5];
@@ -60,9 +50,8 @@ void KeccakP400_chi(tKeccakLane *A)
             A[index(x, y)] = C[x];
     }
 }
-*/
 
-void KeccakP400_iota(tKeccakLane *A, unsigned int indexRound)
+void KeccakP400_iota_reference(tKeccakLane *A, unsigned int indexRound)
 {
     A[index(0, 0)] ^= KeccakP400RoundConstants[indexRound];
 }
