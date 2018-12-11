@@ -8,31 +8,31 @@ chi_aux: .fill 10, 8, 0
 .align 8,0
 temp_a : .fill 50, 8, 0
 rho_off:
-    .hword  0
-    .hword  1
-    .hword 14
-    .hword 12
-    .hword 11
-    .hword  4
-    .hword 12
-    .hword  6
-    .hword  7
-    .hword  4
-    .hword  3
-    .hword 10
-    .hword 11
-    .hword  9
-    .hword  7
-    .hword  9
-    .hword 13
-    .hword 15
-    .hword  5
-    .hword  8
-    .hword  2
-    .hword  2
-    .hword 13
-    .hword  8
-    .hword 14                                             
+    .hword 16 -  0
+    .hword 16 -  1
+    .hword 16 - 14
+    .hword 16 - 12
+    .hword 16 - 11
+    .hword 16 -  4
+    .hword 16 - 12
+    .hword 16 -  6
+    .hword 16 -  7
+    .hword 16 -  4
+    .hword 16 -  3
+    .hword 16 - 10
+    .hword 16 - 11
+    .hword 16 -  9
+    .hword 16 -  7
+    .hword 16 -  9
+    .hword 16 - 13
+    .hword 16 - 15
+    .hword 16 -  5
+    .hword 16 -  8
+    .hword 16 -  2
+    .hword 16 -  2
+    .hword 16 - 13
+    .hword 16 -  8
+    .hword 16 - 14                                             
 round_consts:
     .hword 0x0001
     .hword 0x8082
@@ -72,17 +72,18 @@ KeccakP400Round:
 
     .theta_prep:
         
-        lhu     t0, 0 (a3)                  # t0 = A[x+5*y], y = 0
-        lhu     t1, 10(a3)                  # t0 = A[x+5*y], y = 1
-        xor     t0, t0, t1                  #
-        lhu     t1, 20(a3)                  # t0 = A[x+5*y], y = 2
-        xor     t0, t0, t1                  #
-        lhu     t1, 30(a3)                  # t0 = A[x+5*y], y = 3
-        xor     t0, t0, t1                  #
-        lhu     t1, 40(a3)                  # t0 = A[x+5*y], y = 4
-        xor     t0, t0, t1                  #
+        xc.ld.hu   c0,(0), 0 (a3)           # t0 = A[x+5*y], y = 0
+        xc.ld.hu   c0,(1), 10(a3)           # t0 = A[x+5*y], y = 1
+        xc.ld.hu   c1,(0), 20(a3)           # t0 = A[x+5*y], y = 2
+        xc.ld.hu   c1,(1), 30(a3)           # t0 = A[x+5*y], y = 3
+        xc.ld.hu   c2,(0), 40(a3)           # t0 = A[x+5*y], y = 4
 
-        sh      t0, 0(a2)                   # C[x] = t0
+        xc.bop     c0, c0, c1, 0x6          # XOR
+        xc.bop     c0, c0, c2, 0x6          # XOR
+        xc.pperm.w c1, c0, 2,3,2,3
+        xc.bop     c0, c0, c1, 0x6          # XOR
+
+        xc.st.h    c0,(0), 0(a2)            # C[x] = t0
         
         addi    a3, a3, 2
         addi    a2, a2, 2
@@ -103,20 +104,16 @@ KeccakP400Round:
         addi    a3, t0, 2                   # a3 = x+1
         remu    a3, a3, t2                  # a3 = (x+1)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
-        lhu     t3, 0(a3)                   # t3 = theta_c[(x+1)%5]
+        xc.ld.hu c3,(0), 0(a3)                   # c3 = theta_c[(x+1)%5]
 
-        srli    t4, t3, 15
-        slli    t3, t3, 1
-        or      t3, t3, t4                  # t3 = theta_c[(x+1)%5]<<<1
+        xc.prot.i h,c3, c3, 15              # c3 = theta_c[(x+1)%5]<<<1
         
         addi    a3, t0, 8                   # a3 = x+4
         remu    a3, a3, t2                  # a3 = (x+4)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
-        lhu     t4, 0(a3)                   # t4 = theta_c[(x+4)%5]
+        xc.ld.hu c4,(0), 0(a3)              # t4 = theta_c[(x+4)%5]
 
-        xor     t6, t3, t4                  # t6 = D = t3 ^ t4
-        slli    t6, t6, 16
-        srli    t6, t6, 16
+        xc.bop  c6, c3, c4, 0x6             # c6 = D
         
         .L1:
 
@@ -124,18 +121,14 @@ KeccakP400Round:
             add     t4, t4, t1              # t4 = 5*y
             add     t5, t4, t0              # t5 = (5*y)+x = index(x,y)
             add     t4, t5, a0              # t4 = &A[index(x,y)]
-            lhu     t4, 0(t4)               # t4 = A[index(x,y)
+            xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
 
-            xor     t3, t4, t6              # t3 = A[index(x,y)] ^ D
+            xc.bop  c3, c4, c6, 0x6         # c3 = A[index(x,y)] ^ D
 
             add     t4, a7, t5              # t4 = &RhoOffsets[index(x,y)]
-            lhu     t4, 0 (t4)              # t4 = RhoOffsets[index(x,y)]
+            xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
             
-            sll     t5, t3, t4              # t5 = t3 << t4
-            neg     t4, t4
-            andi    t4, t4, 0xF
-            srl     t4, t3, t4
-            or      t3, t5, t4              # t3 = (A[index(x,y)]^D)<<<ROff...
+            xc.prot h, c3, c3, c4
 
             add     t4, t0, t0              # t4 = 2*x
             slli    t5, t1, 1               # t5 = 2*y
@@ -147,7 +140,7 @@ KeccakP400Round:
             add     t4, t4, t1              # t4 = y + 5((2*x+3*y)%5)
             add     t4, t4, a6              # t4 = &a_temp[y + 5((2*x+3*y)%5)]
             
-            sh      t3, 0(t4)               # a_temp[y + 5((2*x+3*y)%5)] = t3
+            xc.st.h c3,(0), 0(t4)           # a_temp[y + 5((2*x+3*y)%5)] = t3
             
             addi    t1, t1, 2               # y += 1
             bltu    t1, t2, .L1
@@ -175,22 +168,21 @@ KeccakP400Round:
 
             add     t6, t0, t1              # t6 = x + 5y
             add     t4, t6, a6              # t4 = &a_temp[x+5y]
-            lhu     a5, 0(t4)               # a5 =  a_temp[x+5y]
+            xc.ld.hu c5,(0), 0(t4)          # c5 =  a_temp[x+5y]
             
             add     t4, t3, t1              # t3 = (x+1)%5 + 5y
             add     t4, t4, a6              # t3 = &a_temp[(x+1)%5 + 5y]
-            lhu     a4, 0(t4)               # a4 =  a_temp[(x+1)%5 + 5y]
+            xc.ld.hu c4,(0), 0(t4)          # c4 =  a_temp[x+5y]
             
             add     t4, a2, t1              # t4 = (x+2)%5 + 5y
             add     t4, t4, a6              # t4 = &a_temp[(x+2)%5 + 5y]
-            lhu     a3, 0(t4)               # a3 =  a_temp[(x+2)%5 + 5y]
+            xc.ld.hu c3,(0), 0(t4)          # c3 =  a_temp[x+5y]
             
-            not     a4, a4
-            and     a3, a3, a4
-            xor     a3, a3, a5              #
+            xc.bop  c3, c4, c3, 0x2         # c3 = (~c4) & c3
+            xc.bop  c3, c3, c5, 0x6         # c3 = c3 ^ c5
 
             add     t4, a0, t6              # t4 = &A[x+5y]
-            sh      a3, 0(t4)               # A[x+5y] = t3
+            xc.st.h c3,(0), 0(t4)           # A[x+5y] = t3
             
             addi    t1, t1, 10              # y += 1
             bltu    t1, t2, .L4
@@ -203,11 +195,11 @@ KeccakP400Round:
     slli    a2, a1, 1
     add     t1, t0, a2              # t0 = &round_consts[a1]
 
-    lhu     t2, 0(a0)               # t1 = A[index(0,0)]
-    lhu     t3, 0(t1)               # t2 = round_consts[a1]
+    xc.ld.hu c2,(0), 0(a0)          # c1 = A[index(0,0)]
+    xc.ld.hu c3,(0), 0(t1)          # c2 = round_consts[a1]
 
-    xor     t4, t2, t3              # t1 = A[index(0,0)] ^ round_consts[a1]
-    sh      t4, 0(a0)               # A[index(0,0)] = t1
+    xc.bop  c4, c2, c3, 0x6         # c4 = A[index(0,0)] ^ round_consts[a1]
+    xc.st.h c4,(0), 0(a0)           # A[index(0,0)] = c4
 
     ret
 
