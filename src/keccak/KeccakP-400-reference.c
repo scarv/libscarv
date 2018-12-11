@@ -173,7 +173,7 @@ void KeccakP400Round(tKeccakLane *state, unsigned int indexRound)
     KeccakP400_rho(state);
     KeccakP400_pi(state);
     KeccakP400_chi(state);
-    KeccakP400_iota_reference(state, indexRound);
+    KeccakP400_iota(state, indexRound);
 }
 #endif
 
@@ -184,8 +184,9 @@ function.
 void KeccakP400RoundReference(tKeccakLane *A, unsigned int indexRound)
 {
     unsigned int x, y;
-    tKeccakLane C[5], D[5];
+    tKeccakLane C[5];
     tKeccakLane tempA[25];
+    tKeccakLane D;
 
     // Theta / Rho / Pi
 
@@ -199,13 +200,13 @@ void KeccakP400RoundReference(tKeccakLane *A, unsigned int indexRound)
 
     for(x=0; x<5; x++) {
         
-        D[x] = ROL16(C[(x+1)%5], 1) ^ C[(x+4)%5];
+        D = ROL16(C[(x+1)%5], 1) ^ C[(x+4)%5];
 
         for(y=0; y<5; y++) {
 
             tempA[index(0*x+1*y, 2*x+3*y)] = 
                 ROL16 (
-                    A[index(x, y)]^D[x],
+                    A[index(x, y)] ^ D,
                     KeccakP400RhoOffsets[index(x, y)]
                 );
         }
