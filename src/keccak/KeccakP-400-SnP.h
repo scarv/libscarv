@@ -24,15 +24,15 @@ Please refer to SnP-documentation.h for more details.
 
 typedef unsigned char UINT8;
 typedef unsigned short UINT16;
-typedef UINT16 tKeccakLane;
+typedef UINT16 tKeccak400Lane;
 
 #define maxNrRounds 20
 #define nrLanes 25
 #define index(x, y) (((x)%5)+5*((y)%5))
 
 #define ROL16(a, offset) ((offset != 0) ? \
-    ((((tKeccakLane)a) << offset) ^ \
-     (((tKeccakLane)a) >> (sizeof(tKeccakLane)*8-offset))) : a)
+    ((((tKeccak400Lane)a) << offset) ^ \
+     (((tKeccak400Lane)a) >> (sizeof(tKeccak400Lane)*8-offset))) : a)
 
 
 static const unsigned int KeccakP400RhoOffsets[nrLanes] =
@@ -41,7 +41,7 @@ static const unsigned int KeccakP400RhoOffsets[nrLanes] =
      5,  8,  2,  2, 13,  8, 14
 };
 
-static const tKeccakLane KeccakP400RoundConstants[maxNrRounds] =
+static const tKeccak400Lane KeccakP400RoundConstants[maxNrRounds] =
 {
     0x0001, 0x8082, 0x808a, 0x8000, 0x808b, 0x0001, 0x8081, 0x8009, 0x008a,
     0x0088, 0x8009, 0x000a, 0x808b, 0x008b, 0x8089, 0x8003, 0x8002, 0x0080,
@@ -56,8 +56,8 @@ void KeccakP400_OverwriteBytes(void *state, const unsigned char *data, unsigned 
 void KeccakP400_OverwriteWithZeroes(void *state, unsigned int byteCount);
 void KeccakP400_Permute_Nrounds(void *state, unsigned int nrounds);
 void KeccakP400_Permute_20rounds(void *state);
-void KeccakP400RoundReference(tKeccakLane *state, unsigned int indexRound);
-void KeccakP400Round(tKeccakLane *state, unsigned int indexRound);
+void KeccakP400RoundReference(tKeccak400Lane *state, unsigned int indexRound);
+void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound);
 void KeccakP400_ExtractBytes(const void *state, unsigned char *data, unsigned int offset, unsigned int length);
 void KeccakP400_ExtractAndAddBytes(const void *state, const unsigned char *input, unsigned char *output, unsigned int offset, unsigned int length);
 
