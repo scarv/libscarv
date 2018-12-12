@@ -89,28 +89,28 @@ KeccakP1600Round:
 
     .theta_prep:
         
-        lw      t0,   0(a3)
-        lw      t1,  40(a3)
-        xor     t0, t0, t1
-        lw      t1,  80(a3)
-        xor     t0, t0, t1
-        lw      t1, 120(a3)
-        xor     t0, t0, t1
-        lw      t1, 160(a3)
-        xor     t0, t0, t1
+        xc.ld.w     c0,   0(a3)
+        xc.ld.w     c1,  40(a3)
+        xc.bop      c0, c0, c1, 0x6
+        xc.ld.w     c1,  80(a3)
+        xc.bop      c0, c0, c1, 0x6
+        xc.ld.w     c1, 120(a3)
+        xc.bop      c0, c0, c1, 0x6
+        xc.ld.w     c1, 160(a3)
+        xc.bop      c0, c0, c1, 0x6
         
-        lw      t2,   4(a3)
-        lw      t3,  44(a3)
-        xor     t2, t2, t3
-        lw      t3,  84(a3)
-        xor     t2, t2, t3
-        lw      t3, 124(a3)
-        xor     t2, t2, t3
-        lw      t3, 164(a3)
-        xor     t2, t2, t3
+        xc.ld.w     c2,   4(a3)
+        xc.ld.w     c3,  44(a3)
+        xc.bop      c2, c2, c3, 0x6
+        xc.ld.w     c3,  84(a3)
+        xc.bop      c2, c2, c3, 0x6
+        xc.ld.w     c3, 124(a3)
+        xc.bop      c2, c2, c3, 0x6
+        xc.ld.w     c3, 164(a3)
+        xc.bop      c2, c2, c3, 0x6
 
-        sw      t0,   0(a2)
-        sw      t2,   4(a2)
+        xc.st.w     c0,   0(a2)
+        xc.st.w     c2,   4(a2)
         
         addi    a3, a3, 8
         addi    a2, a2, 8
@@ -261,36 +261,33 @@ KeccakP1600Round:
             add     t4, t4, t1              # t4 = ((x+1)%5) + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
 
-            lw      a4, 0(t4)               # a5,a4 =a_temp[((x+1)%5) + 5y] 
-            lw      a5, 4(t4)               # 
+            xc.ld.w c0, 0(t4)               # c1,c0 =a_temp[((x+1)%5) + 5y] 
+            xc.ld.w c1, 4(t4)               # 
             
             addi    t4, t0, 16              # t4 = x+2
             remu    t4, t4, t5              # t4 = (x+2) % 5
             add     t4, t4, t1              # t4 = ((x+2)%5) + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
             
-            lw      s4, 0(t4)               # a5,a4 =a_temp[((x+2)%5) + 5y] 
-            lw      s5, 4(t4)               # 
+            xc.ld.w c2, 0(t4)               # c3,c2 =a_temp[((x+2)%5) + 5y] 
+            xc.ld.w c3, 4(t4)               # 
 
-            not     a4, a4
-            not     a5, a5
-
-            and     s4, s4, a4              # s5,s4 = ~X & Y
-            and     s5, s5, a5              #
+            xc.bop  c0, c0, c2, 0x2         # c0 = (~c0) & c2
+            xc.bop  c1, c1, c3, 0x2         # c1 = (~c1) & c3
             
             add     s2, t0, t1              # t4 = ((x) + 5y
             add     t4, s2, a6              # t4 = &a_temp[((x) + 5y]
             
-            lw      a4, 0(t4)               # a5,a4 =a_temp[((x)) + 5y] 
-            lw      a5, 4(t4)               # 
+            xc.ld.w c4, 0(t4)               # c5,c4 =a_temp[((x)) + 5y] 
+            xc.ld.w c5, 4(t4)               # 
             
-            xor     a4, s4, a4              # s5,s4 = ~X & Y
-            xor     a5, s5, a5              #
+            xc.bop  c0, c0, c4, 0x6         # c0 = c0 ^ c2
+            xc.bop  c1, c1, c5, 0x6         # c1 = c1 ^ c3
             
             add     t4, s2, a0              # t4 = &A[((x) + 5y]
             
-            sw      a4, 0(t4)               # A[t4] = a5,a4
-            sw      a5, 4(t4)               # 
+            xc.st.w c0, 0(t4)               # A[t4] = c1,c0
+            xc.st.w c1, 4(t4)               # 
             
             addi    t1, t1, 40              # y += 1
             bltu    t1, t2, .L4
@@ -303,17 +300,17 @@ KeccakP1600Round:
     slli    a1, a1, 3
     add     t1, t0, a1
 
-    lw      t2, 0(t1)                       # t3,t2 = round_consts[index]
-    lw      t3, 4(t1)                       #
+    xc.ld.w c2, 0(t1)                       # t3,t2 = round_consts[index]
+    xc.ld.w c3, 4(t1)                       #
 
-    lw      t4, 0(a0)
-    lw      t5, 4(a0)
+    xc.ld.w c4, 0(a0)
+    xc.ld.w c5, 4(a0)
 
-    xor     t4, t4, t2
-    xor     t5, t5, t3
+    xc.bop  c4, c4, c2, 0x6                 # XOR
+    xc.bop  c5, c5, c3, 0x6                 # XOR
     
-    sw      t4, 0(a0)
-    sw      t5, 4(a0)
+    xc.st.w c4, 0(a0)
+    xc.st.w c5, 4(a0)
 
     #
     # Stack management
