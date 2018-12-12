@@ -183,6 +183,16 @@ void KeccakP1600OnWords(tKeccak1600Lane *state, unsigned int nrRounds)
         KeccakP1600Round(state, i);
 }
 
+#include <stdint.h>
+uint64_t rot64_1 (uint64_t w) {
+    return (w << 1) | (w >> (64 - 1));
+}
+
+uint64_t rot64_n (uint64_t w, uint8_t a) {
+    uint8_t amnt = a & 0x3F;
+    return (w << amnt) | (w >> (64 - a));
+}
+
 
 /*!
 @brief A reference implementation used to test the accelerated
