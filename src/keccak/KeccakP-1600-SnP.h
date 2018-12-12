@@ -65,7 +65,31 @@ static const tKeccak1600Lane KeccakP1600RoundConstants[maxNrRounds] =
 
 static const unsigned int KeccakP1600RhoOffsets[nrLanes] =
 {
-     0,  1, 62, 28, 27, 36, 44,  6, 55, 20,  3, 10, 43, 25, 39, 41, 45, 15, 21,  8, 18,  2, 61, 56, 14
+  0,  // 0   *
+  1,  // 1   
+ 62,  // 2   
+ 28,  // 3   
+ 27,  // 4   
+ 36,  // 5   *
+ 44,  // 6   
+  6,  // 7   
+ 55,  // 8   
+ 20,  // 9   
+  3,  // 10  *
+ 10,  // 11  
+ 43,  // 12  
+ 25,  // 13  
+ 39,  // 14  
+ 41,  // 15  *
+ 45,  // 16  
+ 15,  // 17  
+ 21,  // 18  
+  8,  // 19  
+ 18,  // 20  *
+  2,  // 21  
+ 61,  // 22  
+ 56,  // 23  
+ 14   // 24  
 };
 
 void KeccakP1600_Initialize(void *state);
