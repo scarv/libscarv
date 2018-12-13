@@ -85,7 +85,7 @@ KeccakP1600Round:
     # Theta function preparation
     la  a2, theta_c                         # a2 = &theta_c
     mv  a3, a0                              # a3 = &A
-    add a4, a2, 40                          # a4 = &theta_c[5]
+    addi a4, a2, 40                          # a4 = &theta_c[5]
 
     .theta_prep:
         
@@ -123,6 +123,13 @@ KeccakP1600Round:
     li      t2, 40
     addi    a2, a2, -40                     # a2 = &theta_c
 
+    xc.gpr2xcr c15, zero
+    xc.ld.liu  c15, 1                       # Shift amount
+    xc.gpr2xcr c14, zero
+    xc.ld.liu  c14, 63                      # Shift amount 2
+    xc.padd    w, c13, c14, c15             # c13 = 64
+    xc.bop     c12, c13, c14, 0xE
+
     # Theta / Rho / Pi
 
     .L0:
@@ -132,27 +139,25 @@ KeccakP1600Round:
         addi    a3, t0, 8                   # a3 = x+1
         remu    a3, a3, t2                  # a3 = (x+1)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
+        
+        xc.ld.w c6, 0(a3)                   # 
+        xc.ld.w c7, 4(a3)                   # t4,t3 = theta_c[(x+1)%5]
 
-        lw      t3, 0(a3)                   # 
-        lw      t4, 4(a3)                   # t4,t3 = theta_c[(x+1)%5]
+        xc.msll (c8,c9), c6, c7, c15
+        xc.msrl (c6,c7), c6, c7, c14
 
-        slli    t5, t3, 1
-        slli    t6, t4, 1
-        srli    t3, t3, 31
-        srli    t4, t4, 31
-
-        or      t4, t5, t4
-        or      t3, t6, t3                  # t4,t3 = theta_c[(x+1)%5] << 1
+        xc.bop  c6, c6, c8, 0xE             # OR
+        xc.bop  c7, c7, c9, 0xE             # OR
         
         addi    a3, t0, 32                  # a3 = x+4
         remu    a3, a3, t2                  # a3 = (x+4)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
-
-        lw      t5, 0(a3)                   # 
-        lw      t6, 4(a3)                   # t6,t5 = theta_c[(x+4)%5]
-
-        xor     t5, t4, t5                  # t6,t5 = (theta_c[(x+1)%5]<<<1)^
-        xor     t6, t3, t6                  #          theta_c[(x+4)%5]
+        
+        xc.ld.w c8, 0(a3)                   # 
+        xc.ld.w c9, 4(a3)                   # t4,t3 = theta_c[(x+1)%5]
+        
+        xc.bop  c6, c6, c8, 0x6             # c7,c6 = D
+        xc.bop  c7, c7, c9, 0x6             #
         
         .L1:
 
@@ -160,65 +165,28 @@ KeccakP1600Round:
             add     t4, t4, t1              # t4 = 5*y
             add     t3, t4, t0              # t3 = (5*y)+x = index(x,y)
             add     t4, t3, a0              # t4 = &A[index(x,y)]
-            lw      a5, 0(t4)               # 
-            lw      a4, 4(t4)               # a5,a4 = A[index(x,y)]
 
-            xor     a5, a5, t5              # a5,a4 = A[index(x,y)] ^ D
-            xor     a4, a4, t6              #
+            xc.ld.w c4, 0(t4)               # 
+            xc.ld.w c3, 4(t4)               # c4,c3 = A[index(x,y)]
+
+            xc.bop  c3, c3, c7, 0x6         # c7,c6 = D
+            xc.bop  c4, c4, c6, 0x6         #
 
             srli    t4, t3, 2               # Halfword align index(x,y)
             add     t4, t4, a7              # t4 = &rho_off[index(x,y)]
-            lhu     t4, 0(t4)               # t4 = rho_off[index(x,y)]
+
+            xc.ld.hu c1, (0), 0(t4)
             
             #
             #  64-bit left rotation of a5,a4 by t4
             #
 
-            beqz    t4, rot64_n_finish
+            xc.psub w, c2, c13, c1
+            xc.msll (c8, c9), c4, c3, c1
+            xc.msrl (c4, c5), c4, c3, c2
 
-            rot64_n:
-                andi	s4,t4, 0x3f                 # s4 = t4
-                addi	s5,s4,-32                   # s5 = t4 - 32
-                bltz	s5, .rot64_1
-                li	    s4,64
-                sub	    t4,s4,t4
-                addi	s4,t4,-32
-                sll	    s5,a4,s5
-                li	    s3,0
-                bltz	s4, .rot64_2
-            
-            .rot64_0:
-                srl	    a4,a5,s4                    # a4 = a5 >> s4
-                li	    a5,0
-                or	    a4,s3,a4
-                or	    a5,s5,a5
-                j       rot64_n_finish
-            
-            .rot64_1:
-                li	    s5,31                       # s5 = 31
-                sub	    s5,s5,s4                    # s5 = 31 - t4
-                srli	s3,a4,0x1                   # s3 = a4 >> 1
-                srl	    s3,s3,s5                    # s3 = a4 >> (32-t4)
-                sll	    s5,a5,s4                    # s5 = a5 << t4
-                or	    s5,s3,s5                    # s5 = 
-                sll	    s3,a4,s4                    # s3 = a4 << t4
-                li	    s4,64                       # s4 =  64
-                sub	    t4,s4,t4                    # t4 =  64 - t4
-                addi	s4,t4,-32                   # s4 = (64 - t4) - 32
-                bgez	s4,.rot64_0
-            
-            .rot64_2:
-                li	    s6,31
-                slli	s4,a5,0x1
-                sub	    s6,s6,t4
-                sll	    s4,s4,s6
-                srl	    a4,a4,t4
-                or	    a4,s4,a4
-                srl	    a5,a5,t4
-                or	    a4,s3,a4
-                or	    a5,s5,a5
-            
-            rot64_n_finish:
+            xc.bop  c4, c4, c8, 0xE
+            xc.bop  c5, c5, c9, 0xE
 
             #
             # Store a5,a4 back to tempA[index(y,2x+3y)]
@@ -234,9 +202,9 @@ KeccakP1600Round:
             add     t3, t3, t4              # t3 = 5((2x+3y)%5)
             add     t3, t3, t1              # t3 = 5((2x+3y)%5) + y
             add     t4, t3, a6              # t4 = &a_temp[5((2x+3y)%5)+y]
-
-            sw      a5, 0(t4)               #   a5,a4
-            sw      a4, 4(t4)               # a_temp[y + 5((2*x+3*y)%5)] =
+            
+            xc.st.w c4, 0(t4)               #   a5,a4
+            xc.st.w c5, 4(t4)               # a_temp[y + 5((2*x+3*y)%5)] =
 
             addi    t1, t1, 8               # y += 1
             bltu    t1, t2, .L1

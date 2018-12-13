@@ -68,7 +68,7 @@ KeccakP400Round:
     # Theta function preparation
     la  a2, theta_c                         # a2 = &theta_c
     mv  a3, a0                              # a3 = &A
-    add a4, a2, 10                          # a4 = &theta_c[5]
+    addi a4, a2, 10                          # a4 = &theta_c[5]
 
     .theta_prep:
         
