@@ -9,7 +9,9 @@
                 ./src/mp/limb \
                 ./src/mp/limb/${ARCH} \
                 ./src/keccak \
-                ./src/keccak/${ARCH}
+                ./src/keccak/${ARCH} \
+                ./src/prince \
+                ./src/prince/${ARCH}
 
  SRC_HEADERS += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.h))
  SRC_SOURCES += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.c))
