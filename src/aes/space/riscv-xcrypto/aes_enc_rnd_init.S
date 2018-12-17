@@ -1,27 +1,25 @@
+.include "aes_macro.S"
 
 .section .text
 .global aes_enc_rnd_init
 aes_enc_rnd_init:
     # a0 =  uint32_t * s 
 	# a1 =  uint32_t * k
-	
-	lw t1, 0(a0)
-	lw t2, 4(a0)
-	lw t3, 8(a0)
-	lw t4, 12(a0)
-
-	lw t5, 0(a1)
-	xor t1, t1, t5
-	lw t5, 4(a1)
-	xor t2, t2, t5
-	lw t5, 8(a1)
-	xor t3, t3, t5
-	lw t5, 12(a1)
-	xor t4, t4, t5
-
-	sw t1, 0(a0)
-	sw t2, 4(a0)
-	sw t3, 8(a0)
-	sw t4, 12(a0)
-
+.ifdef CONF_AES_ROUND_PACK
+	#load
+	AES_LDW_RV	t0,t1,t2,t3,a0
+	#key
+	AES_KEY_RV 	t0,t1,t2,t3,t5,a1
+	#store
+	AES_STW_RV	t0,t1,t2,t3,a0
+.else
+	#load 
+	AES_LDW_XC	c0,c1,c2,c3, a0
+	AES_LDW_XC	c4,c5,c6,c7, a1
+	#key
+	AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7
+	#store
+	AES_STW_XC	c0,c1,c2,c3, a0
+.endif
 	ret
+

@@ -63,7 +63,7 @@ void aes_enc_rnd_key( uint8_t* s, const uint8_t* rk ) {
   #endif
 }
 
-#if !defined( CONF_AES_ENC_SUB_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_ENC_SUB_EXTERN ) 
 void aes_enc_rnd_sub( uint8_t* s ) {
   #if !defined( CONF_AES_ROUND_UNROLL )
   for( int i = 0; i < 16; i++ ) {
@@ -95,7 +95,7 @@ void aes_enc_rnd_row( uint8_t* s ) {
   #endif
 }
 
-#if !defined( CONF_AES_ENC_MIX_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_ENC_MIX_EXTERN )
 void aes_enc_rnd_mix( uint8_t* s ) {
   #if !defined( CONF_AES_ROUND_PACK   )
   #if !defined( CONF_AES_ROUND_UNROLL )

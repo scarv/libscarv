@@ -1,3 +1,4 @@
+.include "aes_macro.S"
 
 .section .text
 .global aes_enc
@@ -5,23 +6,75 @@ aes_enc:
     # a0 =  uint32_t * r
 	# a1 =  uint32_t * m 
 	# a2 =  uint32_t * k
+.ifdef CONF_AES_ROUND_PACK
+	# a3 =	uint8_t * sbox
 	
-	xc.ld.w c0, 0(a1)
-	xc.ld.w c1, 4(a1)
-	xc.ld.w c2, 8(a1)
-	xc.ld.w c3, 12(a1)	
+	#load
+	AES_LDW_RV	t0,t1,t2,t3,a1
 
 #init round	
-	#load key
-	xc.ld.w c4, 0(a2)
-	xc.ld.w c5, 4(a2)
-	xc.ld.w c6, 8(a2)
-	xc.ld.w c7, 12(a2)
 	#key
-	xc.bop	c0, c0, c4, 0x6		#xor
-	xc.bop	c1, c1, c5, 0x6		#xor
-	xc.bop	c2, c2, c6, 0x6		#xor
-	xc.bop	c3, c3, c7, 0x6		#xor
+	AES_KEY_RV 	t0,t1,t2,t3,t5,a2
+	#store
+	AES_STW_RV	t0,t1,t2,t3,a0
+
+#iterative rounds
+	li s11, 9
+
+rnd_loop:
+	addi a2, a2, 0x10
+	#load & sub
+	AES_ENC_SUB_RV 0,  1,   2,  3, t0, t5, a0, a3
+	AES_ENC_SUB_RV 4,  5,   6,  7, t1, t5, a0, a3
+	AES_ENC_SUB_RV 8,  9,  10, 11, t2, t5, a0, a3
+	AES_ENC_SUB_RV 12, 13, 14, 15, t3, t5, a0, a3
+	#row
+	AES_ENC_ROW_RV	t0,t1,t2,t3,t5
+	#mix
+	X0R3_RV t4, t1, t2, t3
+	X0R3_RV t5, t0, t2, t3
+	X0R3_RV t6, t0, t1, t3
+	X0R3_RV a7, t0, t1, t2
+	AES_MULX_PACKED_RV t0, t0 
+	AES_MULX_PACKED_RV t1, t1
+	AES_MULX_PACKED_RV t2, t2
+	AES_MULX_PACKED_RV t3, t3		
+	X0R3_RV t4, t4, t0, t1
+	X0R3_RV t5, t5, t1, t2
+	X0R3_RV t6, t6, t2, t3
+	X0R3_RV a7, a7, t3, t0
+	#key
+	AES_KEY_RV 	t4,t5,t6,a7,t0,a2
+	#store
+	AES_STW_RV	t4,t5,t6,a7,a0
+
+	addi s11, s11, -1
+	bgtz s11, rnd_loop
+
+#final round
+	addi a2, a2, 0x10
+	#load & sub
+	AES_ENC_SUB_RV 0,  1,   2,  3, t0, t5, a0, a3
+	AES_ENC_SUB_RV 4,  5,   6,  7, t1, t5, a0, a3
+	AES_ENC_SUB_RV 8,  9,  10, 11, t2, t5, a0, a3
+	AES_ENC_SUB_RV 12, 13, 14, 15, t3, t5, a0, a3
+	#row
+	AES_ENC_ROW_RV	t0,t1,t2,t3,t5
+	#key
+	AES_KEY_RV 	t0,t1,t2,t3,t5,a2
+	#store
+	AES_STW_RV	t0,t1,t2,t3,a0
+
+
+
+.else	#======================
+	#load plaintext and key
+	AES_LDW_XC	c0,c1,c2,c3, a1
+	AES_LDW_XC	c4,c5,c6,c7, a2
+	
+#init round	
+	#key
+	AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7
 
 #iterative rounds
 	li t1, 9
@@ -38,14 +91,8 @@ rnd_loop:
 	xc.aesmix.enc c2, c5, c4
 	xc.aesmix.enc c3, c7, c6
 	# key	
-	xc.ld.w c4, 0(a2)
-	xc.ld.w c5, 4(a2)
-	xc.ld.w c6, 8(a2)
-	xc.ld.w c7, 12(a2)
-	xc.bop	c0, c0, c4, 0x6		#xor
-	xc.bop	c1, c1, c5, 0x6		#xor
-	xc.bop	c2, c2, c6, 0x6		#xor
-	xc.bop	c3, c3, c7, 0x6		#xor
+	AES_LDW_XC	c4,c5,c6,c7, a2
+	AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7
 
 	addi t1, t1, -1
 	bgtz t1, rnd_loop
@@ -67,18 +114,11 @@ rnd_loop:
 	xc.ins c6, c1, 16, 16
 	xc.ins c7, c2, 16, 16
 	#key
-	xc.ld.w c0, 0(a2)
-	xc.ld.w c1, 4(a2)
-	xc.ld.w c2, 8(a2)
-	xc.ld.w c3, 12(a2)
-	xc.bop	c0, c0, c4, 0x6		#xor
-	xc.bop	c1, c1, c5, 0x6		#xor
-	xc.bop	c2, c2, c6, 0x6		#xor
-	xc.bop	c3, c3, c7, 0x6		#xor
+	AES_LDW_XC	c0,c1,c2,c3, a2
+	AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7
+	#store
+	AES_STW_XC	c0,c1,c2,c3, a0
 
-	xc.st.w c0, 0(a0)
-	xc.st.w c1, 4(a0)
-	xc.st.w c2, 8(a0)
-	xc.st.w c3, 12(a0)
+.endif
 
 	ret

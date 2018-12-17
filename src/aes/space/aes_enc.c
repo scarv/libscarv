@@ -1,7 +1,7 @@
 #include "aes_enc.h"
 
 #if defined( CONF_AES_PRECOMP_SBOX )
-uint8_t AES_ENC_SBOX[] = { 
+uint8_t AES_ENC_SBOX[]= { 
   0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5,
   0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
   0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0,
@@ -39,13 +39,13 @@ uint8_t AES_ENC_SBOX[] = {
 
 #if defined( CONF_AES_ROUND_SPLIT )
 
-#if !defined( CONF_AES_ENC_INIT_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_ENC_INIT_EXTERN )
 void aes_enc_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_key( s, rk );
 }
 #endif
 
-#if !defined( CONF_AES_ENC_ITER_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_ENC_ITER_EXTERN )
 void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_sub( s     );
   aes_enc_rnd_row( s     );
@@ -54,9 +54,13 @@ void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
 }
 #endif
 
-#if !defined( CONF_AES_ENC_FINI_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_ENC_FINI_EXTERN ) 
 void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
+#if defined( CONF_AES_ENC_SUB_EXTERN ) && defined( CONF_AES_ROUND_PACK )
+  aes_enc_rnd_sub( s, AES_ENC_SBOX);
+#else
   aes_enc_rnd_sub( s     );
+#endif
   aes_enc_rnd_row( s     );
   aes_enc_rnd_key( s, rk );
 }
@@ -161,7 +165,13 @@ void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
     #else
     rkp += ( 4 * Nb );
     #endif
-    aes_enc_rnd_iter( s, rkp );
+		
+		#if defined( CONF_AES_ENC_ITER_EXTERN ) && defined( CONF_AES_ROUND_PACK )
+		aes_enc_rnd_iter( s, rkp,  AES_ENC_SBOX );
+		#else
+		aes_enc_rnd_iter( s, rkp );
+		#endif
+		
   }
   //      1 final     round
     #if   !defined( CONF_AES_PRECOMP_RK )
@@ -169,7 +179,12 @@ void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
     #else
     rkp += ( 4 * Nb );
     #endif
-    aes_enc_rnd_fini( s, rkp );
+	
+	#if defined( CONF_AES_ENC_FINI_EXTERN ) && defined( CONF_AES_ROUND_PACK )
+    aes_enc_rnd_fini( s, rkp,  AES_ENC_SBOX);
+	#else
+		aes_enc_rnd_fini( s, rkp );
+	#endif
 
     #if                                      !defined( CONF_AES_ROUND_PACK )
     U8_TO_U8_N(   r, s );
