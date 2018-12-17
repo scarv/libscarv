@@ -26,6 +26,9 @@ static uint64_t prince_round_consts[] = {
 
 
 //! Prince forward SBOX
+#ifdef CONF_PRINCE_SBOX_EXTERN
+extern uint64_t prince_sbox(const uint64_t s_in);
+#else
 static uint64_t prince_sbox(const uint64_t s_in){
   uint64_t s_out = 0;
   const unsigned int sbox[] = {
@@ -42,8 +45,12 @@ static uint64_t prince_sbox(const uint64_t s_in){
   }
   return s_out;
 }
+#endif
 
 //! Inverse prince SBOX
+#ifdef CONF_PRINCE_ISBOX_EXTERN
+extern uint64_t prince_inv_sbox(const uint64_t s_in);
+#else
 static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
   uint64_t s_inv_out = 0;
   const unsigned int isbox[] = {
@@ -60,9 +67,13 @@ static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
   }
   return s_inv_out;
 }
+#endif
 
 //! Galois field matrix multiplication
-static uint64_t gf2_mat_mult16_1(const uint64_t in, const uint64_t mat[16]){
+#ifdef CONF_PRINCE_GF_MUL_EXTERN
+extern uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]);
+#else
+static uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]){
   uint64_t out = 0;
   for(unsigned int i=0;i<16;i++){
     if((in>>i) & 1)
@@ -70,24 +81,33 @@ static uint64_t gf2_mat_mult16_1(const uint64_t in, const uint64_t mat[16]){
   }
   return out;
 }
+#endif
+
 
 //! Matrix multiply step
+#ifdef CONF_PRINCE_MPRIME_EXTERN
+extern uint64_t prince_m_prime_layer(const uint64_t m_prime_in);
+#else
 static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
-  static const uint64_t m16[2][16] = {
+  static const uint16_t m16[2][16] = {
     {0x0111, 0x2220, 0x4404, 0x8088, 0x1011, 0x0222, 0x4440, 0x8808,
      0x1101, 0x2022, 0x0444, 0x8880, 0x1110, 0x2202, 0x4044, 0x0888},
     {0x1110, 0x2202, 0x4044, 0x0888, 0x0111, 0x2220, 0x4404, 0x8088,
      0x1011, 0x0222, 0x4440, 0x8808, 0x1101, 0x2022, 0x0444, 0x8880} 
   };
-  const uint64_t chunk0 = gf2_mat_mult16_1(m_prime_in>>(0*16),m16[0]);
-  const uint64_t chunk1 = gf2_mat_mult16_1(m_prime_in>>(1*16),m16[1]);
-  const uint64_t chunk2 = gf2_mat_mult16_1(m_prime_in>>(2*16),m16[1]);
-  const uint64_t chunk3 = gf2_mat_mult16_1(m_prime_in>>(3*16),m16[0]);
+  const uint64_t chunk0 = prince_gf_mul(m_prime_in>>(0*16),m16[0]);
+  const uint64_t chunk1 = prince_gf_mul(m_prime_in>>(1*16),m16[1]);
+  const uint64_t chunk2 = prince_gf_mul(m_prime_in>>(2*16),m16[1]);
+  const uint64_t chunk3 = prince_gf_mul(m_prime_in>>(3*16),m16[0]);
   const uint64_t m_prime_out = (chunk3<<(3*16)) | (chunk2<<(2*16)) | (chunk1<<(1*16)) | (chunk0<<(0*16));
   return m_prime_out;
 }
+#endif
 
 //! Shift rows step
+#ifdef CONF_PRINCE_SHIFTROWS_EXTERN
+extern uint64_t prince_shift_rows(const uint64_t in, int inverse);
+#else
 static uint64_t prince_shift_rows(const uint64_t in, int inverse){
   const uint64_t row_mask = UINT64_C(0xF000F000F000F000);
   uint64_t shift_rows_out = 0;
@@ -98,6 +118,7 @@ static uint64_t prince_shift_rows(const uint64_t in, int inverse){
   }
   return shift_rows_out;
 }
+#endif
   
 
 /*!
