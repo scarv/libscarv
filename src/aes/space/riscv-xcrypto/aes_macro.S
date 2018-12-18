@@ -82,6 +82,21 @@
 	xc.bop	\XS3, \XS3, \XK3, 0x6		#xor
 .endm
 
+.macro AES_ENC_SUB_XC XS0 XS1 XS2 XS3 SBOX
+	xc.gather.b \XS0, \XS0, \SBOX
+	xc.gather.b \XS1, \XS1, \SBOX
+	xc.gather.b \XS2, \XS2, \SBOX
+	xc.gather.b \XS3, \XS3, \SBOX
+.endm
+
+.macro AES_ENC_ROW_XC XS0 XS1 XS2 XS3 
+	xc.prot.i  w, \XS1, \XS1, 8
+	xc.prot.i  w, \XS2, \XS2, 8
+	xc.prot.i  w, \XS2, \XS2, 8
+	xc.prot.i  w, \XS3, \XS3, 12
+	xc.prot.i  w, \XS3, \XS3, 12
+.endm
+
 .macro AES_MULX_PACKED_RV RD RS	
 	li	 a6,  0x7f7f7f7f
 	and  a4, \RS, a6
@@ -98,6 +113,13 @@
 	or   a5,  a5, a6
 
 	xor \RD,  a4, a5	
+.endm
+
+.macro AES_MULX_PACKED_XC XS0 XS1 XS2 XS3 MULX
+	xc.gather.b \XS0, \XS0, \MULX
+	xc.gather.b \XS1, \XS1, \MULX
+	xc.gather.b \XS2, \XS2, \MULX
+	xc.gather.b \XS3, \XS3, \MULX
 .endm
 
 .macro AES_MULX_PACKED RD RS	
@@ -119,4 +141,9 @@
 .macro X0R3_RV RD RS1 RS2 RS3
 	xor	 \RD, \RS1, \RS2
 	xor	 \RD, \RD,  \RS3
+.endm
+
+.macro X0R3_XC XD XS1 XS2 XS3
+	xc.bop	\XD, \XS1, \XS2, 0x6		#xor
+	xc.bop	\XD, \XD,  \XS3, 0x6		#xor
 .endm

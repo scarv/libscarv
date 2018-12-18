@@ -17,8 +17,13 @@ extern uint8_t AES_ENC_SBOX[];
 
 #if defined( CONF_AES_ROUND_SPLIT )
 extern void aes_enc_rnd_init( uint8_t* s, uint8_t* rk );
+
 	#if defined( CONF_AES_ENC_ITER_EXTERN ) && defined( CONF_AES_ROUND_PACK )
-	extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk,  uint8_t* sbox );
+		#if !defined ( CONF_AES_ENC_XCRYPT )
+		extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk,  uint8_t* sbox );
+		#else
+		extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk,  uint8_t* sbox,  uint8_t* mulx );
+		#endif
 	#else
 	extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk );
 	#endif
@@ -37,7 +42,11 @@ extern void aes_enc_exp     ( uint8_t* r, const uint8_t*  k             );
 extern void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc );
 
 #if defined( CONF_AES_ENC_EXTERN ) && defined( CONF_AES_ROUND_PACK )
-extern void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k,  uint8_t* sbox );
+	#if !defined ( CONF_AES_ENC_XCRYPT )
+	extern void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k,  uint8_t* sbox );
+	#else
+	extern void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx );
+	#endif
 #else
 extern void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k );
 #endif

@@ -167,7 +167,12 @@ void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
     #endif
 		
 		#if defined( CONF_AES_ENC_ITER_EXTERN ) && defined( CONF_AES_ROUND_PACK )
-		aes_enc_rnd_iter( s, rkp,  AES_ENC_SBOX );
+			#if !defined ( CONF_AES_ENC_XCRYPT )
+			aes_enc_rnd_iter( s, rkp,  AES_ENC_SBOX );
+			#else
+			aes_enc_rnd_iter( s, rkp,  AES_ENC_SBOX,  AES_MULX );
+			#endif
+			
 		#else
 		aes_enc_rnd_iter( s, rkp );
 		#endif
