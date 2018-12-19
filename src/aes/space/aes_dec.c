@@ -39,13 +39,13 @@ uint8_t AES_DEC_SBOX[] = {
 
 #if defined( CONF_AES_ROUND_SPLIT )
 
-#if !defined( CONF_AES_DEC_INIT_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_DEC_INIT_EXTERN ) 
 void aes_dec_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_key( s, rk );
 }
 #endif
 
-#if !defined( CONF_AES_DEC_ITER_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_DEC_ITER_EXTERN ) 
 void aes_dec_rnd_iter( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_sub( s     );
   aes_dec_rnd_row( s     );
@@ -54,7 +54,7 @@ void aes_dec_rnd_iter( uint8_t* s, uint8_t* rk ) {
 }
 #endif
 
-#if !defined( CONF_AES_DEC_FINI_EXTERN ) || defined( CONF_AES_ROUND_PACK )
+#if !defined( CONF_AES_DEC_FINI_EXTERN )
 void aes_dec_rnd_fini( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_sub( s     );
   aes_dec_rnd_row( s     );
@@ -125,17 +125,19 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
 	for( int i = 1; i < ( Nr + 1 ); i++ ) {
 	aes_enc_exp_step( rp + ( 4 * Nb ), rp, *(++rcp) ); rp += ( 4 * Nb );
 	}
-		#if defined( CONF_AES_DEC_ITER_EXTERN ) && !defined( CONF_AES_ROUND_PACK )
+
+	//transposition KEY array for doing transpose sub-row-key-mix in iterative loop
+	#if defined( CONF_AES_DEC_ITER_EXTERN )|| defined( CONF_AES_DEC_EXTERN )
+		#if defined( CONF_AES_DEC_XCRYPT ) && !defined( CONF_AES_ROUND_PACK )
 		uint16_t* rph = ( uint16_t * )r; 
 		uint16_t t;
 		for( int i = 1; i < (Nr); i++ ) {
-	    //aes_dec_eqexp_step(rp); rp += ( 4 * Nb );
 			rph += ( 2 * Nb );
 			t = rph[1]; rph[1] = rph[5]; rph[5] = t;
 			t = rph[3]; rph[3] = rph[7]; rph[7] = t;	
-
-	  }
+		}
 		#endif
+	#endif
   #elif defined( CONF_AES_KEY_REV )
   uint8_t* rcp = Nr + AES_RC;
   uint8_t*  rp = ( 4 * Nb * Nr ) + r;
@@ -195,7 +197,16 @@ void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k ) {
     #else
     rkp -= ( 4 * Nb );
     #endif
+	
+	#if defined( CONF_AES_DEC_ITER_EXTERN ) && defined( CONF_AES_ROUND_PACK )
+		#if !defined ( CONF_AES_DEC_XCRYPT )
+		aes_dec_rnd_iter( s, rkp,  AES_DEC_SBOX  );
+		#else
+		aes_dec_rnd_iter( s, rkp,  AES_DEC_SBOX,  AES_MULX  );
+		#endif
+	#else
     aes_dec_rnd_iter( s, rkp );
+	#endif
   }
   //      1 final     round
     #if   !defined( CONF_AES_PRECOMP_RK )
@@ -203,7 +214,12 @@ void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k ) {
     #else
     rkp -= ( 4 * Nb );
     #endif
-    aes_dec_rnd_fini( s, rkp );
+
+	#if defined( CONF_AES_DEC_FINI_EXTERN ) && defined( CONF_AES_ROUND_PACK )
+    aes_dec_rnd_fini( s, rkp,  AES_DEC_SBOX);
+	#else
+	aes_dec_rnd_fini( s, rkp );
+	#endif
 
     #if                                      !defined( CONF_AES_ROUND_PACK )
     U8_TO_U8_N(   r, s );

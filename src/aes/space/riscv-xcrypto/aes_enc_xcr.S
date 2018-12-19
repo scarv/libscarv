@@ -28,18 +28,7 @@ aes_enc:
 			#row
 			AES_ENC_ROW_RV	t0,t1,t2,t3,t5
 			#mix
-			X0R3_RV t4, t1, t2, t3
-			X0R3_RV t5, t0, t2, t3
-			X0R3_RV t6, t0, t1, t3
-			X0R3_RV a7, t0, t1, t2
-			AES_MULX_PACKED_RV t0, t0 
-			AES_MULX_PACKED_RV t1, t1
-			AES_MULX_PACKED_RV t2, t2
-			AES_MULX_PACKED_RV t3, t3		
-			X0R3_RV t4, t4, t0, t1
-			X0R3_RV t5, t5, t1, t2
-			X0R3_RV t6, t6, t2, t3
-			X0R3_RV a7, a7, t3, t0
+			AES_ENC_MIX_RV	t4,t5,t6,a7, t0,t1,t2,t3, a4,a5,a6
 			#key
 			AES_KEY_RV 	t4,t5,t6,a7,t0,a2
 			#store
@@ -79,15 +68,7 @@ aes_enc:
 			#row
 			AES_ENC_ROW_XC	c0,c1,c2,c3
 			#mix
-			X0R3_XC 		c4,c1,c2,c3
-			X0R3_XC 		c5,c0,c2,c3
-			X0R3_XC 		c6,c0,c1,c3
-			X0R3_XC 		c7,c0,c1,c2
-			AES_MULX_PACKED_XC c0,c1,c2,c3 a4
-			X0R3_XC 		c4,c4,c0,c1
-			X0R3_XC 		c5,c5,c1,c2
-			X0R3_XC 		c6,c6,c2,c3
-			X0R3_XC 		c7,c7,c3,c0	
+			AES_ENC_MIX_XC 	c4,c5,c6,c7, c0,c1,c2,c3, a4	
 			#key
 			AES_LDW_XC		c0,c1,c2,c3, a2
 			AES_KEY_XC		c0,c1,c2,c3, c4,c5,c6,c7	

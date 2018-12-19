@@ -3,8 +3,8 @@
 .section .text
 .global aes_enc_rnd_fini
 aes_enc_rnd_fini:
-    # a0 =  uint32_t * s 
-	# a1 =  uint32_t * k
+# a0 =  uint32_t * s 
+# a1 =  uint32_t * k
 .ifdef CONF_AES_ROUND_PACK
 	# a2 =	uint8_t * sbox
 	.ifndef CONF_AES_ENC_XCRYPT

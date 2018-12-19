@@ -49,6 +49,10 @@
 	or  	\RD, \RD, \RT	
 .endm
 
+.macro AES_DEC_SUB_RV B0 B1 B2 B3 RD RT SP SBOX
+	AES_ENC_SUB_RV \B0,\B1,\B2,\B3,\RD,\RT,\SP,\SBOX
+.endm
+
 .macro AES_ENC_ROW_RV RS0 RS1 RS2 RS3 RT
 	slli \RT,	\RS1, 	 24
 	srli \RS1,	\RS1, 	  8
@@ -59,6 +63,50 @@
 	slli \RT,	\RS3, 	  8
 	srli \RS3,	\RS3, 	 24
 	or 	 \RS3,	\RS3, 	\RT
+.endm
+
+.macro AES_DEC_ROW_RV RS0 RS1 RS2 RS3 RT
+	slli \RT,	\RS1, 	  8
+	srli \RS1,	\RS1, 	 24 
+	or 	 \RS1,	\RS1, 	\RT
+	slli \RT,	\RS2, 	 16
+	srli \RS2,	\RS2, 	 16
+	or 	 \RS2,	\RS2, 	\RT
+	slli \RT,	\RS3, 	 24
+	srli \RS3,	\RS3, 	  8
+	or 	 \RS3,	\RS3, 	\RT
+.endm
+
+.macro AES_ENC_MIX_RV RD0 RD1 RD2 RD3 RS0 RS1 RS2 RS3 MT0 MT1 MT2
+	X0R3_RV 		\RD0, \RS1, \RS2, \RS3
+	X0R3_RV 		\RD1, \RS0, \RS2, \RS3
+	X0R3_RV 		\RD2, \RS0, \RS1, \RS3
+	X0R3_RV 		\RD3, \RS0, \RS1, \RS2
+	AES_MULX_PACKED_RV    \RS0, \RS0, \MT0,\MT1,\MT2 
+	AES_MULX_PACKED_RV    \RS1, \RS1, \MT0,\MT1,\MT2
+	AES_MULX_PACKED_RV    \RS2, \RS2, \MT0,\MT1,\MT2
+	AES_MULX_PACKED_RV	  \RS3, \RS3, \MT0,\MT1,\MT2		
+	X0R3_RV 		\RD0, \RD0, \RS0, \RS1
+	X0R3_RV 		\RD1, \RD1, \RS1, \RS2
+	X0R3_RV 		\RD2, \RD2, \RS2, \RS3
+	X0R3_RV 		\RD3, \RD3, \RS3, \RS0	
+.endm
+.macro AES_DEC_MIX_RV RD0 RD1 RD2 RD3 RS0 RS1 RS2 RS3 MT0 MT1 MT2  
+	AES_ENC_MIX_RV  \RD0, \RD1, \RD2, \RD3, \RS0, \RS1, \RS2, \RS3, \MT0,\MT1,\MT2
+	xor	\RS0, \RS0, \RS2
+	xor \RS1, \RS1, \RS3
+	AES_MULX_PACKED_RV  \RS0, \RS0, \MT0,\MT1,\MT2 
+	AES_MULX_PACKED_RV  \RS1, \RS1, \MT0,\MT1,\MT2 
+	xor	\RD0, \RD0, \RS0
+	xor \RD1, \RD1, \RS1
+	xor	\RD2, \RD2, \RS0
+	xor \RD3, \RD3, \RS1
+	xor	\RS0, \RS0, \RS1
+	AES_MULX_PACKED_RV  \RS0, \RS0, \MT0,\MT1,\MT2  
+	xor	\RD0, \RD0, \RS0
+	xor \RD1, \RD1, \RS0
+	xor	\RD2, \RD2, \RS0
+	xor \RD3, \RD3, \RS0
 .endm
 
 .macro AES_LDW_XC XD0 XD1 XD2 XD3 SP
@@ -88,6 +136,9 @@
 	xc.gather.b \XS2, \XS2, \SBOX
 	xc.gather.b \XS3, \XS3, \SBOX
 .endm
+.macro AES_DEC_SUB_XC XS0 XS1 XS2 XS3 SBOX
+	AES_ENC_SUB_XC \XS0, \XS1, \XS2, \XS3, \SBOX
+.endm
 
 .macro AES_ENC_ROW_XC XS0 XS1 XS2 XS3 
 	xc.prot.i  w, \XS1, \XS1, 8
@@ -96,47 +147,71 @@
 	xc.prot.i  w, \XS3, \XS3, 12
 	xc.prot.i  w, \XS3, \XS3, 12
 .endm
+.macro AES_DEC_ROW_XC XS0 XS1 XS2 XS3 
+	xc.prot.i  w, \XS1, \XS1, 12
+	xc.prot.i  w, \XS1, \XS1, 12
+	xc.prot.i  w, \XS2, \XS2, 8
+	xc.prot.i  w, \XS2, \XS2, 8
+	xc.prot.i  w, \XS3, \XS3, 8
+.endm
 
-.macro AES_MULX_PACKED_RV RD RS	
-	li	 a6,  0x7f7f7f7f
-	and  a4, \RS, a6
-	slli a4,  a4, 1
+.macro AES_ENC_MIX_XC XD0 XD1 XD2 XD3 XS0 XS1 XS2 XS3 MULX
+	X0R3_XC	\XD0, \XS1, \XS2, \XS3
+	X0R3_XC	\XD1, \XS0, \XS2, \XS3
+	X0R3_XC	\XD2, \XS0, \XS1, \XS3
+	X0R3_XC	\XD3, \XS0, \XS1, \XS2
+	xc.gather.b   \XS0, \XS0, \MULX
+	xc.gather.b   \XS1, \XS1, \MULX
+	xc.gather.b   \XS2, \XS2, \MULX
+	xc.gather.b   \XS3, \XS3, \MULX
+	X0R3_XC	\XD0, \XD0, \XS0, \XS1
+	X0R3_XC	\XD1, \XD1, \XS1, \XS2
+	X0R3_XC	\XD2, \XD2, \XS2, \XS3
+	X0R3_XC	\XD3, \XD3, \XS3,  \XS0
+.endm
+
+.macro AES_DEC_MIX_XC XD0 XD1 XD2 XD3 XS0 XS1 XS2 XS3 MULX  
+	AES_ENC_MIX_XC \XD0 \XD1 \XD2 \XD3 \XS0 \XS1 \XS2 \XS3 \MULX
+	xc.bop	\XS0, \XS0, \XS2, 0x6		#xor
+	xc.bop	\XS1, \XS1, \XS3, 0x6		#xor
+	xc.gather.b   \XS0, \XS0, \MULX
+	xc.gather.b   \XS1, \XS1, \MULX
+	xc.bop	\XD0, \XD0, \XS0, 0x6		#xor
+	xc.bop	\XD1, \XD1, \XS1, 0x6		#xor
+	xc.bop	\XD2, \XD2, \XS0, 0x6		#xor
+	xc.bop	\XD3, \XD3, \XS1, 0x6		#xor
+	xc.bop	\XS0, \XS0, \XS1, 0x6		#xor
+	xc.gather.b   \XS0, \XS0, \MULX
+	xc.bop	\XD0, \XD0, \XS0, 0x6		#xor
+	xc.bop	\XD1, \XD1, \XS0, 0x6		#xor
+	xc.bop	\XD2, \XD2, \XS0, 0x6		#xor
+	xc.bop	\XD3, \XD3, \XS0, 0x6		#xor
+.endm
+
+.macro AES_MULX_PACKED_RV RD RS	MT0 MT1 MT2
+	li	 \MT2,  0x7f7f7f7f
+	and  \MT0,	\RS, \MT2
+	slli \MT0,	\MT0, 1
 	
-	li 	 a6,  0x80808080
-	and	 a5, \RS, a6
+	li 	 \MT2,	0x80808080
+	and	 \MT1,	\RS, \MT2
 	
 	#shift right 7 and multiply 0x1b
-	srli a5,  a5, 3
-	srli a6,  a5, 1
-	or   a5,  a5, a6
-	srli a6,  a5, 3
-	or   a5,  a5, a6
+	srli \MT1,	\MT1, 3
+	srli \MT2,	\MT1, 1
+	or   \MT1,	\MT1, \MT2
+	srli \MT2,	\MT1, 3
+	or   \MT1,	\MT1, \MT2
 
-	xor \RD,  a4, a5	
+	xor	 \RD,	\MT0, \MT1	
 .endm
 
-.macro AES_MULX_PACKED_XC XS0 XS1 XS2 XS3 MULX
-	xc.gather.b \XS0, \XS0, \MULX
-	xc.gather.b \XS1, \XS1, \MULX
-	xc.gather.b \XS2, \XS2, \MULX
-	xc.gather.b \XS3, \XS3, \MULX
-.endm
-
-.macro AES_MULX_PACKED RD RS	
-	li	 a6,  0x7f7f7f7f
-	and  a4, \RS, a6
-	li 	 a6,  0x80808080
-	and	 a5, \RS, a6
-	slli a4,  a4, 1
-	srli a5,  a5, 7
-	xc.gpr2xcr  c0, a5
-	xc.gpr2xcr  c1, zero
-	xc.psub 	b, c1, c1, c0
-	xc.xcr2gpr	a5, c1
-	li	 a6,  0x1b1b1b1b
-	and  a5,  a5, a6
-	xor \RD,  a4, a5	
-.endm
+#.macro AES_MULX_PACKED_XC XS0 XS1 XS2 XS3 MULX
+#	xc.gather.b \XS0, \XS0, \MULX
+#	xc.gather.b \XS1, \XS1, \MULX
+#	xc.gather.b \XS2, \XS2, \MULX
+#	xc.gather.b \XS3, \XS3, \MULX
+#.endm
 
 .macro X0R3_RV RD RS1 RS2 RS3
 	xor	 \RD, \RS1, \RS2
