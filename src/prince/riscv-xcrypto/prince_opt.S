@@ -26,8 +26,8 @@ prince_sbox:
     xc.ld.w c3, 0(t0)
     xc.ld.w c4, 4(t0)
     
-    xc.sbox.4 c0, c0, c3, c4
-    xc.sbox.4 c1, c1, c3, c4
+    xc.lut  c0, c0, c3, c4
+    xc.lut  c1, c1, c3, c4
     
     xc.xcr2gpr a0, c0
     xc.xcr2gpr a1, c1
@@ -51,8 +51,8 @@ prince_inv_sbox:
     xc.ld.w c3, 0(t0)
     xc.ld.w c4, 4(t0)
     
-    xc.sbox.4 c0, c0, c3, c4
-    xc.sbox.4 c1, c1, c3, c4
+    xc.lut    c0, c0, c3, c4
+    xc.lut    c1, c1, c3, c4
     
     xc.xcr2gpr a0, c0
     xc.xcr2gpr a1, c1
