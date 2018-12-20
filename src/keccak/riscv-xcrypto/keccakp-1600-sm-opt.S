@@ -120,7 +120,7 @@ KeccakP1600Round:
     la      a7, rho_off
     la      a6, temp_a
     li      t0, 0                           # t0 = x = 0
-    li      t2, 40
+    li      t2, 5
     addi    a2, a2, -40                     # a2 = &theta_c
 
     xc.gpr2xcr c15, zero
@@ -136,8 +136,7 @@ KeccakP1600Round:
         
         li      t1, 0                       # t1 = y = 0
         
-        addi    a3, t0, 8                   # a3 = x+1
-        remu    a3, a3, t2                  # a3 = (x+1)%5
+        xc.sha3.x1 a3, t0, zero, 3          # a3 = (x+1)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
         
         xc.ld.w c6, 0(a3)                   # 
@@ -149,8 +148,7 @@ KeccakP1600Round:
         xc.bop  c6, c6, c8, 0xE             # OR
         xc.bop  c7, c7, c9, 0xE             # OR
         
-        addi    a3, t0, 32                  # a3 = x+4
-        remu    a3, a3, t2                  # a3 = (x+4)%5
+        xc.sha3.x4 a3, t0, zero, 3          # a4 = (x+4)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
         
         xc.ld.w c8, 0(a3)                   # 
@@ -161,9 +159,7 @@ KeccakP1600Round:
         
         .L1:
 
-            slli    t4, t1, 2               # t4 = 4*y
-            add     t4, t4, t1              # t4 = 5*y
-            add     t3, t4, t0              # t3 = (5*y)+x = index(x,y)
+            xc.sha3.xy t3, t0, t1, 3        # t3 = (5*y)+x = index(x,y)
             add     t4, t3, a0              # t4 = &A[index(x,y)]
 
             xc.ld.w c4, 0(t4)               # 
@@ -193,29 +189,22 @@ KeccakP1600Round:
             #  - t0 = x 
             #  - t1 = y
         
-            slli    t3, t0, 1               # t3 = 2x
-            slli    t4, t1, 1               # t4 = 2y
-            add     t4, t4, t1              # t4 = 3y
-            add     t3, t3, t4              # t4 = 2x + 3y
-            remu    t3, t3, t2              # t3 = (2x+3y)%5
-            slli    t4, t3, 2               # t4 = 4((2x+3y)%5)
-            add     t3, t3, t4              # t3 = 5((2x+3y)%5)
-            add     t3, t3, t1              # t3 = 5((2x+3y)%5) + y
+            xc.sha3.yx t3, t0, t1, 3
             add     t4, t3, a6              # t4 = &a_temp[5((2x+3y)%5)+y]
             
             xc.st.w c4, 0(t4)               #   a5,a4
             xc.st.w c5, 4(t4)               # a_temp[y + 5((2*x+3*y)%5)] =
 
-            addi    t1, t1, 8               # y += 1
+            addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L1
 
-        addi    t0, t0, 8                   # x += 1
+        addi    t0, t0, 1                   # x += 1
         bltu    t0, t2, .L0
     
     # Chi
     
     li      t0, 0                           # t0 = x = 0
-    li      t2, 200
+    li      t2, 5
     li      t5, 40
 
     .L3:
@@ -224,17 +213,13 @@ KeccakP1600Round:
 
         .L4:
             
-            addi    t4, t0, 8               # t4 = x+1
-            remu    t4, t4, t5              # t4 = (x+1) % 5
-            add     t4, t4, t1              # t4 = ((x+1)%5) + 5y
+            xc.sha3.x1 t4, t0, t1, 3        # t4 = (x+1)%5 + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
 
             xc.ld.w c0, 0(t4)               # c1,c0 =a_temp[((x+1)%5) + 5y] 
             xc.ld.w c1, 4(t4)               # 
             
-            addi    t4, t0, 16              # t4 = x+2
-            remu    t4, t4, t5              # t4 = (x+2) % 5
-            add     t4, t4, t1              # t4 = ((x+2)%5) + 5y
+            xc.sha3.x2 t4, t0, t1, 3        # t4 = (x+2)%5 + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
             
             xc.ld.w c2, 0(t4)               # c3,c2 =a_temp[((x+2)%5) + 5y] 
@@ -243,7 +228,7 @@ KeccakP1600Round:
             xc.bop  c0, c0, c2, 0x2         # c0 = (~c0) & c2
             xc.bop  c1, c1, c3, 0x2         # c1 = (~c1) & c3
             
-            add     s2, t0, t1              # t4 = ((x) + 5y
+            xc.sha3.xy s2, t0, t1, 3        # t6 = x + 5y
             add     t4, s2, a6              # t4 = &a_temp[((x) + 5y]
             
             xc.ld.w c4, 0(t4)               # c5,c4 =a_temp[((x)) + 5y] 
@@ -257,11 +242,11 @@ KeccakP1600Round:
             xc.st.w c0, 0(t4)               # A[t4] = c1,c0
             xc.st.w c1, 4(t4)               # 
             
-            addi    t1, t1, 40              # y += 1
+            addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L4
         
-        addi    t0, t0, 8                   # x += 1
-        bltu    t0, t5, .L3
+        addi    t0, t0, 1                   # x += 1
+        bltu    t0, t2, .L3
 
     # Iota
     la      t0, round_consts
