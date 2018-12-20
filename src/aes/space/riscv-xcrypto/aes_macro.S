@@ -141,18 +141,15 @@
 .endm
 
 .macro AES_ENC_ROW_XC XS0 XS1 XS2 XS3 
-	xc.prot.i  w, \XS1, \XS1, 8
-	xc.prot.i  w, \XS2, \XS2, 8
-	xc.prot.i  w, \XS2, \XS2, 8
-	xc.prot.i  w, \XS3, \XS3, 12
-	xc.prot.i  w, \XS3, \XS3, 12
+	xc.pperm.w \XS1, \XS1, 1, 2, 3, 0
+	xc.pperm.w \XS2, \XS2, 2, 3, 0, 1
+	xc.pperm.w \XS3, \XS3, 3, 0, 1, 2
+
 .endm
 .macro AES_DEC_ROW_XC XS0 XS1 XS2 XS3 
-	xc.prot.i  w, \XS1, \XS1, 12
-	xc.prot.i  w, \XS1, \XS1, 12
-	xc.prot.i  w, \XS2, \XS2, 8
-	xc.prot.i  w, \XS2, \XS2, 8
-	xc.prot.i  w, \XS3, \XS3, 8
+	xc.pperm.w \XS1, \XS1, 3, 0, 1, 2
+	xc.pperm.w \XS2, \XS2, 2, 3, 0, 1
+	xc.pperm.w \XS3, \XS3, 1, 2, 3, 0
 .endm
 
 .macro AES_ENC_MIX_XC XD0 XD1 XD2 XD3 XS0 XS1 XS2 XS3 MULX
@@ -205,13 +202,6 @@
 
 	xor	 \RD,	\MT0, \MT1	
 .endm
-
-#.macro AES_MULX_PACKED_XC XS0 XS1 XS2 XS3 MULX
-#	xc.gather.b \XS0, \XS0, \MULX
-#	xc.gather.b \XS1, \XS1, \MULX
-#	xc.gather.b \XS2, \XS2, \MULX
-#	xc.gather.b \XS3, \XS3, \MULX
-#.endm
 
 .macro X0R3_RV RD RS1 RS2 RS3
 	xor	 \RD, \RS1, \RS2

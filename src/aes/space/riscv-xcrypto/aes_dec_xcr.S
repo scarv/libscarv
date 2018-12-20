@@ -9,6 +9,8 @@ aes_dec:
 .ifdef CONF_AES_ROUND_PACK
 # a3 =	uint8_t * sbox	
 	.ifndef CONF_AES_DEC_XCRYPT	
+		addi	sp,sp,-8
+       	sw		s1,4(sp)
 		#load
 		AES_LDW_RV	t0,t1,t2,t3, a1
 		# set key pointer from the end of array
@@ -19,7 +21,7 @@ aes_dec:
 		#store
 		AES_STW_RV	t0,t1,t2,t3, a0
 		#iterative rounds
-		li s11, 9
+		li s1, 9
 		rnd_loop:
 			addi a2, a2, -16
 			#load & sub
@@ -36,8 +38,8 @@ aes_dec:
 			#store
 			AES_STW_RV		t4,t5,t6,a7, a0
 			
-			addi s11, s11, -1
-			bgtz s11, rnd_loop
+			addi s1, s1, -1
+			bgtz s1, rnd_loop
 		#final round
 		addi a2, a2, -16
 		#load & sub
@@ -51,6 +53,8 @@ aes_dec:
 		AES_KEY_RV 	t0,t1,t2,t3,t5, a2
 		#store
 		AES_STW_RV	t0,t1,t2,t3, a0
+		lw		s1,4(sp)
+		addi	sp,sp,8
 	.else
 	# a4 =	uint8_t * mulx
 		#load 
@@ -124,19 +128,17 @@ aes_dec:
 		#final round
 		addi a2, a2, -16
 		#sub; second row	
-		xc.aessub.dec c4, c0, c3
-		xc.aessub.dec c5, c1, c0
-		xc.aessub.dec c6, c2, c1
-		xc.aessub.dec c7, c3, c2
+		xc.aessub.dec c4, c2, c1
+		xc.aessub.dec c5, c3, c2
+		xc.aessub.dec c6, c0, c3
+		xc.aessub.dec c7, c1, c0
 		# third and fourth row
-		xc.ld.hiu c0, 0xFFFF
-		xc.ld.liu c0, 0x0000	
-		xc.mix.l c1, c4, c0, 0
-		xc.mix.l c2, c5, c0, 0
-		xc.mix.l c4, c6, c0, 0
-		xc.mix.l c5, c7, c0, 0
-		xc.mix.l c6, c1, c0, 0
-		xc.mix.l c7, c2, c0, 0
+		xc.ins c1, c4, 0, 16
+		xc.ins c2, c5, 0, 16
+		xc.ins c4, c6, 0, 16
+		xc.ins c5, c7, 0, 16
+		xc.ins c6, c1, 0, 16
+		xc.ins c7, c2, 0, 16
 		#key
 		AES_LDW_XC	c0,c1,c2,c3, a2
 		AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7

@@ -37,19 +37,18 @@ aes_enc_rnd_fini:
 		#load
 		AES_LDW_XC	c0,c1,c2,c3, a0
 		# sub & second row	
-		xc.aessub.enc c4, c0, c1
-		xc.aessub.enc c5, c1, c2
-		xc.aessub.enc c6, c2, c3
-		xc.aessub.enc c7, c3, c0
+		#sub; second row	
+		xc.aessub.enc c4, c2, c3
+		xc.aessub.enc c5, c3, c0
+		xc.aessub.enc c6, c0, c1
+		xc.aessub.enc c7, c1, c2
 		# third and fourth row
-		xc.ld.hiu c0, 0xFFFF
-		xc.ld.liu c0, 0x0000
-		xc.mix.l c1, c4, c0, 0
-		xc.mix.l c2, c5, c0, 0
-		xc.mix.l c4, c6, c0, 0
-		xc.mix.l c5, c7, c0, 0
-		xc.mix.l c6, c1, c0, 0
-		xc.mix.l c7, c2, c0, 0
+		xc.ins c1, c4, 0, 16
+		xc.ins c2, c5, 0, 16
+		xc.ins c4, c6, 0, 16
+		xc.ins c5, c7, 0, 16
+		xc.ins c6, c1, 0, 16
+		xc.ins c7, c2, 0, 16
 		#key
 		AES_LDW_XC	c0,c1,c2,c3, a1
 		AES_KEY_XC	c0,c1,c2,c3, c4,c5,c6,c7	
