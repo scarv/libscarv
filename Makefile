@@ -11,7 +11,9 @@
                 ./src/keccak \
                 ./src/keccak/${ARCH} \
                 ./src/prince \
-                ./src/prince/${ARCH}
+                ./src/prince/${ARCH} \
+                ./src/sha2 \
+                ./src/sha2/${ARCH}
 
  SRC_HEADERS += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.h))
  SRC_SOURCES += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.c))

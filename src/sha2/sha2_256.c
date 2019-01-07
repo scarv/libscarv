@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include "sha2_256.h"
 
 #define SHA2_256_S0(a) ( U32_RTR( a,  7 ) ^ U32_RTR( a, 18 ) ^ U32_SHR( a,  3 ) )
