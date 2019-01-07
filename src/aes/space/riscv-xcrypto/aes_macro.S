@@ -124,10 +124,10 @@
 .endm
 
 .macro AES_KEY_XC XS0 XS1 XS2 XS3 XK0 XK1 XK2 XK3
-	xc.bop	\XS0, \XS0, \XK0, 0x6		#xor
-	xc.bop	\XS1, \XS1, \XK1, 0x6		#xor
-	xc.bop	\XS2, \XS2, \XK2, 0x6		#xor
-	xc.bop	\XS3, \XS3, \XK3, 0x6		#xor
+	xc.bop	\XS0, \XS0, \XK0, 0x66	#xor
+	xc.bop	\XS1, \XS1, \XK1, 0x66	#xor
+	xc.bop	\XS2, \XS2, \XK2, 0x66	#xor
+	xc.bop	\XS3, \XS3, \XK3, 0x66	#xor
 .endm
 
 .macro AES_ENC_SUB_XC XS0 XS1 XS2 XS3 SBOX
@@ -169,20 +169,20 @@
 
 .macro AES_DEC_MIX_XC XD0 XD1 XD2 XD3 XS0 XS1 XS2 XS3 MULX  
 	AES_ENC_MIX_XC \XD0 \XD1 \XD2 \XD3 \XS0 \XS1 \XS2 \XS3 \MULX
-	xc.bop	\XS0, \XS0, \XS2, 0x6		#xor
-	xc.bop	\XS1, \XS1, \XS3, 0x6		#xor
+	xc.bop	\XS0, \XS0, \XS2, 0x66	#xor
+	xc.bop	\XS1, \XS1, \XS3, 0x66	#xor
 	xc.gather.b   \XS0, \XS0, \MULX
 	xc.gather.b   \XS1, \XS1, \MULX
-	xc.bop	\XD0, \XD0, \XS0, 0x6		#xor
-	xc.bop	\XD1, \XD1, \XS1, 0x6		#xor
-	xc.bop	\XD2, \XD2, \XS0, 0x6		#xor
-	xc.bop	\XD3, \XD3, \XS1, 0x6		#xor
-	xc.bop	\XS0, \XS0, \XS1, 0x6		#xor
+	xc.bop	\XD0, \XD0, \XS0, 0x66	#xor
+	xc.bop	\XD1, \XD1, \XS1, 0x66	#xor
+	xc.bop	\XD2, \XD2, \XS0, 0x66	#xor
+	xc.bop	\XD3, \XD3, \XS1, 0x66	#xor
+	xc.bop	\XS0, \XS0, \XS1, 0x66	#xor
 	xc.gather.b   \XS0, \XS0, \MULX
-	xc.bop	\XD0, \XD0, \XS0, 0x6		#xor
-	xc.bop	\XD1, \XD1, \XS0, 0x6		#xor
-	xc.bop	\XD2, \XD2, \XS0, 0x6		#xor
-	xc.bop	\XD3, \XD3, \XS0, 0x6		#xor
+	xc.bop	\XD0, \XD0, \XS0, 0x66	#xor
+	xc.bop	\XD1, \XD1, \XS0, 0x66	#xor
+	xc.bop	\XD2, \XD2, \XS0, 0x66	#xor
+	xc.bop	\XD3, \XD3, \XS0, 0x66	#xor
 .endm
 
 .macro AES_MULX_PACKED_RV RD RS	MT0 MT1 MT2
@@ -209,6 +209,6 @@
 .endm
 
 .macro X0R3_XC XD XS1 XS2 XS3
-	xc.bop	\XD, \XS1, \XS2, 0x6		#xor
-	xc.bop	\XD, \XD,  \XS3, 0x6		#xor
+	xc.bop	\XD, \XS1, \XS2, 0x66	#xor
+	xc.bop	\XD, \XD,  \XS3, 0x66	#xor
 .endm

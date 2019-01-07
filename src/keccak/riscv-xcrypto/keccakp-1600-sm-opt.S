@@ -91,23 +91,23 @@ KeccakP1600Round:
         
         xc.ld.w     c0,   0(a3)
         xc.ld.w     c1,  40(a3)
-        xc.bop      c0, c0, c1, 0x6
+        xc.bop      c0, c0, c1, 0x66
         xc.ld.w     c1,  80(a3)
-        xc.bop      c0, c0, c1, 0x6
+        xc.bop      c0, c0, c1, 0x66
         xc.ld.w     c1, 120(a3)
-        xc.bop      c0, c0, c1, 0x6
+        xc.bop      c0, c0, c1, 0x66
         xc.ld.w     c1, 160(a3)
-        xc.bop      c0, c0, c1, 0x6
+        xc.bop      c0, c0, c1, 0x66
         
         xc.ld.w     c2,   4(a3)
         xc.ld.w     c3,  44(a3)
-        xc.bop      c2, c2, c3, 0x6
+        xc.bop      c2, c2, c3, 0x66
         xc.ld.w     c3,  84(a3)
-        xc.bop      c2, c2, c3, 0x6
+        xc.bop      c2, c2, c3, 0x66
         xc.ld.w     c3, 124(a3)
-        xc.bop      c2, c2, c3, 0x6
+        xc.bop      c2, c2, c3, 0x66
         xc.ld.w     c3, 164(a3)
-        xc.bop      c2, c2, c3, 0x6
+        xc.bop      c2, c2, c3, 0x66
 
         xc.st.w     c0,   0(a2)
         xc.st.w     c2,   4(a2)
@@ -128,7 +128,7 @@ KeccakP1600Round:
     xc.gpr2xcr c14, zero
     xc.ld.liu  c14, 63                      # Shift amount 2
     xc.padd    w, c13, c14, c15             # c13 = 64
-    xc.bop     c12, c13, c14, 0xE
+    xc.bop     c12, c13, c14, 0xEE          # OR
 
     # Theta / Rho / Pi
 
@@ -145,8 +145,8 @@ KeccakP1600Round:
         xc.msll (c8,c9), c6, c7, c15
         xc.msrl (c6,c7), c6, c7, c14
 
-        xc.bop  c6, c6, c8, 0xE             # OR
-        xc.bop  c7, c7, c9, 0xE             # OR
+        xc.bop  c6, c6, c8, 0xEE            # OR
+        xc.bop  c7, c7, c9, 0xEE            # OR
         
         xc.sha3.x4 a3, t0, zero, 3          # a4 = (x+4)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
@@ -154,8 +154,8 @@ KeccakP1600Round:
         xc.ld.w c8, 0(a3)                   # 
         xc.ld.w c9, 4(a3)                   # t4,t3 = theta_c[(x+1)%5]
         
-        xc.bop  c6, c6, c8, 0x6             # c7,c6 = D
-        xc.bop  c7, c7, c9, 0x6             #
+        xc.bop  c6, c6, c8, 0x66            # c7,c6 = D
+        xc.bop  c7, c7, c9, 0x66            #
         
         .L1:
 
@@ -165,8 +165,8 @@ KeccakP1600Round:
             xc.ld.w c4, 0(t4)               # 
             xc.ld.w c3, 4(t4)               # c4,c3 = A[index(x,y)]
 
-            xc.bop  c3, c3, c7, 0x6         # c7,c6 = D
-            xc.bop  c4, c4, c6, 0x6         #
+            xc.bop  c3, c3, c7, 0x66        # c7,c6 = D
+            xc.bop  c4, c4, c6, 0x66        #
 
             srli    t4, t3, 2               # Halfword align index(x,y)
             add     t4, t4, a7              # t4 = &rho_off[index(x,y)]
@@ -181,8 +181,8 @@ KeccakP1600Round:
             xc.msll (c8, c9), c4, c3, c1
             xc.msrl (c4, c5), c4, c3, c2
 
-            xc.bop  c4, c4, c8, 0xE
-            xc.bop  c5, c5, c9, 0xE
+            xc.bop  c4, c4, c8, 0xEE
+            xc.bop  c5, c5, c9, 0xEE
 
             #
             # Store a5,a4 back to tempA[index(y,2x+3y)]
@@ -225,8 +225,8 @@ KeccakP1600Round:
             xc.ld.w c2, 0(t4)               # c3,c2 =a_temp[((x+2)%5) + 5y] 
             xc.ld.w c3, 4(t4)               # 
 
-            xc.bop  c0, c0, c2, 0x2         # c0 = (~c0) & c2
-            xc.bop  c1, c1, c3, 0x2         # c1 = (~c1) & c3
+            xc.bop  c0, c0, c2, 0x22        # c0 = (~c0) & c2
+            xc.bop  c1, c1, c3, 0x22        # c1 = (~c1) & c3
             
             xc.sha3.xy s2, t0, t1, 3        # t6 = x + 5y
             add     t4, s2, a6              # t4 = &a_temp[((x) + 5y]
@@ -234,8 +234,8 @@ KeccakP1600Round:
             xc.ld.w c4, 0(t4)               # c5,c4 =a_temp[((x)) + 5y] 
             xc.ld.w c5, 4(t4)               # 
             
-            xc.bop  c0, c0, c4, 0x6         # c0 = c0 ^ c2
-            xc.bop  c1, c1, c5, 0x6         # c1 = c1 ^ c3
+            xc.bop  c0, c0, c4, 0x66        # c0 = c0 ^ c2
+            xc.bop  c1, c1, c5, 0x66        # c1 = c1 ^ c3
             
             add     t4, s2, a0              # t4 = &A[((x) + 5y]
             
@@ -259,8 +259,8 @@ KeccakP1600Round:
     xc.ld.w c4, 0(a0)
     xc.ld.w c5, 4(a0)
 
-    xc.bop  c4, c4, c2, 0x6                 # XOR
-    xc.bop  c5, c5, c3, 0x6                 # XOR
+    xc.bop  c4, c4, c2, 0x66                # XOR
+    xc.bop  c5, c5, c3, 0x66                # XOR
     
     xc.st.w c4, 0(a0)
     xc.st.w c5, 4(a0)
