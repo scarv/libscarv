@@ -15,12 +15,12 @@ aes_enc_exp_step:
 
 	xc.aessub.enc c4, c3, c3
 	xc.pperm.w c4, c4, 1, 2, 3, 0
-	xc.bop	c4, c4, c8, 0x6		#xor
+	xc.bop	c4, c4, c8, 0x66	#xor
 	
-	xc.bop	c4, c4, c0, 0x6		#xor
-	xc.bop	c5, c4, c1, 0x6		#xor
-	xc.bop	c6, c5, c2, 0x6		#xor
-	xc.bop	c7, c6, c3, 0x6		#xor
+	xc.bop	c4, c4, c0, 0x66	#xor
+	xc.bop	c5, c4, c1, 0x66	#xor
+	xc.bop	c6, c5, c2, 0x66	#xor
+	xc.bop	c7, c6, c3, 0x66	#xor
 	
 	xc.st.w c4, 0(a0)
 	xc.st.w c5, 4(a0)

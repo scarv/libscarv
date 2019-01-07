@@ -78,10 +78,10 @@ KeccakP400Round:
         xc.ld.hu   c1,(1), 30(a3)           # t0 = A[x+5*y], y = 3
         xc.ld.hu   c2,(0), 40(a3)           # t0 = A[x+5*y], y = 4
 
-        xc.bop     c0, c0, c1, 0x6          # XOR
-        xc.bop     c0, c0, c2, 0x6          # XOR
+        xc.bop     c0, c0, c1, 0x66          # XOR
+        xc.bop     c0, c0, c2, 0x66          # XOR
         xc.pperm.w c1, c0, 2,3,2,3
-        xc.bop     c0, c0, c1, 0x6          # XOR
+        xc.bop     c0, c0, c1, 0x66          # XOR
 
         xc.st.h    c0,(0), 0(a2)            # C[x] = t0
         
@@ -112,7 +112,7 @@ KeccakP400Round:
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
         xc.ld.hu c4,(0), 0(a3)              # t4 = theta_c[(x+4)%5]
 
-        xc.bop  c6, c3, c4, 0x6             # c6 = D
+        xc.bop  c6, c3, c4, 0x66            # c6 = D
         
         .L1:
 
@@ -121,7 +121,7 @@ KeccakP400Round:
             add     t4, t5, a0              # t4 = &A[index(x,y)]
             xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
 
-            xc.bop  c3, c4, c6, 0x6         # c3 = A[index(x,y)] ^ D
+            xc.bop  c3, c4, c6, 0x66        # c3 = A[index(x,y)] ^ D
 
             add     t4, a7, t5              # t4 = &RhoOffsets[index(x,y)]
             xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
@@ -162,8 +162,8 @@ KeccakP400Round:
             add     t4, t4, a6              # t4 = &a_temp[(x+2)%5 + 5y]
             xc.ld.hu c3,(0), 0(t4)          # c3 =  a_temp[x+5y]
             
-            xc.bop  c3, c4, c3, 0x2         # c3 = (~c4) & c3
-            xc.bop  c3, c3, c5, 0x6         # c3 = c3 ^ c5
+            xc.bop  c3, c4, c3, 0x22        # c3 = (~c4) & c3
+            xc.bop  c3, c3, c5, 0x66        # c3 = c3 ^ c5
 
             add     t4, a0, t6              # t4 = &A[x+5y]
             xc.st.h c3,(0), 0(t4)           # A[x+5y] = t3
@@ -182,7 +182,7 @@ KeccakP400Round:
     xc.ld.hu c2,(0), 0(a0)          # c1 = A[index(0,0)]
     xc.ld.hu c3,(0), 0(t1)          # c2 = round_consts[a1]
 
-    xc.bop  c4, c2, c3, 0x6         # c4 = A[index(0,0)] ^ round_consts[a1]
+    xc.bop  c4, c2, c3, 0x66        # c4 = A[index(0,0)] ^ round_consts[a1]
     xc.st.h c4,(0), 0(a0)           # A[index(0,0)] = c4
 
     ret

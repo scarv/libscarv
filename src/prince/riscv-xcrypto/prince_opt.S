@@ -123,17 +123,17 @@ prince_shift_rowsa:
 
     .psr_0:
 
-        xc.bop     c3, c13, c0, 0x8      # c2,c3 - in & (rowmask >> 4*i)
-        xc.bop     c2, c12, c0, 0x8
+        xc.bop     c3, c13, c0, 0x88     # c2,c3 - in & (rowmask >> 4*i)
+        xc.bop     c2, c12, c0, 0x88
 
         xc.msrl (c4,c5), c2, c3, c8     # row >> shift
         xc.msll (c2,c3), c2, c3, c6     # row << (64-shift)
 
-        xc.bop  c2, c2, c4, 0xE         # OR
-        xc.bop  c3, c3, c5, 0xE         # OR
+        xc.bop  c2, c2, c4, 0xEE        # OR
+        xc.bop  c3, c3, c5, 0xEE        # OR
         
-        xc.bop  c10, c10, c2, 0xE       # OR
-        xc.bop  c11, c11, c3, 0xE       # OR
+        xc.bop  c10, c10, c2, 0xEE      # OR
+        xc.bop  c11, c11, c3, 0xEE      # OR
 
         xc.psub  w, c8, c8, c7
         xc.padd  w, c6, c6, c7
@@ -150,17 +150,17 @@ prince_shift_rowsa:
 
     .psr_1:
 
-        xc.bop     c3, c13, c0, 0x8      # c2,c3 - in & (rowmask >> 4*i)
-        xc.bop     c2, c12, c0, 0x8
+        xc.bop     c3, c13, c0, 0x88     # c2,c3 - in & (rowmask >> 4*i)
+        xc.bop     c2, c12, c0, 0x88
 
         xc.msrl (c4,c5), c2, c3, c6     # row >> shift
         xc.msll (c2,c3), c2, c3, c8     # row << (64-shift)
 
-        xc.bop  c2, c2, c4, 0xE         # OR
-        xc.bop  c3, c3, c5, 0xE         # OR
+        xc.bop  c2, c2, c4, 0xEE        # OR
+        xc.bop  c3, c3, c5, 0xEE        # OR
         
-        xc.bop  c10, c10, c2, 0xE       # OR
-        xc.bop  c11, c11, c3, 0xE       # OR
+        xc.bop  c10, c10, c2, 0xEE      # OR
+        xc.bop  c11, c11, c3, 0xEE      # OR
 
         xc.psub  w, c8, c8, c7
         xc.padd  w, c6, c6, c7
