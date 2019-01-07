@@ -91,26 +91,21 @@ KeccakP1600Round:
         
         xc.ld.w     c0,   0(a3)
         xc.ld.w     c1,  40(a3)
-        xc.bop      c0, c0, c1, 0x66
-        xc.ld.w     c1,  80(a3)
-        xc.bop      c0, c0, c1, 0x66
+        xc.ld.w     c2,  80(a3)
+        xc.bop      c0, c1, c2, 0b10010110
         xc.ld.w     c1, 120(a3)
-        xc.bop      c0, c0, c1, 0x66
-        xc.ld.w     c1, 160(a3)
-        xc.bop      c0, c0, c1, 0x66
-        
-        xc.ld.w     c2,   4(a3)
-        xc.ld.w     c3,  44(a3)
-        xc.bop      c2, c2, c3, 0x66
-        xc.ld.w     c3,  84(a3)
-        xc.bop      c2, c2, c3, 0x66
-        xc.ld.w     c3, 124(a3)
-        xc.bop      c2, c2, c3, 0x66
-        xc.ld.w     c3, 164(a3)
-        xc.bop      c2, c2, c3, 0x66
-
+        xc.ld.w     c2, 160(a3)
+        xc.bop      c0, c1, c2, 0b10010110
         xc.st.w     c0,   0(a2)
-        xc.st.w     c2,   4(a2)
+        
+        xc.ld.w     c0,   4(a3)
+        xc.ld.w     c1,  44(a3)
+        xc.ld.w     c2,  84(a3)
+        xc.bop      c0, c1, c2, 0b10010110
+        xc.ld.w     c1, 124(a3)
+        xc.ld.w     c2, 164(a3)
+        xc.bop      c0, c1, c2, 0b10010110
+        xc.st.w     c0,   4(a2)
         
         addi    a3, a3, 8
         addi    a2, a2, 8
@@ -225,22 +220,19 @@ KeccakP1600Round:
             xc.ld.w c2, 0(t4)               # c3,c2 =a_temp[((x+2)%5) + 5y] 
             xc.ld.w c3, 4(t4)               # 
 
-            xc.bop  c0, c0, c2, 0x22        # c0 = (~c0) & c2
-            xc.bop  c1, c1, c3, 0x22        # c1 = (~c1) & c3
-            
             xc.sha3.xy s2, t0, t1, 3        # t6 = x + 5y
             add     t4, s2, a6              # t4 = &a_temp[((x) + 5y]
             
             xc.ld.w c4, 0(t4)               # c5,c4 =a_temp[((x)) + 5y] 
             xc.ld.w c5, 4(t4)               # 
             
-            xc.bop  c0, c0, c4, 0x66        # c0 = c0 ^ c2
-            xc.bop  c1, c1, c5, 0x66        # c1 = c1 ^ c3
+            xc.bop  c2, c0, c4, 0b10011010  # c2 = (c2 & (~c0)) ^ c4
+            xc.bop  c3, c1, c5, 0b10011010  # c2 = (c3 & (~c1)) ^ c5
             
             add     t4, s2, a0              # t4 = &A[((x) + 5y]
             
-            xc.st.w c0, 0(t4)               # A[t4] = c1,c0
-            xc.st.w c1, 4(t4)               # 
+            xc.st.w c2, 0(t4)               # A[t4] = c1,c0
+            xc.st.w c3, 4(t4)               # 
             
             addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L4
