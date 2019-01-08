@@ -16,6 +16,8 @@
   d +=       t_0;                                                       \
   h  = t_1 + t_0;                                                       \
 }
+  
+uint32_t W[ 64 ];
 
 uint32_t K[] = { 
   0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 
@@ -36,24 +38,26 @@ uint32_t K[] = {
   0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2 
 };
         
-uint32_t H_0, H_1, H_2, H_3, H_4, H_5, H_6, H_7;
+uint32_t H [8];
 
 uint8_t T[ 64 ];
 
 uint64_t n_left; // bytes remaining
 uint64_t n_done; // bytes processed so far
 
+#ifdef CONF_SHA2_256_COMP_EXTERN
+extern void sha2_256_comp( const uint8_t* x );
+#else
 void sha2_256_comp( const uint8_t* x ) {
-  uint32_t W[ 64 ];
 
-  uint32_t a = H_0;
-  uint32_t b = H_1;
-  uint32_t c = H_2;
-  uint32_t d = H_3;
-  uint32_t e = H_4;
-  uint32_t f = H_5;
-  uint32_t g = H_6;
-  uint32_t h = H_7;
+  uint32_t a = H[0];
+  uint32_t b = H[1];
+  uint32_t c = H[2];
+  uint32_t d = H[3];
+  uint32_t e = H[4];
+  uint32_t f = H[5];
+  uint32_t g = H[6];
+  uint32_t h = H[7];
 
   U8_TO_U32_BE( W[  0 ], x,  0 );
   U8_TO_U32_BE( W[  1 ], x,  4 );
@@ -88,15 +92,16 @@ void sha2_256_comp( const uint8_t* x ) {
     SHA2_256_R( b, c, d, e, f, g, h, a, W[ i + 7 ], K[ i + 7 ] );
   }
 
-  H_0 += a;
-  H_1 += b;
-  H_2 += c;
-  H_3 += d;
-  H_4 += e;
-  H_5 += f;
-  H_6 += g;
-  H_7 += h;
+  H[0] += a;
+  H[1] += b;
+  H[2] += c;
+  H[3] += d;
+  H[4] += e;
+  H[5] += f;
+  H[6] += g;
+  H[7] += h;
 }
+#endif // CONF_SHA2_256_COMP_EXTERN
 
 void sha2_256_padd( uint8_t* x ) {
   int n_b = SHA2_256_SIZEOF_BLOCK;
@@ -125,14 +130,14 @@ void sha2_256_padd( uint8_t* x ) {
 }
 
 void sha2_256_init() {
-  H_0 = 0x6A09E667;
-  H_1 = 0xBB67AE85;
-  H_2 = 0x3C6EF372;
-  H_3 = 0xA54FF53A;
-  H_4 = 0x510E527F;
-  H_5 = 0x9B05688C;
-  H_6 = 0x1F83D9AB;
-  H_7 = 0x5BE0CD19;
+  H[0] = 0x6A09E667;
+  H[1] = 0xBB67AE85;
+  H[2] = 0x3C6EF372;
+  H[3] = 0xA54FF53A;
+  H[4] = 0x510E527F;
+  H[5] = 0x9B05688C;
+  H[6] = 0x1F83D9AB;
+  H[7] = 0x5BE0CD19;
 
   n_left = 0;
   n_done = 0;
@@ -177,14 +182,14 @@ void sha2_256_hash( const uint8_t* m, int n_m ) {
 void sha2_256_fini( uint8_t* d ) {
   sha2_256_padd( T );
 
-  U32_TO_U8_BE( d, H_0,  0 );
-  U32_TO_U8_BE( d, H_1,  4 );
-  U32_TO_U8_BE( d, H_2,  8 );
-  U32_TO_U8_BE( d, H_3, 12 );
-  U32_TO_U8_BE( d, H_4, 16 );
-  U32_TO_U8_BE( d, H_5, 20 );
-  U32_TO_U8_BE( d, H_6, 24 );
-  U32_TO_U8_BE( d, H_7, 28 );
+  U32_TO_U8_BE( d, H[0],  0 );
+  U32_TO_U8_BE( d, H[1],  4 );
+  U32_TO_U8_BE( d, H[2],  8 );
+  U32_TO_U8_BE( d, H[3], 12 );
+  U32_TO_U8_BE( d, H[4], 16 );
+  U32_TO_U8_BE( d, H[5], 20 );
+  U32_TO_U8_BE( d, H[6], 24 );
+  U32_TO_U8_BE( d, H[7], 28 );
 }
 
 void sha2_256( uint8_t* d, int l, ... ) {
