@@ -78,6 +78,7 @@
   | `CONF_KECCAKP400_ROUND_EXTERN`     | Use an external                                                            KeccakP[400]              implementation |
   | `CONF_KECCAKP400_NO_MOD_INS=[1|0]  | Use an in memory LUT to compute indexes [1, faster, larger] or the `remu` instruction [0, slower, smaller]          |
   | `CONF_KECCAKP1600_ROUND_EXTERN`    | Use an external                                                            KeccakP[1600]             implementation |
+  | `CONF_KECCAKP1600_NO_MOD_INS=[1|0] | Use an in memory LUT to compute indexes [1, faster, larger] or the `remu` instruction [0, slower, smaller]          |
 
   noting that not *all* combinations are valid: "correct" configuration
   isn't fool proof!
