@@ -60,6 +60,45 @@ round_consts:
     .dword 0x0000000080000001
     .dword 0x8000000080008008
 
+.if CONF_KECCAKP1600_INDEX_FUNC==1
+mod5_lut:
+    .dword 0 << 3# 0
+    .dword 1 << 3# 1
+    .dword 2 << 3# 2
+    .dword 3 << 3# 3
+    .dword 4 << 3# 4
+    .dword 0 << 3# 5
+    .dword 1 << 3# 6
+    .dword 2 << 3# 7
+    .dword 3 << 3# 8
+    .dword 4 << 3# 9
+    .dword 0 << 3# 10
+    .dword 1 << 3# 11
+    .dword 2 << 3# 12
+    .dword 3 << 3# 13
+    .dword 4 << 3# 14
+    .dword 0 << 3# 15
+    .dword 1 << 3# 16
+    .dword 2 << 3# 17
+    .dword 3 << 3# 18
+    .dword 4 << 3# 19
+    .dword 0 << 3# 20
+    .dword 1 << 3# 21
+    .dword 2 << 3# 22
+    .dword 3 << 3# 23
+    .dword 4 << 3# 24
+    .dword 0 << 3# 25
+.endif
+
+.macro MOD5 A, B, C
+    .if CONF_KECCAKP1600_INDEX_FUNC==1
+        add     \A, \A, \C
+        lbu     \A, 0(\A)
+    .else
+        remu    \A, \A, \B
+    .endif
+.endm
+
 .text
 
 .func KeccakP1600Round
@@ -73,13 +112,16 @@ KeccakP1600Round:
     # - 1 lane = 2 words = 8 bytes
     #
 
-    addi    sp, sp, -40
+    addi    sp, sp, -44
     sw      s3, 4(sp)
     sw      s4, 8(sp)
     sw      s5,16(sp)
     sw      s6,20(sp)
     sw      s7,24(sp)
     sw      s2,28(sp)
+    .if CONF_KECCAKP1600_INDEX_FUNC==1
+         sw s0,32(sp)
+    .endif
 
     #
     # Theta function preparation
@@ -119,6 +161,9 @@ KeccakP1600Round:
 
     la      a7, rho_off
     la      a6, temp_a
+    .if CONF_KECCAKP1600_INDEX_FUNC==1
+        la      s0, mod5_lut
+    .endif
     li      t0, 0                           # t0 = x = 0
     li      t2, 40
     addi    a2, a2, -40                     # a2 = &theta_c
@@ -130,7 +175,7 @@ KeccakP1600Round:
         li      t1, 0                       # t1 = y = 0
         
         addi    a3, t0, 8                   # a3 = x+1
-        remu    a3, a3, t2                  # a3 = (x+1)%5
+        MOD5    a3, t2, s0                  # a3 = (x+1)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
 
         lw      t3, 0(a3)                   # 
@@ -145,7 +190,7 @@ KeccakP1600Round:
         or      t3, t6, t3                  # t4,t3 = theta_c[(x+1)%5] << 1
         
         addi    a3, t0, 32                  # a3 = x+4
-        remu    a3, a3, t2                  # a3 = (x+4)%5
+        MOD5    a3, t2, s0                  # a3 = (x+4)%5
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
 
         lw      t5, 0(a3)                   # 
@@ -229,7 +274,7 @@ KeccakP1600Round:
             slli    t4, t1, 1               # t4 = 2y
             add     t4, t4, t1              # t4 = 3y
             add     t3, t3, t4              # t4 = 2x + 3y
-            remu    t3, t3, t2              # t3 = (2x+3y)%5
+            MOD5    t3, t2, s0              # t3 = (2x+3y)%5
             slli    t4, t3, 2               # t4 = 4((2x+3y)%5)
             add     t3, t3, t4              # t3 = 5((2x+3y)%5)
             add     t3, t3, t1              # t3 = 5((2x+3y)%5) + y
@@ -257,7 +302,7 @@ KeccakP1600Round:
         .L4:
             
             addi    t4, t0, 8               # t4 = x+1
-            remu    t4, t4, t5              # t4 = (x+1) % 5
+            MOD5    t4, t5, s0              # t4 = (x+1) % 5
             add     t4, t4, t1              # t4 = ((x+1)%5) + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
 
@@ -265,7 +310,7 @@ KeccakP1600Round:
             lw      a5, 4(t4)               # 
             
             addi    t4, t0, 16              # t4 = x+2
-            remu    t4, t4, t5              # t4 = (x+2) % 5
+            MOD5    t4, t5, s0              # t4 = (x+2) % 5
             add     t4, t4, t1              # t4 = ((x+2)%5) + 5y
             add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
             
@@ -324,7 +369,10 @@ KeccakP1600Round:
     lw      s6,20(sp)
     lw      s7,24(sp)
     lw      s2,28(sp)
-    addi    sp, sp, 40
+    .if CONF_KECCAKP1600_INDEX_FUNC==1
+         lw s0,32(sp)
+    .endif
+    addi    sp, sp, 44
 
     ret
 
