@@ -76,6 +76,7 @@ void aes_enc_rnd_sub( uint8_t* s ) {
   #endif
 }
 
+
 void aes_enc_rnd_row( uint8_t* s ) {
   #if !defined( CONF_AES_ROUND_PACK   )
   AES_ENC_RND_ROW_STEP(  1,  5,  9, 13, 
@@ -122,4 +123,5 @@ void aes_enc_rnd_mix( uint8_t* s ) {
             sp[ 2 ] = t_6; sp[ 3 ] = t_7;
   #endif
 }
+
 
