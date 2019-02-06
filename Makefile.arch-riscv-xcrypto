@@ -10,10 +10,10 @@ GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
 AS_FLAGS   = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)x $(ASMCONF)
 GCC_LIBS   =
 
-AS         = $(XC_HOME)/work/riscv-binutils-gdb/build/gas/as-new
+AS         = ${GCC_PREFIX}as
 CC         = ${GCC_PREFIX}gcc
 AR         = ${GCC_PREFIX}ar
-OBJDUMP    = $(XC_HOME)/work/riscv-binutils-gdb/build/binutils/objdump
+OBJDUMP    = ${GCC_PREFIX}objdump
 OBJCOPY    = ${GCC_PREFIX}objcopy
 
 include Makefile.conf
