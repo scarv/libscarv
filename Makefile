@@ -167,6 +167,7 @@ disasm:  $(DISASM)
 #
 
 $(LIBSCARV) : $(OBJS)
+	@mkdir -p $(dir $@)
 	$(AR) rcs $@ $^
 
 #
