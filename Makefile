@@ -148,6 +148,10 @@ OBJCOPY    = ${GCC_PREFIX}objcopy
 
 all: headers objects disasm libs
 
+# Shared utility code
+$(eval $(call tgt_include_header,src/share/util.h,.))
+HEADERS += $(call map_include,src/share/util.h,.)
+
 include src/mp/Makefile.in
 #include src/sha1/Makefile.in
 include src/sha2/Makefile.in

@@ -5,7 +5,8 @@ KECCAK_PATHS= src/keccak \
             src/keccak/$(ARCH) \
 
 KECCAK_SRCS = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.c)) \
-            $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.S)) \
+              $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.S)) \
+              src/share/util.c
 
 KECCAK_HEAD = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.h))
 

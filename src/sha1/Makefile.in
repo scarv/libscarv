@@ -6,6 +6,7 @@ SHA1_PATHS= src/sha1 \
 
 SHA1_SRCS = $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.c)) \
             $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.S)) \
+            src/share/util.c
 
 SHA1_HEAD = $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.h))
 

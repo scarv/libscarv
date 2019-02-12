@@ -12,6 +12,7 @@ MP_PATHS= src/mp/limb \
 
 MP_SRCS = $(foreach DIR,${MP_PATHS},$(wildcard ${DIR}/*.c)) \
           $(foreach DIR,${MP_PATHS},$(wildcard ${DIR}/*.S)) \
+          src/share/util.c
 
 MP_HEAD = $(foreach DIR,${MP_PATHS},$(wildcard ${DIR}/*.h))
 

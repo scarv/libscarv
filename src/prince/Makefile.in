@@ -3,6 +3,7 @@ PRINCE_LIB  = scarvprince
 
 PRINCE_PATHS= src/prince \
               src/prince/$(ARCH) \
+              src/share/util.c
 
 PRINCE_SRCS = $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.c)) \
             $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.S)) \

@@ -3,6 +3,7 @@ SHA2_LIB  = scarvsha2
 
 SHA2_PATHS= src/sha2 \
             src/sha2/$(ARCH) \
+            src/share/util.c
 
 SHA2_SRCS = $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.c)) \
             $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.S)) \
