@@ -90,12 +90,12 @@
   c) three high-level implementation strategies, namely
 
   1. a reference strategy
-     (`TYPE`=`space`, `!CONF_AES_ROUND_PACK`; see [Section 4.1, 1]),
+     (`AES_TYPE`=`space`, `!CONF_AES_ROUND_PACK`; see [Section 4.1, 1]),
   2. a T-tables  strategy
-     (`TYPE`=`speed`;                         see [Section 4.2, 1]),
+     (`AES_TYPE`=`speed`;                         see [Section 4.2, 1]),
      and
   3. a packed    strategy
-     (`TYPE`=`space`,  `CONF_AES_ROUND_PACK`; see              [2]).
+     (`AES_TYPE`=`space`,  `CONF_AES_ROUND_PACK`; see              [2]).
 
 <!--- -------------------------------------------------------------------- --->
 

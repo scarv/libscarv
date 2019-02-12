@@ -1,83 +1,173 @@
- SRC_PATHS   += ./src/share \
-                ./src/aes/share \
-                ./src/aes/${TYPE} \
-                ./src/aes/${TYPE}/${ARCH} \
-                ./src/mp/mpn \
-                ./src/mp/mpn/${ARCH} \
-                ./src/mp/mpz \
-                ./src/mp/mrz \
-                ./src/mp/limb \
-                ./src/mp/limb/${ARCH} \
-                ./src/keccak \
-                ./src/keccak/${ARCH} \
-                ./src/prince \
-                ./src/prince/${ARCH} \
-                ./src/sha2 \
-                ./src/sha2/${ARCH}
 
- SRC_HEADERS += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.h))
- SRC_SOURCES += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.c))
- SRC_SOURCES += $(foreach DIR,${SRC_PATHS},$(wildcard ${DIR}/*.S))
+ifndef ARCH
+    $(error Please specify the ARCH variable)
+endif
 
-define include_map
-  $(patsubst ${1},./build/include/${LIB_ID}/${2},$(notdir ${3}))
+#
+# Top-level variables that the included makefiles will modify
+#
+ 
+TRASH           =
+
+INSTALL_DIR     =build/$(ARCH)
+OBJ_DIR         = $(INSTALL_DIR)/obj
+LIB_DIR         = $(INSTALL_DIR)/lib
+HEADER_DIR      = $(INSTALL_DIR)/include/scarv
+
+CFLAGS         += -Isrc/share
+
+# All object files to be compiled
+OBJS            =
+
+# Static libraries to build
+LIBS            = 
+
+# Headers to be coppied to the installation dir.
+HEADERS         =
+
+# Disassembly targets
+DISASM          =
+DISASM_DIR      = $(INSTALL_DIR)/disasm
+
+# Object files to be included in libscarv.a
+LIBSCARV_OBJS   =
+LIBSCARV_LIBID  =libscarv.a
+
+#
+# Include the generic top-level configuration makefile.
+#
+include Makefile.conf
+
+#
+# Include the architecture specific make file.
+#
+ifeq ($(ARCH),generic)
+    include Makefile.arch-generic
+else ifeq ($(ARCH),riscv)
+    include Makefile.arch-riscv
+else ifeq ($(ARCH),riscv-xcrypto)
+    include Makefile.arch-riscv-xcrypto
+else
+    $(error Unknown architecture specified: $(ARCH))
+endif
+
+# Add architecture specific configuration switches to CFLAGS
+CFLAGS += $(CONF)
+
+#
+# Functions for generating rules
+#
+
+#
+# 1 - header source path
+# 2 - destination subfolder
+#
+define map_include
+$(abspath $(HEADER_DIR)/${2}/$(notdir ${1}))
 endef
-define     lib_map
-  $(patsubst ${1},./build/lib/${2},              $(notdir ${3}))
+
+#
+# 1 - header source path
+# 2 - destination subfolder
+#
+define tgt_include_header
+$(call map_include,${1},${2}) : $(abspath ${1}) ;
+	@mkdir -p $(dir $(call map_include,${1},${2}))
+	cp $${^} $${@}
+
 endef
 
-define include_rule
-$(call include_map,${1},${2},${3}) : ${3}
-	@cp $${^} $${@}
-endef
-define     lib_rule
-$(call     lib_map,${1},${2},${3}) : ${3}
-	$${CC} $$(patsubst %, -I %, $${SRC_PATHS}) $${GCC_PATHS} $${GCC_FLAGS} -c -o $${@} $${<}
-endef
-define     asm_lib_rule
-$(call     lib_map,${1},${2},${3}) : ${3}
-	$$(AS) $$(patsubst %, -I %, $${SRC_PATHS}) $${GCC_PATHS} $${AS_FLAGS} -c -o $${@} $${<}
+#
+# 1 - object file source path
+# 2 - destination subfolder
+#
+define map_obj
+    $(OBJ_DIR)/${2}/$(basename $(notdir ${1})).o
 endef
 
- LIB_ID       = scarv
- LIB_VERSION  = 
+#
+# 1 - object file source path
+# 2 - destination subfolder
+# 3 - extra flags
+#
+define tgt_obj
+$(call map_obj,${1},${2}) : ${1} ;
+	@mkdir -p $(dir $(call map_obj,${1},${2}))
+	$(CC) -c ${CFLAGS} ${3} -o $$@ $$<
 
- LIB_PATHS   += ./build/bin ./build/lib ./build/include/${LIB_ID}
+endef
 
- LIB_HEADERS += $(foreach FILE,$(filter %.h, ${SRC_HEADERS}),$(call include_map,%.h,%.h,${FILE}))
- LIB_OBJECTS += $(foreach FILE,$(filter %.c, ${SRC_SOURCES}),$(call     lib_map,%.c,%.o,${FILE}))
- LIB_OBJECTS += $(foreach FILE,$(filter %.S, ${SRC_SOURCES}),$(call     lib_map,%.S,%.o,${FILE}))
+#
+# 1 - library name
+#
+define map_static_lib
+    $(LIB_DIR)/lib$(basename $(notdir ${1})).a
+endef
 
- LIB_TARGET  += ./build/lib/lib${LIB_ID}.a
+#
+# 1 - Source objects
+# 2 - Library name
+#
+define tgt_static_lib
+$(call map_static_lib,${2}) : ${1} ;
+	@mkdir -p $(dir $(call map_static_lib,${2}))
+	$(AR) rcs $$@ $$^
+endef
 
-$(foreach FILE, $(filter %.h, ${SRC_HEADERS}), $(eval $(call include_rule,%.h,%.h,${FILE})))
-$(foreach FILE, $(filter %.c, ${SRC_SOURCES}), $(eval $(call     lib_rule,%.c,%.o,${FILE})))
-$(foreach FILE, $(filter %.S, ${SRC_SOURCES}), $(eval $(call asm_lib_rule,%.S,%.o,${FILE})))
+#
+# 1 - object file source path
+# 2 - destination subfolder
+#
+define map_disasm
+    $(DISASM_DIR)/${2}/$(basename $(notdir ${1})).dis
+endef
 
-${LIB_PATHS}   :
-	@mkdir -p ${@}
-${LIB_TARGET} : ${LIB_OBJECTS}
-	${AR} rcs ${@} ${^}
+#
+# 1 - object file source path
+# 2 - destination subfolder
+#
+define tgt_disasm
+$(call map_disasm,${1},${2}) : $(call map_obj,${1},${2}) ;
+	@mkdir -p $(dir $(call map_disasm,${1},${2}))
+	$(OBJDUMP) -D $$< > $$@
+endef
 
-TEST_PATHS   += ./test ./test/aes ./test/mp
+#
+# GCC tool paths - GCC_PREFIX set by architecture dependent makefile.
+#
+AS         = ${GCC_PREFIX}as
+CC         = ${GCC_PREFIX}gcc
+AR         = ${GCC_PREFIX}ar
+OBJDUMP    = ${GCC_PREFIX}objdump
+OBJCOPY    = ${GCC_PREFIX}objcopy
 
-TEST_HEADERS += $(foreach DIR,${TEST_PATHS},$(wildcard ${DIR}/*.h))
-TEST_SOURCES += $(foreach DIR,${TEST_PATHS},$(wildcard ${DIR}/*.c))
-TEST_SOURCES += $(foreach DIR,${TEST_PATHS},$(wildcard ${DIR}/*.S))
+#
+# Include the makefiles responsible for each portion of the library
+#
 
-TEST_TARGET  += ./build/bin/lib${LIB_ID}_test.elf
+all: headers objects disasm libs
 
-${TEST_TARGET} : ${LIB_TARGET} ${TEST_SOURCES} ${TEST_HEADERS}
-	${CC} -L ./build/lib -I ./build/include -I ./test ${GCC_PATHS} ${GCC_FLAGS} -o ${@} $(filter %.c, ${^}) -l${LIB_ID}
+include src/mp/Makefile.in
+#include src/sha1/Makefile.in
+include src/sha2/Makefile.in
+include src/keccak/Makefile.in
+include src/prince/Makefile.in
+include src/aes/Makefile.in
 
-lib      : ${LIB_TARGET}
+TRASH += $(HEADERS) $(OBJS) $(DISASM) $(LIBS)
 
-objects  : ${LIB_PATHS} ${LIB_HEADERS} ${LIB_OBJECTS}
+headers: $(HEADERS)
+objects: $(OBJS)
+libs:    $(LIBS)
+disasm:  $(DISASM)
 
-all      : objects ${LIB_TARGET} ${TEST_TARGET}
+test:
+	@echo $(HEADERS)
+	@echo $(OBJS)
 
-clean    :
-	@rm -rf ${LIB_PATHS} ${LIB_HEADERS} ${LIB_OBJECTS} ${LIB_TARGET} ${TEST_TARGET}
+clean:
+	rm -rf $(TRASH)
 
-spotless :
-	@rm -rf ./build/*
+spotless: clean
+	rm -rf $(INSTALL_DIR)
+

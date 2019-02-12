@@ -1,0 +1,32 @@
+
+KECCAK_LIB  = scarvkeccak
+
+KECCAK_PATHS= src/keccak \
+            src/keccak/$(ARCH) \
+
+KECCAK_SRCS = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.c)) \
+            $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.S)) \
+
+KECCAK_HEAD = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.h))
+
+KECCAK_FLAGS= $(addprefix -I,$(KECCAK_PATHS))
+
+# Create targets for the headers
+$(foreach FILE,$(KECCAK_HEAD),$(eval $(call tgt_include_header,$(FILE),keccak)))
+$(foreach FILE,$(KECCAK_SRCS),$(eval $(call tgt_obj,$(FILE),keccak,$(KECCAK_FLAGS))))
+$(foreach FILE,$(KECCAK_SRCS),$(eval $(call tgt_disasm,$(FILE),keccak,$(KECCAK_FLAGS))))
+
+
+KECCAK_HEADERS =$(foreach FILE, $(KECCAK_HEAD), $(call map_include,$(FILE),keccak))
+KECCAK_OBJS    =$(foreach FILE, $(KECCAK_SRCS), $(call map_obj,$(FILE),keccak))
+KECCAK_DISASM  =$(foreach FILE, $(KECCAK_SRCS), $(call map_disasm,$(FILE),keccak))
+
+# Add to the list of headers/objects etc to create.
+HEADERS += $(KECCAK_HEADER)
+OBJS    += $(KECCAK_OBJS)
+DISASM  += $(KECCAK_DISASM)
+
+# libscarvkeccak to the list of static libraries to build
+LIBS += $(call map_static_lib,$(KECCAK_LIB))
+$(eval $(call tgt_static_lib,$(KECCAK_OBJS),$(KECCAK_LIB)))
+
