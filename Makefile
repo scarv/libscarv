@@ -145,7 +145,7 @@ OBJCOPY    = ${GCC_PREFIX}objcopy
 # Include the makefiles responsible for each portion of the library
 #
 
-all: headers objects disasm libs
+all: headers objects disasm libs doxygen
 
 include src/mp/Makefile.in
 #include src/sha1/Makefile.in
@@ -161,9 +161,8 @@ objects: $(OBJS)
 libs:    $(LIBS)
 disasm:  $(DISASM)
 
-test:
-	@echo $(HEADERS)
-	@echo $(OBJS)
+doxygen:
+	doxygen doxygen.cfg
 
 clean:
 	rm -rf $(TRASH)
