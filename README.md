@@ -1,8 +1,8 @@
-# `libscarv`: a (software) library of cryptographic reference implementations
+# `libscarv`: A (software) library of cryptographic reference implementations
 
 <!--- -------------------------------------------------------------------- --->
 
-## Content
+## Getting Started
 
 - It *isn't* a library you'd expect (or want) in production code.  In
   short, it's really only intended for internal use: it offers 
@@ -17,24 +17,31 @@
   - configuration for the build is determined by
     `Makefile.conf`,
   - the build is  launched via
-    `Makefile.arch-${ARCH}`
-    which provides architecture-specific variables and targets,
-  - the build is supported by 
     `Makefile`
     which provides architecture-agnostic variables and targets.
+  - the build is supported by 
+    `Makefile.arch-${ARCH}`
+    which provides architecture-specific variables and targets,
 
-  So, for example, 
+  So, for example, running:
 
   ```
-  make -f Makefile.arch-generic clean all test
+  make ARCH=[generic, riscv, riscv-xcrypto]
   ```
 
-  to 
-  a) build the library, 
-     and then
-  b) build and execute some associated unit tests (which use Python as
-     a reference oracle),
-  for the generic (i.e., vanilla C) architecture.
+  will build the library for the appropriate architecture.
+
+## Target architectures
+
+There are three supported target architectures:
+
+Architecture    | Description
+----------------|------------------------------------------------------------
+`generic`       | Builds with whatever default GCC toolchain is setup.
+`riscv`         | Targets the RISC-V `rv32imac` architecture.
+`riscv-xcrypto` | Targets the RISC-V `rv32imaxc` architecture. The `x` indicates support for the [XCrypto](https://github.com/scarv/xcrypto) ISE.
+
+## Configuration Options
 
 - The configuration options available in
   `Makefile.conf`
@@ -75,10 +82,15 @@
   | `CONF_MP_MRZ_MUL_EXTERN`           | Use an external                                                            Montgomery multiplication implementation |
   | `CONF_MP_MRZ_MUL_REDC`             | Use a         Un-integrated (i.e.. separate multiplication then reduction) Montgomery multiplication implementation |
   | `CONF_MP_MRZ_MUL_CIOS`             | Use a  Coarsely Integrated Operand Scanning (CIOS)                         Montgomery multiplication implementation |
+  |                                    |                                                                                                                     |
   | `CONF_KECCAKP400_ROUND_EXTERN`     | Use an external                                                            KeccakP[400]              implementation |
   | `CONF_KECCAKP400_INDEX_FUNC=[1,0]` | Use an in memory LUT to compute indexes [1, faster, larger] or the `remu` instruction [0, slower, smaller]          |
+  |                                    |                                                                                                                     |
   | `CONF_KECCAKP1600_ROUND_EXTERN`    | Use an external                                                            KeccakP[1600]             implementation |
   | `CONF_KECCAKP1600_INDEX_FUNC=[1,0]`| Use an in memory LUT to compute indexes [1, faster, larger] or the `remu` instruction [0, slower, smaller]          |
+  | `CONF_PRINCE_SBOX_EXTERN`          | Use an external (assembly) definition of the prince SBOX function                                                   |
+  | `CONF_PRINCE_ISBOX_EXTERN`         | Use an external (assembly) definition of the prince inverse SBOX function                                           |
+  | `CONF_PRINCE_GF_MUL_EXTERN`        | Use an external (assembly) definition of the prince GF\_MUL function                                                |
 
   noting that not *all* combinations are valid: "correct" configuration
   isn't fool proof!
