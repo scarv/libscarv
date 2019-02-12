@@ -1,23 +1,5 @@
-ARCH       = riscv
-ARCH_SUBSET=rv32im
+ARCH_SUBSET=rv32imac
 ARCH_ABI   =ilp32
-
-CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)
-
-GCC_PREFIX = $(RISCV)/bin/riscv64-unknown-elf-
-GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
-AS_FLAGS   = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) ${ASMCONF}
-GCC_LIBS   =
-
-AS         = ${GCC_PREFIX}as
-CC         = ${GCC_PREFIX}gcc
-AR         = ${GCC_PREFIX}ar
-OBJDUMP    = ${GCC_PREFIX}objdump
-OBJCOPY    = ${GCC_PREFIX}objcopy
-
-include Makefile.conf
-include Makefile
 
 #
 # Externally defined assembly functions.
@@ -47,5 +29,10 @@ CONF += -DCONF_AES_DEC_FINI_EXTERN
 
 ASMCONF =$(subst -D, --defsym , $(addsuffix =1,$(CONF)))
 
-test : all
-	@${LIB_TEST} 1000 4 16 | python 
+CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) -nostdlib
+
+GCC_PREFIX = $(RISCV)/bin/riscv32-unknown-elf-
+GCC_PATHS  =
+GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
+ASFLAGS    = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) ${ASMCONF}
+GCC_LIBS   =

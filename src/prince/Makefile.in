@@ -1,0 +1,31 @@
+
+PRINCE_LIB  = scarvprince
+
+PRINCE_PATHS= src/prince \
+              src/prince/$(ARCH) \
+
+PRINCE_SRCS = $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.c)) \
+            $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.S)) \
+
+PRINCE_HEAD = $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.h))
+
+PRINCE_FLAGS= $(addprefix -I,$(PRINCE_PATHS))
+
+# Create targets for the headers
+$(foreach FILE,$(PRINCE_HEAD),$(eval $(call tgt_include_header,$(FILE),prince)))
+$(foreach FILE,$(PRINCE_SRCS),$(eval $(call tgt_obj,$(FILE),prince,$(PRINCE_FLAGS))))
+$(foreach FILE,$(PRINCE_SRCS),$(eval $(call tgt_disasm,$(FILE),prince,$(PRINCE_FLAGS))))
+
+
+PRINCE_HEADERS =$(foreach FILE, $(PRINCE_HEAD), $(call map_include,$(FILE),prince))
+PRINCE_OBJS    =$(foreach FILE, $(PRINCE_SRCS), $(call map_obj,$(FILE),prince))
+PRINCE_DISASM  =$(foreach FILE, $(PRINCE_SRCS), $(call map_disasm,$(FILE),prince))
+
+# Add to the list of headers/objects etc to create.
+HEADERS += $(PRINCE_HEADER)
+OBJS    += $(PRINCE_OBJS)
+DISASM  += $(PRINCE_DISASM)
+
+# libscarvprince to the list of static libraries to build
+LIBS += $(call map_static_lib,$(PRINCE_LIB))
+$(eval $(call tgt_static_lib,$(PRINCE_OBJS),$(PRINCE_LIB)))

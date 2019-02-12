@@ -1,23 +1,5 @@
-ARCH       = riscv-xcrypto
-ARCH_SUBSET=rv32im
+ARCH_SUBSET=rv32imaxc
 ARCH_ABI   =ilp32
-
-CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) -nostdlib -nostartfiles
-
-GCC_PREFIX = $(RISCV)/bin/riscv64-unknown-elf-
-GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
-AS_FLAGS   = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)x $(ASMCONF)
-GCC_LIBS   =
-
-AS         = ${GCC_PREFIX}as
-CC         = ${GCC_PREFIX}gcc
-AR         = ${GCC_PREFIX}ar
-OBJDUMP    = ${GCC_PREFIX}objdump
-OBJCOPY    = ${GCC_PREFIX}objcopy
-
-include Makefile.conf
-include Makefile
 
 #
 # Externally defined assembly functions.
@@ -50,17 +32,12 @@ CONF += -DCONF_PRINCE_GF_MUL_EXTERN
 
 CONF += -DCONF_SHA2_256_COMP_EXTERN
 
+ASMCONF =$(subst -D,--defsym,$(addsuffix =1,$(CONF))) 
 
-ASMCONF =$(subst -D, --defsym , $(addsuffix =1,$(CONF))) 
+CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) -nostdlib
 
-DISASM = $(addprefix build/disasm/,$(notdir $(LIB_OBJECTS:%.o=%.dis)))
-
-./build/disasm/%.dis : ./build/lib/%.o
-	@mkdir -p $(dir $@)
-	$(OBJDUMP) -D $< > $@
-
-disasm: $(DISASM)
-
-test : all
-	@${LIB_TEST} 1000 4 16 | python 
-
+GCC_PREFIX = $(RISCV)/bin/riscv32-unknown-elf-
+GCC_PATHS  =
+GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
+ASFLAGS    = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) $(ASMCONF)
+GCC_LIBS   =

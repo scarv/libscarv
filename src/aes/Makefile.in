@@ -1,0 +1,33 @@
+
+AES_LIB  = scarvaes
+
+AES_PATHS= src/aes/share \
+           src/aes/$(AES_TYPE) \
+           src/aes/$(AES_TYPE)/$(ARCH) \
+
+AES_SRCS = $(foreach DIR,${AES_PATHS},$(wildcard ${DIR}/*.c)) \
+           $(foreach DIR,${AES_PATHS},$(wildcard ${DIR}/*.S)) \
+
+AES_HEAD = $(foreach DIR,${AES_PATHS},$(wildcard ${DIR}/*.h))
+
+AES_FLAGS= $(addprefix -I,$(AES_PATHS))
+
+# Create targets for the headers
+$(foreach FILE,$(AES_HEAD),$(eval $(call tgt_include_header,$(FILE),aes)))
+$(foreach FILE,$(AES_SRCS),$(eval $(call tgt_obj,$(FILE),aes,$(AES_FLAGS))))
+$(foreach FILE,$(AES_SRCS),$(eval $(call tgt_disasm,$(FILE),aes,$(AES_FLAGS))))
+
+
+AES_HEADERS =$(foreach FILE, $(AES_HEAD), $(call map_include,$(FILE),aes))
+AES_OBJS    =$(foreach FILE, $(AES_SRCS), $(call map_obj,$(FILE),aes))
+AES_DISASM  =$(foreach FILE, $(AES_SRCS), $(call map_disasm,$(FILE),aes))
+
+# Add to the list of headers/objects etc to create.
+HEADERS += $(AES_HEADER)
+OBJS    += $(AES_OBJS)
+DISASM  += $(AES_DISASM)
+
+# libscarvaes to the list of static libraries to build
+LIBS += $(call map_static_lib,$(AES_LIB))
+$(eval $(call tgt_static_lib,$(AES_OBJS),$(AES_LIB)))
+
