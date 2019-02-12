@@ -30,8 +30,9 @@ DISASM          =
 DISASM_DIR      = $(INSTALL_DIR)/disasm
 
 # Object files to be included in libscarv.a
-LIBSCARV_OBJS   =
 LIBSCARV_LIBID  =libscarv.a
+LIBSCARV        =$(LIB_DIR)/$(LIBSCARV_LIBID)
+LIBS           +=$(LIBSCARV)
 
 #
 # Include the generic top-level configuration makefile.
@@ -145,7 +146,7 @@ OBJCOPY    = ${GCC_PREFIX}objcopy
 # Include the makefiles responsible for each portion of the library
 #
 
-all: headers objects disasm libs doxygen
+all: headers objects disasm libs
 
 include src/mp/Makefile.in
 #include src/sha1/Makefile.in
@@ -160,6 +161,17 @@ headers: $(HEADERS)
 objects: $(OBJS)
 libs:    $(LIBS)
 disasm:  $(DISASM)
+
+#
+# Main libscarv.a, containing everything.
+#
+
+$(LIBSCARV) : $(OBJS)
+	$(AR) rcs $@ $^
+
+#
+# Utility targets
+#
 
 doxygen:
 	doxygen doxygen.cfg
