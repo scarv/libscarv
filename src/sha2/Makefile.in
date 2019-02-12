@@ -22,7 +22,7 @@ SHA2_OBJS    =$(foreach FILE, $(SHA2_SRCS), $(call map_obj,$(FILE),sha2))
 SHA2_DISASM  =$(foreach FILE, $(SHA2_SRCS), $(call map_disasm,$(FILE),sha2))
 
 # Add to the list of headers/objects etc to create.
-HEADERS += $(SHA2_HEADER)
+HEADERS += $(SHA2_HEADERS)
 OBJS    += $(SHA2_OBJS)
 DISASM  += $(SHA2_DISASM)
 

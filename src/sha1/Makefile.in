@@ -22,7 +22,7 @@ SHA1_OBJS    =$(foreach FILE, $(SHA1_SRCS), $(call map_obj,$(FILE),sha1))
 SHA1_DISASM  =$(foreach FILE, $(SHA1_SRCS), $(call map_disasm,$(FILE),sha1))
 
 # Add to the list of headers/objects etc to create.
-HEADERS += $(SHA1_HEADER)
+HEADERS += $(SHA1_HEADERS)
 OBJS    += $(SHA1_OBJS)
 DISASM  += $(SHA1_DISASM)
 

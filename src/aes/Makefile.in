@@ -23,7 +23,7 @@ AES_OBJS    =$(foreach FILE, $(AES_SRCS), $(call map_obj,$(FILE),aes))
 AES_DISASM  =$(foreach FILE, $(AES_SRCS), $(call map_disasm,$(FILE),aes))
 
 # Add to the list of headers/objects etc to create.
-HEADERS += $(AES_HEADER)
+HEADERS += $(AES_HEADERS)
 OBJS    += $(AES_OBJS)
 DISASM  += $(AES_DISASM)
 
