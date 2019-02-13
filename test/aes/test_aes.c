@@ -24,9 +24,10 @@ void test_aes( int n ) {
 
     #if defined( CONF_AES_PRECOMP_RK )  
     uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
-    aes_enc_exp( rk, k ); aes_enc( c, m, rk );
+    aes_enc_exp( rk, k );
+    aes_enc( c, m, rk, AES_ENC_SBOX, AES_MULX);
     #else  
-                          aes_enc( c, m,  k );
+    aes_enc( c, m,  k, AES_ENC_SBOX, AES_MULX);
     #endif  
 
     test_aes_dump( "m", m, 16 );
@@ -53,9 +54,10 @@ void test_aes( int n ) {
 
     #if defined( CONF_AES_PRECOMP_RK )  
     uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
-    aes_dec_exp( rk, k ); aes_dec( m, c, rk );
+    aes_dec_exp( rk, k );
+    aes_dec( m, c, rk, AES_DEC_SBOX, AES_MULX);
     #else
-                          aes_dec( m, c,  k );
+    aes_dec( m, c,  k, AES_DEC_SBOX, AES_MULX);
     #endif
   
     test_aes_dump( "c", c, 16 );
@@ -73,3 +75,10 @@ void test_aes( int n ) {
   }
   #endif
 }
+
+int main(int argc, char ** argv) {
+    test_aes(100);
+    return 0;
+}
+
+

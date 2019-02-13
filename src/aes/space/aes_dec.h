@@ -38,10 +38,6 @@ extern void aes_dec_exp     ( uint8_t* r, const uint8_t*  k );
 #endif
 extern void aes_dec_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc );
 
-//#if defined( CONF_AES_DEC_EXTERN ) 
 extern void aes_dec( uint8_t* r, uint8_t* m, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx );
-//#else
-//extern void aes_dec( uint8_t* r, uint8_t* m, uint8_t* k );
-//#endif
 
 #endif
