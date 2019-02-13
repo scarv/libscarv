@@ -2,7 +2,7 @@
 
 <!--- -------------------------------------------------------------------- --->
 
-## Getting Started
+## Getting Started [![Documentation](https://codedocs.xyz/scarv/libscarv.svg)](https://codedocs.xyz/scarv/libscarv/)
 
 - It *isn't* a library you'd expect (or want) in production code.  In
   short, it's really only intended for internal use: it offers 
