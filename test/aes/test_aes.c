@@ -15,6 +15,9 @@ void test_aes_dump( char* id, uint8_t* x, int l_x ) {
 }
 
 void test_aes( int n ) {
+
+  printf( "import binascii, Crypto.Cipher.AES as AES\n" );
+
   #if defined( CONF_AES_ENABLE_ENC )
   for( int i = 0; i < n; i++ ) {
     uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
