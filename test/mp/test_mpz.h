@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <scarv/mpn.h>
-#include <scarv/mpz.h>
-#include <scarv/mrz.h>
+#include <scarv/mp/mpn.h>
+#include <scarv/mp/mpz.h>
+#include <scarv/mp/mrz.h>
 
 extern void test_mpz( int n, int l_min, int l_max );
 

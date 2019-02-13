@@ -35,6 +35,8 @@ void test_mrz_dump( char* id, mrz_t x, int l_x ) {
 
 void test_mrz( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
+
+    printf("# mrz mul %d / %d\n",i,n);
     mrz_t N; int l_N;
     mrz_t x; int l_x;
     mrz_t y; int l_y;
@@ -66,4 +68,9 @@ void test_mrz( int n, int l_min, int l_max ) {
     printf( "  print 'r == %%s' %% ( hex( r ) )" "\n" );
     printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
   }
+}
+
+
+int main(int argc, char ** argv) {
+    test_mrz(10,1,32);
 }

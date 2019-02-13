@@ -19,6 +19,7 @@ void test_mpz_dump( char* id, mpz_t* x ) {
 
 void test_mpz( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
+    printf("# mpz add %d / %d\n",i,n);
     mpz_t x;
     mpz_t y;
     mpz_t r;
@@ -43,6 +44,7 @@ void test_mpz( int n, int l_min, int l_max ) {
   }
 
   for( int i = 0; i < n; i++ ) {
+    printf("# mpz sub %d / %d\n",i,n);
     mpz_t x;
     mpz_t y;
     mpz_t r;
@@ -67,6 +69,7 @@ void test_mpz( int n, int l_min, int l_max ) {
   }
 
   for( int i = 0; i < n; i++ ) {
+    printf("# mpz mul %d / %d\n",i,n);
     mpz_t x;
     mpz_t y;
     mpz_t r;
@@ -89,4 +92,9 @@ void test_mpz( int n, int l_min, int l_max ) {
     printf( "  print 'r == %%s' %% ( hex( r ) )" "\n" );
     printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
   }
+}
+
+
+int main(int argc, char ** argv) {
+    test_mpz(10,1,16);
 }

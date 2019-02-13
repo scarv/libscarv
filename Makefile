@@ -12,6 +12,7 @@ TRASH           =
 INSTALL_DIR     =build/$(ARCH)
 OBJ_DIR         = $(INSTALL_DIR)/obj
 LIB_DIR         = $(INSTALL_DIR)/lib
+BIN_DIR         = $(INSTALL_DIR)/bin
 HEADER_DIR      = $(INSTALL_DIR)/include/scarv
 
 CFLAGS         += -Isrc/share
@@ -21,6 +22,9 @@ OBJS            =
 
 # Static libraries to build
 LIBS            = 
+
+# Test executables
+TESTS           =
 
 # Headers to be coppied to the installation dir.
 HEADERS         =
@@ -146,7 +150,7 @@ OBJCOPY    = ${GCC_PREFIX}objcopy
 # Include the makefiles responsible for each portion of the library
 #
 
-all: headers objects disasm libs
+all: headers objects disasm libs tests
 
 # Shared utility code
 $(eval $(call tgt_include_header,src/share/util.h,.))
@@ -159,12 +163,15 @@ include src/keccak/Makefile.in
 include src/prince/Makefile.in
 include src/aes/Makefile.in
 
-TRASH += $(HEADERS) $(OBJS) $(DISASM) $(LIBS)
+include test/Makefile.in
+
+TRASH += $(HEADERS) $(OBJS) $(DISASM) $(LIBS) $(TESTS)
 
 headers: $(HEADERS)
 objects: $(OBJS)
 libs:    $(LIBS)
 disasm:  $(DISASM)
+tests:   $(HEADERS) $(LIBS) $(TESTS)
 
 #
 # Main libscarv.a, containing everything.

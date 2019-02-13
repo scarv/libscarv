@@ -20,6 +20,9 @@ void test_mpn_dump( char* id, limb_t* x, int l_x ) {
 
 void test_mpn( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
+    
+    printf("# mpn add %d / %d\n",i,n);
+
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
     limb_t r[ 2 * l_max + 2 ]; int l_r;
@@ -46,6 +49,8 @@ void test_mpn( int n, int l_min, int l_max ) {
   }
 
   for( int i = 0; i < n; i++ ) {
+    printf("# mpn cmp %d / %d\n",i,n);
+
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
     limb_t r[ 2 * l_max + 2 ]; int l_r;
@@ -84,6 +89,7 @@ void test_mpn( int n, int l_min, int l_max ) {
   }
 
   for( int i = 0; i < n; i++ ) {
+    printf("# mpn mul %d / %d\n",i,n);
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
     limb_t r[ 2 * l_max + 2 ]; int l_r;
@@ -109,3 +115,8 @@ void test_mpn( int n, int l_min, int l_max ) {
       printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
   }
 }
+
+int main(int argc, char ** argv) {
+    test_mpn(10,1,16);
+}
+
