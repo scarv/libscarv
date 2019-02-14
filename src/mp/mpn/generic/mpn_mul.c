@@ -1,4 +1,4 @@
-#include "mpn_mul.h"
+#include "scarv/mp/mpn_mul.h"
 
 #if !defined( CONF_MP_MPN_MUL_EXTERN ) && defined( CONF_MP_MPN_MUL_OPERAND_SCANNING )
 void mpn_mul( limb_t* r, const limb_t* x, int l_x, 

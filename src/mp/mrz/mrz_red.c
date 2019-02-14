@@ -1,4 +1,4 @@
-#include "mrz_red.h"
+#include "scarv/mp/mrz_red.h"
 
 #if !defined( CONF_MP_MRZ_RED_EXTERN ) 
 void mrz_red( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x ) {

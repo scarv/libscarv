@@ -16,7 +16,7 @@ MP_SRCS = $(foreach DIR,${MP_PATHS},$(wildcard ${DIR}/*.c)) \
 
 MP_HEAD = $(foreach DIR,${MP_PATHS},$(wildcard ${DIR}/*.h))
 
-MP_FLAGS= $(addprefix -I,$(MP_PATHS))
+MP_FLAGS= -I$(INSTALL_DIR)/include
 
 # Create targets for the headers
 $(foreach FILE,$(MP_HEAD),$(eval $(call tgt_include_header,$(FILE),mp)))

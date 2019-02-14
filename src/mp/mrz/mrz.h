@@ -1,10 +1,10 @@
 #ifndef __MRZ_H
 #define __MRZ_H
 
-#include "util.h"
-#include "limb.h"
-#include  "mpn.h"
-#include  "mpz.h"
+#include "scarv/util.h"
+#include "scarv/mp/limb.h"
+#include "scarv/mp/mpn.h"
+#include "scarv/mp/mpz.h"
 
 typedef limb_t mrz_t[ CONF_MP_MRZ_MAX_LIMBS ];
 
@@ -21,12 +21,12 @@ typedef struct{
 
 extern void mrz_precomp( mrz_ctx_t* ctx, const limb_t* N, int l_N );
 
-#include "mrz_red.h"
+#include "scarv/mp/mrz_red.h"
 
-#include "mrz_add.h"
-#include "mrz_sub.h"
-#include "mrz_mul.h"
+#include "scarv/mp/mrz_add.h"
+#include "scarv/mp/mrz_sub.h"
+#include "scarv/mp/mrz_mul.h"
 
-#include "mrz_exp.h"
+#include "scarv/mp/mrz_exp.h"
 
 #endif

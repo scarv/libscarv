@@ -1,9 +1,9 @@
 #ifndef __MPZ_H
 #define __MPZ_H
 
-#include "util.h"
-#include "limb.h"
-#include  "mpn.h"
+#include "scarv/util.h"
+#include "scarv/mp/limb.h"
+#include "scarv/mp/mpn.h"
 
 #define MPZ_SIGN_POS ( +1 )
 #define MPZ_SIGN_NEG ( -1 )

@@ -1,4 +1,4 @@
-#include "mpn_cmp.h"
+#include "scarv/mp/mpn_cmp.h"
 
 #if !defined( CONF_MP_MPN_CMP_EXTERN )
 int mpn_cmp( const limb_t* x, int l_x, 
