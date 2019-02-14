@@ -1,7 +1,7 @@
 #ifndef __LIMB_IMP_H
 #define __LIMB_IMP_H
 
-#include "util.h"
+#include "scarv/util.h"
 
 typedef uint32_t  limb_t;
 typedef uint64_t dlimb_t;
