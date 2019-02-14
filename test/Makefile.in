@@ -50,3 +50,9 @@ $(eval $(call tgt_test,test_aes,$(TEST_AES_SRCS),$(LIBSCARV),test/aes))
 TEST_KECCAK_SRCS = test/keccak/test_keccak.c 
 TEST_KECCAK_PATH = $(call map_test,test_aes)
 $(eval $(call tgt_test,test_keccak,$(TEST_KECCAK_SRCS),$(LIBSCARV),test/keccak))
+
+#
+# Add Prince test
+TEST_PRINCE_SRCS = test/prince/test_prince.c 
+TEST_PRINCE_PATH = $(call map_test,test_aes)
+$(eval $(call tgt_test,test_prince,$(TEST_PRINCE_SRCS),$(LIBSCARV),test/prince))
