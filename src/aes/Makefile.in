@@ -11,7 +11,16 @@ AES_SRCS = $(foreach DIR,${AES_PATHS},$(wildcard ${DIR}/*.c)) \
 
 AES_HEAD = $(foreach DIR,${AES_PATHS},$(wildcard ${DIR}/*.h))
 
-AES_FLAGS= $(addprefix -I,$(AES_PATHS))
+AES_FLAGS= -I$(INSTALL_DIR)/include
+
+#
+# Make sure that if the assembler files need to include files, we
+# add the right paths to the build command.
+ifeq ($(ARCH),riscv)
+    AES_FLAGS += -Isrc/aes/$(AES_TYPE)/riscv
+else ifeq ($(ARCH),riscv-xcrypto)
+    AES_FLAGS += -Isrc/aes/$(AES_TYPE)/riscv-xcrypto
+endif
 
 # Create targets for the headers
 $(foreach FILE,$(AES_HEAD),$(eval $(call tgt_include_header,$(FILE),aes)))

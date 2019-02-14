@@ -43,4 +43,10 @@ $(eval $(call tgt_test,test_mrz,$(TEST_MRZ_SRCS),$(LIBSCARV),test/mp))
 # Add AES test
 TEST_AES_SRCS = test/aes/test_aes.c 
 TEST_AES_PATH = $(call map_test,test_aes)
-$(eval $(call tgt_test,test_aes,$(TEST_AES_SRCS),$(LIBSCARV),test/mp))
+$(eval $(call tgt_test,test_aes,$(TEST_AES_SRCS),$(LIBSCARV),test/aes))
+
+#
+# Add Keccak test
+TEST_KECCAK_SRCS = test/keccak/test_keccak.c 
+TEST_KECCAK_PATH = $(call map_test,test_aes)
+$(eval $(call tgt_test,test_keccak,$(TEST_KECCAK_SRCS),$(LIBSCARV),test/keccak))

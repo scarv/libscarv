@@ -10,7 +10,7 @@ PRINCE_SRCS = $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.c)) \
 
 PRINCE_HEAD = $(foreach DIR,${PRINCE_PATHS},$(wildcard ${DIR}/*.h))
 
-PRINCE_FLAGS= $(addprefix -I,$(PRINCE_PATHS))
+PRINCE_FLAGS= -I$(INSTALL_DIR)/include
 
 # Create targets for the headers
 $(foreach FILE,$(PRINCE_HEAD),$(eval $(call tgt_include_header,$(FILE),prince)))

@@ -1,4 +1,4 @@
-#include "aes_dec.h"
+#include "scarv/aes/aes_dec.h"
 
 #if defined( CONF_AES_PRECOMP_SBOX )
 uint8_t AES_DEC_SBOX[] = { 

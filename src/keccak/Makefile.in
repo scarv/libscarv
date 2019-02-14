@@ -10,7 +10,7 @@ KECCAK_SRCS = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.c)) \
 
 KECCAK_HEAD = $(foreach DIR,${KECCAK_PATHS},$(wildcard ${DIR}/*.h))
 
-KECCAK_FLAGS= $(addprefix -I,$(KECCAK_PATHS))
+KECCAK_FLAGS= -I$(INSTALL_DIR)/include
 
 # Create targets for the headers
 $(foreach FILE,$(KECCAK_HEAD),$(eval $(call tgt_include_header,$(FILE),keccak)))

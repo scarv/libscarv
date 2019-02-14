@@ -1,12 +1,12 @@
 #ifndef __AES_ENC_IMP_H
 #define __AES_ENC_IMP_H
 
-#include "util.h"
+#include "scarv/util.h"
 
-#include "aes_conf.h"
-#include "aes_mulx.h"
+#include "scarv/aes/aes_conf.h"
+#include "scarv/aes/aes_mulx.h"
 
-#include "aes_enc.h"
+#include "scarv/aes/aes_enc.h"
 
 extern void aes_enc_rnd_key( uint8_t* s, const uint8_t* rk );
 extern void aes_enc_rnd_sub( uint8_t* s                    );

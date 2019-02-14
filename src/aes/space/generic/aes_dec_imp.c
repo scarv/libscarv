@@ -1,4 +1,4 @@
-#include "aes_dec_imp.h"
+#include "scarv/aes/aes_dec_imp.h"
 
 #define AES_DEC_RND_KEY_STEP(a,b,c,d        ) {   \
   s[ a ] = s[ a ] ^ rk[ a ];                      \

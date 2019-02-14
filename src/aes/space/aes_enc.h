@@ -1,13 +1,13 @@
 #ifndef __AES_ENC_H
 #define __AES_ENC_H
 
-#include "util.h"
+#include "scarv/util.h"
 
-#include "aes_conf.h"
-#include "aes_rc.h"
+#include "scarv/aes/aes_conf.h"
+#include "scarv/aes/aes_rc.h"
 
-#include "aes_dec.h"
-#include "aes_enc_imp.h"
+#include "scarv/aes/aes_dec.h"
+#include "scarv/aes/aes_enc_imp.h"
 
 #if defined( CONF_AES_PRECOMP_SBOX )
 extern uint8_t AES_ENC_SBOX[];

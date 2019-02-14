@@ -10,7 +10,7 @@ SHA2_SRCS = $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.c)) \
 
 SHA2_HEAD = $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.h))
 
-SHA2_FLAGS= $(addprefix -I,$(SHA2_PATHS))
+SHA2_FLAGS= -I$(INSTALL_DIR)/include
 
 # Create targets for the headers
 $(foreach FILE,$(SHA2_HEAD),$(eval $(call tgt_include_header,$(FILE),sha2)))
