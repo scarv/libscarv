@@ -26,7 +26,7 @@ typedef unsigned char UINT8;
 typedef unsigned short UINT16;
 typedef UINT16 tKeccak400Lane;
 
-#define maxNrRounds 20
+#define maxNrRounds400 20
 #define nrLanes 25
 #define index(x, y) (((x)%5)+5*((y)%5))
 
@@ -41,7 +41,7 @@ static const unsigned int KeccakP400RhoOffsets[nrLanes] =
      5,  8,  2,  2, 13,  8, 14
 };
 
-static const tKeccak400Lane KeccakP400RoundConstants[maxNrRounds] =
+static const tKeccak400Lane KeccakP400RoundConstants[maxNrRounds400] =
 {
     0x0001, 0x8082, 0x808a, 0x8000, 0x808b, 0x0001, 0x8081, 0x8009, 0x008a,
     0x0088, 0x8009, 0x000a, 0x808b, 0x008b, 0x8089, 0x8003, 0x8002, 0x0080,

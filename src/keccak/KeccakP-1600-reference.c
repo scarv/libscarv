@@ -179,7 +179,7 @@ void KeccakP1600OnWords(tKeccak1600Lane *state, unsigned int nrRounds)
     displayStateAsLanes(3, "Same, with lanes as 64-bit words", state, 1600);
 #endif
 
-    for(i=(maxNrRounds-nrRounds); i<maxNrRounds; i++)
+    for(i=(maxNrRounds1600-nrRounds); i<maxNrRounds1600; i++)
         KeccakP1600Round(state, i);
 }
 

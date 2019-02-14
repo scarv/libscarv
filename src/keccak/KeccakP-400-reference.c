@@ -123,10 +123,10 @@ void KeccakP400_Permute_20rounds(void *state)
     displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state, nrLanes * sizeof(tKeccak400Lane) * 8);
 #endif
 #if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
-    KeccakP400OnWords((tKeccak400Lane*)state, maxNrRounds);
+    KeccakP400OnWords((tKeccak400Lane*)state, maxNrRounds400);
 #else
     fromBytesToWords(stateAsWords, (const unsigned char *)state);
-    KeccakP400OnWords(stateAsWords, maxNrRounds);
+    KeccakP400OnWords(stateAsWords, maxNrRounds400);
     fromWordsToBytes((unsigned char *)state, stateAsWords);
 #endif
 #ifdef KeccakReference
@@ -162,7 +162,7 @@ void KeccakP400OnWords(tKeccak400Lane *state, unsigned int nrRounds)
     displayStateAsLanes(3, "Same, with lanes as 16-bit words", state, 400);
 #endif
 
-    for(i=(maxNrRounds-nrRounds); i<maxNrRounds; i++)
+    for(i=(maxNrRounds400-nrRounds); i<maxNrRounds400; i++)
         KeccakP400Round(state, i);
 }
 
