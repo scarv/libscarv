@@ -108,13 +108,20 @@ static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
 #ifdef CONF_PRINCE_SHIFTROWS_EXTERN
 extern uint64_t prince_shift_rows(const uint64_t in, int inverse);
 #else
-uint64_t prince_shift_rows(const uint64_t in, int inverse){
-  const uint64_t row_mask = UINT64_C(0xF000F000F000F000);
+static uint64_t prince_shift_rows(const uint64_t in, int inverse){
+  const uint64_t row_mask = 0xF000F000F000F000;
+
   uint64_t shift_rows_out = 0;
+
   for(unsigned int i=0;i<4;i++){
-    const uint64_t row = in & (row_mask>>(4*i));
-    const unsigned int shift = inverse ? i*16 : 64-i*16;
-    shift_rows_out |= (row>>shift) | (row<<(64-shift));
+
+    const uint64_t smask = (row_mask>>(4*i));
+    const uint64_t row   = in & smask;
+
+    const uint32_t shift = (inverse ? i*16 : 64-(i*16)) & 0x3f;
+
+    shift_rows_out      |= (row>>shift) | (row<<(64-shift));
+
   }
   return shift_rows_out;
 }
