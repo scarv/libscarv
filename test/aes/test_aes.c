@@ -16,7 +16,7 @@ void test_aes_dump( char* id, uint8_t* x, int l_x ) {
 
 void test_aes( int n ) {
 
-  printf( "import binascii, Crypto.Cipher.AES as AES\n" );
+  printf( "import sys, binascii, Crypto.Cipher.AES as AES\n" );
 
   #if defined( CONF_AES_ENABLE_ENC )
   for( int i = 0; i < n; i++ ) {
@@ -47,6 +47,7 @@ void test_aes( int n ) {
     printf( "  print 'k == %%s' %% ( binascii.b2a_hex( k ) )" "\n" );
     printf( "  print 'c == %%s' %% ( binascii.b2a_hex( c ) )" "\n" );
     printf( "  print '  != %%s' %% ( binascii.b2a_hex( t ) )" "\n" );
+    printf( "  sys.exit(1)\n");
   }
   #endif
 
@@ -84,6 +85,7 @@ void test_aes( int n ) {
     printf( "  print 'k == %%s' %% ( binascii.b2a_hex( k ) )" "\n" );
     printf( "  print 'm == %%s' %% ( binascii.b2a_hex( m ) )" "\n" );
     printf( "  print '  != %%s' %% ( binascii.b2a_hex( t ) )" "\n" );
+    printf( "  sys.exit(1)\n");
   }
   #endif
 }

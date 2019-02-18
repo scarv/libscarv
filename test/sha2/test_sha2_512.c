@@ -46,10 +46,11 @@ int main(int argc, char ** argv) {
         printf("if (golden != dout):\n");
         printf("    sys.stdout.write('Input   : ')\n");
         printf("    print(binascii.b2a_hex(din)   )\n");
-        printf("    print('Expected: ')\n");
+        printf("    sys.stdout.write('Expected: ')\n");
         printf("    print(golden)\n");
-        printf("    print('Got     :')\n");
-        printf("    print(dout)\n\n");
+        printf("    sys.stdout.write('Got     : ')\n");
+        printf("    print(dout)\n");
+        printf("    sys.exit(1)\n\n");
 
         for(int i = 0; i < LEN; i ++) {
             data_in[i] = data_out[i];

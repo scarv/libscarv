@@ -53,6 +53,7 @@ int main(int argc, char ** argv) {
             printf(", got ");
             put64h(enc_result);
             printf("')\n");
+            printf("sys.exit(1)\n");
         }
         
         uint64_t dec_result = prince_dec(ciphertext, k0, k1);
@@ -65,6 +66,7 @@ int main(int argc, char ** argv) {
             printf(", got ");
             put64h(dec_result);
             printf("')\n");
+            printf("sys.exit(1)\n");
         }
     }
 }

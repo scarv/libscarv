@@ -46,6 +46,7 @@ void test_mpn( int n, int l_min, int l_max ) {
       printf( "  print 'y == %%s' %% ( hex( y ) )" "\n" );
       printf( "  print 'r == %%s' %% ( hex( r ) )" "\n" );
       printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
+      printf( "  sys.exit(1)\n\n");
   }
 
   for( int i = 0; i < n; i++ ) {
@@ -86,6 +87,7 @@ void test_mpn( int n, int l_min, int l_max ) {
       printf( "  print 'y == %%s' %% ( hex( y ) )" "\n" );
       printf( "  print 'r == %%s' %% ( hex( r ) )" "\n" );
       printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
+      printf( "  sys.exit(1)\n\n");
   }
 
   for( int i = 0; i < n; i++ ) {
@@ -113,10 +115,12 @@ void test_mpn( int n, int l_min, int l_max ) {
       printf( "  print 'y == %%s' %% ( hex( y ) )" "\n" );
       printf( "  print 'r == %%s' %% ( hex( r ) )" "\n" );
       printf( "  print '  != %%s' %% ( hex( t ) )" "\n" );
+      printf( "  sys.exit(1)\n\n");
   }
 }
 
 int main(int argc, char ** argv) {
+    printf("import sys\n");
     test_mpn(10,1,16);
 }
 

@@ -14,6 +14,7 @@ OBJ_DIR         = $(INSTALL_DIR)/obj
 LIB_DIR         = $(INSTALL_DIR)/lib
 BIN_DIR         = $(INSTALL_DIR)/bin
 HEADER_DIR      = $(INSTALL_DIR)/include/scarv
+WORK_DIR        = $(INSTALL_DIR)/work
 
 CFLAGS         += -Isrc/share
 
@@ -25,6 +26,7 @@ LIBS            =
 
 # Test executables
 TESTS           =
+TEST_OUTPUTS    =
 
 # Headers to be coppied to the installation dir.
 HEADERS         =
@@ -172,6 +174,8 @@ objects: $(OBJS)
 libs:    $(LIBS)
 disasm:  $(DISASM)
 tests:   $(HEADERS) $(LIBS) $(TESTS)
+
+run-tests: $(TEST_OUTPUTS)
 
 #
 # Main libscarv.a, containing everything.

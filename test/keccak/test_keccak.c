@@ -73,6 +73,7 @@ void test_keccakp_400(
         if(fail) {
             printf("print(\"Keccak %d/%d Failed after %d rounds.\")\n",
                 i,n,nrounds);
+            printf("sys.exit(1)\n");
         } else {
             // Test passed
         }
@@ -149,6 +150,7 @@ void test_keccakp_1600(
         if(fail) {
             printf("print(\"Keccak %d/%d Failed after %d rounds.\")\n",
                 i,n,nrounds);
+            printf("sys.exit(1)\n");
         } else {
             // Test passed
         }
