@@ -31,6 +31,35 @@
 
   will build the library for the appropriate architecture.
 
+- Building for `riscv-xcrypto` requires a modified toolchain, which
+  can be obtained from
+  [scarv/riscv-tools](https://github.com/scarv/riscv-tools).
+
+  The `RISCV` environment variable must point at the installation of
+  this toolchain in order to compile the library and run tests on the
+  Spike simulator.
+
+## Running Tests
+
+- Tests can be run for a given architecture by running the following:
+
+  ```
+  $> make ARCH=[generic,riscv,riscv-xcrypto] run-tests
+  ```
+
+  This will build and run all of the algorithm tests, placing their
+  output in `build/<ARCH>/work`.
+
+- The output of each test is valid Python2 code. We use Python as a golden
+  reference for some of the tests, and as a checker for all of the
+  outputs.
+
+  The output of each test is automatically run through Python.
+  Any mismatches are identified and printed out.
+
+- To run tests for the `riscv` or `riscv-xcrypto` architecture, you will
+  need to have an appropriate toolchain and version of spike installed.
+
 ## Target architectures
 
 There are three supported target architectures:
