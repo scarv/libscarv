@@ -22,7 +22,7 @@ void test_aes( int n ) {
   for( int i = 0; i < n; i++ ) {
     uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
     
-    printf("# aes dec %d / %d\n", i,n);
+    printf("# aes enc %d / %d\n", i,n);
 
     test_aes_rand( m, 16 );
     test_aes_rand( k, 16 );
