@@ -62,3 +62,9 @@ $(eval $(call tgt_test,test_prince,$(TEST_PRINCE_SRCS),$(LIBSCARV),test/prince))
 TEST_SHA256_SRCS = test/sha2/test_sha2_256.c 
 TEST_SHA256_PATH = $(call map_test,test_sha2_256)
 $(eval $(call tgt_test,test_sha2_256,$(TEST_SHA256_SRCS),$(LIBSCARV),test/sha2_256))
+
+#
+# Add SHA512 test
+TEST_SHA512_SRCS = test/sha2/test_sha2_512.c 
+TEST_SHA512_PATH = $(call map_test,test_sha2_512)
+$(eval $(call tgt_test,test_sha2_512,$(TEST_SHA512_SRCS),$(LIBSCARV),test/sha2_512))
