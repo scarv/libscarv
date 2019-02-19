@@ -33,6 +33,6 @@ CFLAGS    += -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET)
 
 GCC_PREFIX = $(RISCV)/bin/riscv32-unknown-elf-
 GCC_PATHS  =
-GCC_FLAGS  = ${CONF} -Wall -O2 $(CFLAGS)
+CFLAGS    += ${CONF} -Wall -O2
 ASFLAGS    = -mabi=$(ARCH_ABI) -march=$(ARCH_SUBSET) ${ASMCONF}
 GCC_LIBS   =

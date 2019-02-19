@@ -49,11 +49,14 @@ include Makefile.conf
 # Include the architecture specific make file.
 #
 ifeq ($(ARCH),generic)
+    CFLAGS += -DLIBSCARV_ARCH_GENERIC
     include Makefile.arch-generic
 else ifeq ($(ARCH),riscv)
     include Makefile.arch-riscv
+    CFLAGS += -DLIBSCARV_ARCH_RISCV
 else ifeq ($(ARCH),riscv-xcrypto)
     include Makefile.arch-riscv-xcrypto
+    CFLAGS += -DLIBSCARV_ARCH_RISCV_XCRYPTO
 else
     $(error Unknown architecture specified: $(ARCH))
 endif

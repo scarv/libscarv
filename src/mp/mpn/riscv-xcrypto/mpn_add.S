@@ -7,42 +7,66 @@ mpn_add:
     # a2 = int      l_x
     # a3 = limb_t * y
     # a4 = int      l_y
-    mv      t1, a4
-    bge     a4, a2, l_y_is_max
-    mv      t1, a2
 
-l_y_is_max:
-    # t1 = MAX(l_x, l_y)
-    li      t0, 0 
-    # t0 = loop counter i.
+    mv   t1, a2
+    bltu a2, a4, .l_y_min
+    mv   t1, a4
+
+    .l_y_min:                   // t1 = MIN(l_x, l_y)
+        
+       xc.gpr2xcr c1, zero
+
+       li   t0, 0               // i = 0
+       bgeu t0, t1, .mpn_add_done
+
+    .loop_1:
+
+       xc.ld.w c2, 0(a1)        // c0 = x[i]
+       xc.ld.w c3, 0(a3)        // c1 = y[i]
+
+       xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
+
+       xc.st.w c0, 0(a0)        // r[i] = c1 = lo(c2+c3)
+
+       addi a0, a0, 4
+       addi a1, a1, 4
+       addi a3, a3, 4
+       addi t0, t0, 1           // i++
+       bltu t0, t1, .loop_1
 
     xc.gpr2xcr c3, zero
-    # c3 = Carry out/in
 
-    beqz    t1, mpn_add_done
+    bgeu t0, a2, .pre_loop_3        // if(i >= l_x) goto .loop_3
+    .loop_2:
 
-mpn_add_x_loop:
-    xc.gpr2xcr  c0, zero        #
-    bgeu        t0, a2, .+8     #   c0 = i < l_x ? x[i] : 0
-    xc.ld.w     c0, 0(a1)       #
+       xc.ld.w c2, 0(a1)        // c2 = x[i]
+
+       xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
+
+       xc.st.w c0, 0(a0)        // r[i] = c1 = lo(c2+c3)
+
+       addi a0, a0, 4
+       addi a1, a1, 4
+       addi t0, t0, 1
+       bltu t0, a2, .loop_2
     
-    xc.gpr2xcr  c1, zero        #
-    bgeu        t0, a4, .+8     #  c1 = i < l_y ? y[i] : 0
-    xc.ld.w     c1, 0(a3)       #
+    .pre_loop_3:
+        bgeu t0, a4, .mpn_add_done  // if(i >= l_y) goto mpn_add_done
 
-    xc.madd.3   (c2,c3), c0, c1, c3
+    .loop_3:
 
-    addi        a1, a1, 4       # Increment source pointers
-    addi        a3, a3, 4
+       xc.ld.w c2, 0(a3)        // c2 = y[i]
 
-    xc.st.w     c2, 0(a0)       # Store result back
+       xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
 
-    addi        t0, t0, 1       # Increment loop counter.
-    addi        a0, a0, 0x4     # Increment result pointer.
+       xc.st.w c0, 0(a0)        // r[i] = c1
 
-    bltu        t0, t1, mpn_add_x_loop
+       addi a0, a0, 4
+       addi a3, a3, 4
+       addi t0, t0, 1
+       bltu t0, a4, .loop_3
 
-mpn_add_done:
-    xc.xcr2gpr  a0, c3          # Move a0 <= c3    
+.mpn_add_done:
+    xc.xcr2gpr  a0, c1          # Move a0 <= c1
     ret
 

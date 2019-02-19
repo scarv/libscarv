@@ -31,7 +31,11 @@ define tgt_test
 TESTS  += $(call map_test_bin,${1})
 $(call map_test_bin,${1}) : ${2} ${3}
 	@mkdir -p $(dir $(call map_test_bin,${1}))
-	$(CC) $(CFLAGS) $(addprefix -I,${4}) -I$(INSTALL_DIR)/include -o $${@} $${^}
+	$(CC) $(CFLAGS) $(addprefix -I,${4}) \
+        -I$(INSTALL_DIR)/include \
+        -Itest/share \
+        -o $${@} $${^}
+	$(OBJDUMP) -D $${@} > $(DISASM_DIR)/${1}.dis
 endef
 
 #
