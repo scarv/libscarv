@@ -91,6 +91,14 @@ Architecture    | Description
   | `CONF_AES_ROUND_SPLIT`             | A given implementation splits each round function, vs. merges them into one round                                   |
   | `CONF_AES_ROUND_PACK`              | Use a packed representation of the state and round key matrices                                                     |
   | `CONF_AES_ROUND_UNROLL`            | Use unrolled loops wherever possible                                                                                |
+  | `CONF_AES_ENC_INIT_EXTERN`         | Use an external (assembly) definition of `aes_enc_init` function               |
+  | `CONF_AES_ENC_ITER_EXTERN`         | Use an external (assembly) definition of `aes_enc_iter` function               |
+  | `CONF_AES_ENC_FINI_EXTERN`         | Use an external (assembly) definition of `aes_enc_fini` function               |
+  | `CONF_AES_ENC_EXTERN`              | Use an external (assembly) definition of unsplitted `aes_enc` function         |
+  | `CONF_AES_DEC_INIT_EXTERN`         | Use an external (assembly) definition of `aes_dec_init` function               |
+  | `CONF_AES_DEC_ITER_EXTERN`         | Use an external (assembly) definition of `aes_dec_iter` function               |
+  | `CONF_AES_DEC_FINI_EXTERN`         | Use an external (assembly) definition of `aes_dec_fini` function               |
+  | `CONF_AES_DEC_EXTERN`              | Use an external (assembly) definition of unsplitted `aes_dec` function         |
   |                                    |                                                                                                                     |
   | `CONF_MP_MPZ_MAX_LIMBS`            | Set maximum number of limbs in an instance of `mpz_t`                                                               |
   | `CONF_MP_MRZ_MAX_LIMBS`            | Set maximum number of limbs in an instance of `mrz_t`                                                               |
