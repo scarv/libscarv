@@ -1,3 +1,6 @@
+
+#include "test_util.h"
+
 #include "test_mrz.h"
 
 mrz_ctx_t ctx;
@@ -10,7 +13,7 @@ int test_mrz_rand_modulus( mrz_t r, int l_min, int l_max ) {
   } while( !( r[ 0 ] & 1 ) );
 
   return l_r;
-} 
+}
 
 int test_mrz_rand_operand( mrz_t r, mrz_t x, int l_x ) {
   int l_r = l_x;
@@ -21,7 +24,7 @@ int test_mrz_rand_operand( mrz_t r, mrz_t x, int l_x ) {
   while( mpn_cmp( r, l_r, x, l_x ) >= 0 );
 
   return l_r;
-} 
+}
 
 void test_mrz_dump( char* id, mrz_t x, int l_x ) {
   printf( "%s = long( '", id );
@@ -49,14 +52,24 @@ void test_mrz( int n, int l_min, int l_max ) {
 
     mrz_precomp( &ctx, N, l_N );
 
+    uint32_t count_c = test_util_rdcycle();
+    uint32_t count_i = test_util_rdinstret();
+
     mrz_mul( &ctx, r, x, ctx.rho_2 );
     mrz_exp( &ctx, r, r, y, l_y );
     mrz_mul( &ctx, r, r, ctx.rho_0 );
 
-    test_mrz_dump( "N", N, l_N );  
-    test_mrz_dump( "x", x, l_x );  
-    test_mrz_dump( "y", y, l_y );  
-    test_mrz_dump( "r", r, l_r );  
+    count_c = test_util_rdcycle()  - count_c;
+    count_i = test_util_rdinstret()- count_i;
+
+    printf("# cycles = %lu\n", count_c);
+    printf("# instrs = %lu\n", count_i);
+    printf("# l_r, l_x, l_y = %lu, %lu, %lu\n", l_r, l_x, l_y);
+
+    test_mrz_dump( "N", N, l_N );
+    test_mrz_dump( "x", x, l_x );
+    test_mrz_dump( "y", y, l_y );
+    test_mrz_dump( "r", r, l_r );
 
     printf( "t = pow( x, y, N )                " "\n" );
 

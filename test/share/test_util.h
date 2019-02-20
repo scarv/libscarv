@@ -13,9 +13,9 @@ uint32_t test_util_rdcycle() {
     #elif defined LIBSCARV_ARCH_RISCV_XCRYPTO
         asm volatile ("rdcycle %0":"=r"(tr));
     #elif defined LIBSCARV_ARCH_GENERIC
-        tr = 0;
+        tr = 10;
     #else
-        tr = 0;
+        tr = 10;
     #endif
     return tr;
 }
@@ -28,9 +28,9 @@ uint32_t test_util_rdinstret() {
     #elif defined LIBSCARV_ARCH_RISCV_XCRYPTO
         asm volatile ("rdinstret %0":"=r"(tr));
     #elif defined LIBSCARV_ARCH_GENERIC
-        tr = 0;
+        tr = 10;
     #else
-        tr = 0;
+        tr = 10;
     #endif
     return tr;
 }

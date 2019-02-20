@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "test_util.h"
 #include "scarv/prince/prince.h"
 
 const uint32_t num_prince_vectors = 4;
@@ -42,8 +43,17 @@ int main(int argc, char ** argv) {
         printf("k0        = "); put64h(k0        ); printf("\n");
         printf("k1        = "); put64h(k1        ); printf("\n");
         printf("ciphertext= "); put64h(ciphertext); printf("\n");
-        
+
+        uint32_t count_c = test_util_rdcycle();
+        uint32_t count_i = test_util_rdinstret();
+
         uint64_t enc_result = prince_enc(plaintext, k0, k1);
+
+        count_c = test_util_rdcycle()  - count_c;
+        count_i = test_util_rdinstret()- count_i;
+
+        printf("# cycles = %lu\n", count_c);
+        printf("# instrs = %lu\n", count_i);
 
         printf("enc_result= "); put64h(enc_result); printf("\n");
 
@@ -55,8 +65,17 @@ int main(int argc, char ** argv) {
             printf("')\n");
             printf("sys.exit(1)\n");
         }
-        
+
+        count_c = test_util_rdcycle();
+        count_i = test_util_rdinstret();
+
         uint64_t dec_result = prince_dec(ciphertext, k0, k1);
+
+        count_c = test_util_rdcycle()  - count_c;
+        count_i = test_util_rdinstret()- count_i;
+
+        printf("# cycles = %lu\n", count_c);
+        printf("# instrs = %lu\n", count_i);
 
         printf("dec_result= "); put64h(dec_result); printf("\n");
 

@@ -5,7 +5,7 @@ TEST_CMD_SUFFIX =
 
 ifeq ($(ARCH),generic)
     TEST_CMD_PREFIX =
-    TEST_CMD_SUFFIX = 
+    TEST_CMD_SUFFIX =
 else ifeq ($(ARCH),riscv)
     TEST_CMD_PREFIX =$(RISCV)/bin/spike $(RISCV)/riscv32-unknown-elf/bin/pk
     TEST_CMD_SUFFIX = | tail -n+2
@@ -60,56 +60,63 @@ endef
 
 #
 # Add multi-precision MPN arithmetic test
-TEST_MPN_SRCS = test/mp/test_mpn.c 
+TEST_MPN_SRCS = test/mp/test_mpn.c
 TEST_MPN_PATH = $(call map_test_bin,test_mpn)
 $(eval $(call tgt_test,test_mpn,$(TEST_MPN_SRCS),$(LIBSCARV),test/mp))
 $(eval $(call tgt_run_test,test_mpn))
 
 #
 # Add multi-precision MPZ arithmetic test
-TEST_MPZ_SRCS = test/mp/test_mpz.c 
+TEST_MPZ_SRCS = test/mp/test_mpz.c
 TEST_MPZ_PATH = $(call map_test_bin,test_mpz)
 $(eval $(call tgt_test,test_mpz,$(TEST_MPZ_SRCS),$(LIBSCARV),test/mp))
 $(eval $(call tgt_run_test,test_mpz))
 
 #
 # Add multi-precision MRZ arithmetic test
-TEST_MRZ_SRCS = test/mp/test_mrz.c 
+TEST_MRZ_SRCS = test/mp/test_mrz.c
 TEST_MRZ_PATH = $(call map_test_bin,test_mrz)
 $(eval $(call tgt_test,test_mrz,$(TEST_MRZ_SRCS),$(LIBSCARV),test/mp))
 $(eval $(call tgt_run_test,test_mrz))
 
 #
 # Add AES test
-TEST_AES_SRCS = test/aes/test_aes.c 
+TEST_AES_SRCS = test/aes/test_aes.c
 TEST_AES_PATH = $(call map_test_bin,test_aes)
 $(eval $(call tgt_test,test_aes,$(TEST_AES_SRCS),$(LIBSCARV),test/aes))
 $(eval $(call tgt_run_test,test_aes))
 
 #
-# Add Keccak test
-TEST_KECCAK_SRCS = test/keccak/test_keccak.c 
-TEST_KECCAK_PATH = $(call map_test_bin,test_aes)
-$(eval $(call tgt_test,test_keccak,$(TEST_KECCAK_SRCS),$(LIBSCARV),test/keccak))
-$(eval $(call tgt_run_test,test_keccak))
+# Add KeccakP400 test
+TEST_KECCAKP400_SRCS = test/keccak/test_keccakP400.c
+TEST_KECCAKP400_PATH = $(call map_test_bin,test_keccak)
+$(eval $(call tgt_test,test_keccakP400,$(TEST_KECCAKP400_SRCS),$(LIBSCARV),test/keccakP400))
+$(eval $(call tgt_run_test,test_keccakP400))
+
+#
+# Add KeccakP1600 test
+TEST_KECCAKP1600_SRCS = test/keccak/test_keccakP1600.c
+TEST_KECCAKP1600_PATH = $(call map_test_bin,test_keccak)
+$(eval $(call tgt_test,test_keccakP1600,$(TEST_KECCAKP1600_SRCS),$(LIBSCARV),test/keccakP1600))
+$(eval $(call tgt_run_test,test_keccakP1600))
 
 #
 # Add Prince test
-TEST_PRINCE_SRCS = test/prince/test_prince.c 
-TEST_PRINCE_PATH = $(call map_test_bin,test_aes)
+TEST_PRINCE_SRCS = test/prince/test_prince.c
+TEST_PRINCE_PATH = $(call map_test_bin,test_prince)
 $(eval $(call tgt_test,test_prince,$(TEST_PRINCE_SRCS),$(LIBSCARV),test/prince))
 $(eval $(call tgt_run_test,test_prince))
 
 #
 # Add SHA256 test
-TEST_SHA256_SRCS = test/sha2/test_sha2_256.c 
+TEST_SHA256_SRCS = test/sha2/test_sha2_256.c
 TEST_SHA256_PATH = $(call map_test_bin,test_sha2_256)
 $(eval $(call tgt_test,test_sha2_256,$(TEST_SHA256_SRCS),$(LIBSCARV),test/sha2_256))
 $(eval $(call tgt_run_test,test_sha2_256))
 
 #
 # Add SHA512 test
-TEST_SHA512_SRCS = test/sha2/test_sha2_512.c 
+TEST_SHA512_SRCS = test/sha2/test_sha2_512.c
 TEST_SHA512_PATH = $(call map_test_bin,test_sha2_512)
 $(eval $(call tgt_test,test_sha2_512,$(TEST_SHA512_SRCS),$(LIBSCARV),test/sha2_512))
 $(eval $(call tgt_run_test,test_sha2_512))

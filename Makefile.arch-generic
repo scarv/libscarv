@@ -3,7 +3,7 @@ CFLAGS     +=
 
 GCC_PREFIX =
 GCC_PATHS  =
-CFLAGS    += ${CONF} -Wall -O2
+CFLAGS    += ${CONF} -Wall -O2 -g
 ASFLAGS    =
 GCC_LIBS   =
 
