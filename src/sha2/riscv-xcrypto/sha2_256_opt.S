@@ -92,9 +92,8 @@
 // T - Temp reg   T != {A,B,C,R}
 //
 .macro SHA2_F0 R, A, B, C, T
-    xc.bop  \R, \A, \B, 0b10001000 # R = A & B
-    xc.bop  \T, \A, \B, 0b11101110 # T = A | B
-    xc.bop  \R, \T, \C, 0b11111000 # R = R | (T & C)
+    xc.bop  \R, \A, \A, 0b10101010 # R = A
+    xc.bop  \R, \B, \C, 0b11101000 # R = (A&B) | ((A|B) & C)
 .endm
 
 
