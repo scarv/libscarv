@@ -9,6 +9,7 @@ aes_enc_rnd_iter:
 // a3 =	uint8_t * mulx
 
 #ifdef CONF_AES_ROUND_PACK
+
 //load
 AES_LDW_XC      c0,c1,c2,c3, a0	
 //sub
@@ -24,6 +25,7 @@ AES_KEY_XC      c0,c1,c2,c3, c4,c5,c6,c7
 AES_STW_XC      c0,c1,c2,c3, a0
 
 #else
+
 // AES_ROUND_UNPACK using XCRYPTO AES instructions ================
 //load
 AES_LDW_XC      c0,c1,c2,c3, a0	
@@ -43,4 +45,5 @@ AES_KEY_XC      c0,c1,c2,c3, c4,c5,c6,c7
 AES_STW_XC      c0,c1,c2,c3, a0
 
 #endif
+
 ret
