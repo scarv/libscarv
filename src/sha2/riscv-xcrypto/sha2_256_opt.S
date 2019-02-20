@@ -10,14 +10,12 @@
 //
 //  T0 - Temp register 
 //  W  - Register with base address of W (word aligned)
-//  X  - Register with base address of X (byte aligned)
+//  X  - Register with base address of X (word aligned)
 //  O  - Offset into W/X - Multiple of 4.
 //
 .macro SHA2_U8_TO_U32_BE T0, W, X, O
-    xc.ld.bu    \T0, (0,0), (\O + 3)(\X)
-    xc.ld.bu    \T0, (0,1), (\O + 2)(\X)
-    xc.ld.bu    \T0, (1,0), (\O + 1)(\X)
-    xc.ld.bu    \T0, (1,1), (\O + 0)(\X)
+    xc.ld.w     \T0, \O(\X)
+    xc.pperm.w  \T0, \T0, 3,2,1,0
     xc.st.w     \T0, \O(\W)
 .endm
 
