@@ -4,13 +4,16 @@
 
 #define QRF(a,b,c,d) \
     a += b; d ^= a; d = U32_RTL(d, 16); \
-    c += b; b ^= a; b = U32_RTL(b, 12); \
+    c += d; b ^= c; b = U32_RTL(b, 12); \
     a += b; d ^= a; d = U32_RTL(d,  8); \
-    c += b; b ^= a; b = U32_RTL(b,  7); 
+    c += d; b ^= c; b = U32_RTL(b,  7); 
 
 /*!
 @brief Implements the ChaCha20 block transformation
+@details if CONF_CHACHA20_BLOCK_EXTERN is defined, then an assembly
+    implementation is looked for in src/chacha20/<ARCH>/
 */
+#ifndef CONF_CHACHA20_BLOCK_EXTERN
 void chacha20_block(
     uint32_t output[16], //!< Output array
     uint32_t input [16]  //!< Input array
@@ -40,3 +43,5 @@ void chacha20_block(
 
     return;
 }
+#endif
+

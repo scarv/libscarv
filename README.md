@@ -128,6 +128,7 @@ Architecture    | Description
   | `CONF_PRINCE_SBOX_EXTERN`          | Use an external (assembly) definition of the prince SBOX function                                                   |
   | `CONF_PRINCE_ISBOX_EXTERN`         | Use an external (assembly) definition of the prince inverse SBOX function                                           |
   | `CONF_PRINCE_GF_MUL_EXTERN`        | Use an external (assembly) definition of the prince GF\_MUL function                                                |
+  | `CONF_CHACHA20_BLOCK_EXTERN`       | Use an external (assembly) definition of the ChaCha20 block function                                                |
 
   noting that not *all* combinations are valid: "correct" configuration
   isn't fool proof!
