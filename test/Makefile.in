@@ -120,3 +120,11 @@ TEST_SHA512_SRCS = test/sha2/test_sha2_512.c
 TEST_SHA512_PATH = $(call map_test_bin,test_sha2_512)
 $(eval $(call tgt_test,test_sha2_512,$(TEST_SHA512_SRCS),$(LIBSCARV),test/sha2_512))
 $(eval $(call tgt_run_test,test_sha2_512))
+
+#
+# Add CHACHA20 test
+TEST_CHACHA20_SRCS = test/chacha20/test_chacha20.c
+TEST_CHACHA20_PATH = $(call map_test_bin,test_chacha20)
+$(eval $(call tgt_test,test_chacha20,$(TEST_CHACHA20_SRCS),$(LIBSCARV),test/chacha20))
+$(eval $(call tgt_run_test,test_chacha20))
+

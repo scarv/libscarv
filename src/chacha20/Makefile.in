@@ -1,0 +1,32 @@
+
+CHACHA20_LIB  = scarvchacha20
+
+CHACHA20_PATHS= src/chacha20 \
+              src/chacha20/$(ARCH) \
+              src/share/util.c
+
+CHACHA20_SRCS = $(foreach DIR,${CHACHA20_PATHS},$(wildcard ${DIR}/*.c)) \
+            $(foreach DIR,${CHACHA20_PATHS},$(wildcard ${DIR}/*.S)) \
+
+CHACHA20_HEAD = $(foreach DIR,${CHACHA20_PATHS},$(wildcard ${DIR}/*.h))
+
+CHACHA20_FLAGS= -I$(INSTALL_DIR)/include
+
+# Create targets for the headers
+$(foreach FILE,$(CHACHA20_HEAD),$(eval $(call tgt_include_header,$(FILE),chacha20)))
+$(foreach FILE,$(CHACHA20_SRCS),$(eval $(call tgt_obj,$(FILE),chacha20,$(CHACHA20_FLAGS))))
+$(foreach FILE,$(CHACHA20_SRCS),$(eval $(call tgt_disasm,$(FILE),chacha20,$(CHACHA20_FLAGS))))
+
+
+CHACHA20_HEADERS =$(foreach FILE, $(CHACHA20_HEAD), $(call map_include,$(FILE),chacha20))
+CHACHA20_OBJS    =$(foreach FILE, $(CHACHA20_SRCS), $(call map_obj,$(FILE),chacha20))
+CHACHA20_DISASM  =$(foreach FILE, $(CHACHA20_SRCS), $(call map_disasm,$(FILE),chacha20))
+
+# Add to the list of headers/objects etc to create.
+HEADERS += $(CHACHA20_HEADERS)
+OBJS    += $(CHACHA20_OBJS)
+DISASM  += $(CHACHA20_DISASM)
+
+# libscarvchacha20 to the list of static libraries to build
+LIBS += $(call map_static_lib,$(CHACHA20_LIB))
+$(eval $(call tgt_static_lib,$(CHACHA20_OBJS),$(CHACHA20_LIB)))
