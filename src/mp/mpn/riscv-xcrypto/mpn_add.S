@@ -29,9 +29,8 @@ mpn_add:
 
        xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
 
-       xc.st.w c0, 0(a0)        // r[i] = c1 = lo(c2+c3)
+       xc.str.w c0, t0, a0        // r[i] = c1
 
-       addi a0, a0, 4
        addi t0, t0, 4           // i++
        bltu t0, t1, .loop_1
 
@@ -44,9 +43,8 @@ mpn_add:
 
        xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
 
-       xc.st.w c0, 0(a0)        // r[i] = c1 = lo(c2+c3)
+       xc.str.w c0, t0, a0        // r[i] = c0
 
-       addi a0, a0, 4
        addi t0, t0, 4
        bltu t0, a2, .loop_2
     
@@ -59,9 +57,8 @@ mpn_add:
 
        xc.madd.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
 
-       xc.st.w c0, 0(a0)        // r[i] = c1
+       xc.str.w c0, t0, a0        // r[i] = c0
 
-       addi a0, a0, 4
        addi t0, t0, 4
        bltu t0, a4, .loop_3
 
