@@ -68,7 +68,7 @@ KeccakP400Round:
     # Theta function preparation
     la  a2, theta_c                         # a2 = &theta_c
     mv  a3, a0                              # a3 = &A
-    addi a4, a2, 10                          # a4 = &theta_c[5]
+    addi a4, a2, 10                         # a4 = &theta_c[5]
 
     .theta_prep:
         
@@ -100,16 +100,14 @@ KeccakP400Round:
         
         li      t1, 0                       # t1 = y = 0
 
-        xc.sha3.x1 a3, t0, zero, 1
-        add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
+        xc.sha3.x1 a3, t0, zero, 1          # a3 = (x+1)%5
 
-        xc.ld.hu c3,(0), 0(a3)              # c3 = theta_c[(x+1)%5]
+        xc.ldr.hu c3(0), a2, a3            # c3 = theta_c[(x+1)%5]
 
         xc.prot.i h,c3, c3, 15              # c3 = theta_c[(x+1)%5]<<<1
         
-        xc.sha3.x4 a3, t0, zero, 1
-        add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
-        xc.ld.hu c4,(0), 0(a3)              # t4 = theta_c[(x+4)%5]
+        xc.sha3.x4 a3, t0, zero, 1          # a3 = (x+4)%5
+        xc.ldr.hu c4(0), a2, a3             # t4 = theta_c[(x+4)%5]
 
         xc.bop  c6, c3, c4, 0x66            # c6 = D = c3 ^ c4
         
@@ -117,20 +115,17 @@ KeccakP400Round:
 
             xc.sha3.xy t5, t0, t1, 1        # t5 = (5*y)+x = index(x,y)
 
-            add     t4, t5, a0              # t4 = &A[index(x,y)]
-            xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
+            xc.ldr.hu c4(0), t5, a0         # t4 = A[index(x,y)
 
             xc.bop  c3, c4, c6, 0x66        # c3 = A[index(x,y)] ^ D
 
-            add     t4, a7, t5              # t4 = &RhoOffsets[index(x,y)]
-            xc.ld.hu c4,(0), 0(t4)          # t4 = A[index(x,y)
+            xc.ldr.hu c4(0), a7, t5         # t4 = A[index(x,y)]
             
             xc.prot h, c3, c3, c4
 
             xc.sha3.yx t4, t0, t1, 1
-            add     t4, t4, a6              # t4 = &a_temp[y + 5((2*x+3*y)%5)]
 
-            xc.st.h c3,(0), 0(t4)           # a_temp[y + 5((2*x+3*y)%5)] = t3
+            xc.str.h c3(0), a6,t4            # a_temp[y + 5((2*x+3*y)%5)] = t3
             
             addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L1
@@ -150,21 +145,17 @@ KeccakP400Round:
         .L4:
 
             xc.sha3.xy t6, t0, t1, 1        # t6 = x + 5y
-            add     t4, t6, a6              # t4 = &a_temp[x+5y]
-            xc.ld.hu c5,(0), 0(t4)          # c5 =  a_temp[x+5y]
+            xc.ldr.hu c5(0), t6, a6         # c5 =  a_temp[x+5y]
             
             xc.sha3.x1 t4, t0, t1, 1        # t4 = (x+1)%5 + 5y
-            add     t4, t4, a6              # t3 = &a_temp[(x+1)%5 + 5y]
-            xc.ld.hu c4,(0), 0(t4)          # c4 =  a_temp[x+5y]
+            xc.ldr.hu c4(0), t4, a6         # c4 =  a_temp[(x+1)%5 + 5y]
             
             xc.sha3.x2 t4, t0, t1, 1        # t4 = (x+2)%5 + 5y
-            add     t4, t4, a6              # t4 = &a_temp[(x+2)%5 + 5y]
-            xc.ld.hu c3,(0), 0(t4)          # c3 =  a_temp[x+5y]
+            xc.ldr.hu c3(0), t4, a6         # c3 =  a_temp[(x+2)%5 + 5y]
             
             xc.bop  c3, c4, c5, 0b10011010  # c3 = (c3 & (~c4)) ^ c5
 
-            add     t4, a0, t6              # t4 = &A[x+5y]
-            xc.st.h c3,(0), 0(t4)           # A[x+5y] = t3
+            xc.str.h c3(0), a0, t6          # A[x+5y] = t3
             
             addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L4

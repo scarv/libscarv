@@ -10,10 +10,6 @@ int test_mpn_rand( limb_t* r, int l_min, int l_max ) {
   fread( r, sizeof( limb_t ), l_r, fd );
   fclose( fd );
 
-  for(unsigned int i = 0; i < l_r; i++) {
-      r[i] = i | 0x80000000;
-  }
-
   return l_r;
 } 
 
