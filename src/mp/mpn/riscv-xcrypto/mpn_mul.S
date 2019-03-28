@@ -39,25 +39,22 @@ mpn_mul:
         xc.gpr2xcr  c7, zero                # C  = 0
             
         # Load inputs to MUL function
-        add     t3, t0, a3              #          
-        xc.ld.w c2, 0(t3)               # c2 = y[j]
+        xc.ldr.w c2, t0, a3                 # c2 = y[j]
         
         .mpn_mul_inner:
 
             # Load inputs to MUL function
-            add     t3, t1, a1              #
-            xc.ld.w c3, 0(t3)               # c3 = x[i]
+            xc.ldr.w c3, t1, a1             # c3 = x[i]
 
             add     t3, t0, t1              # t3 = i+j = t0+t1
-            add     t3, t3, t2              # t3 = addr of R[i+j]
-            xc.ld.w c4, 0(t3)               # c4 = R[j+i]
+            xc.ldr.w c4, t2, t3             # c4 = R[j+i]
 
             # Compute (y[i] * x[i]) + R[i+j] + C
             xc.mmul.3 (c6,c7), c2, c3, c7
             xc.macc.1 (c6,c7), c4
 
             # Store results back to carry and aux Result array
-            xc.st.w c6, 0(t3)               # R[j+i] = low word 
+            xc.str.w c6, t2, t3             # R[j+i] = low word 
 
             addi    t1, t1, 4
             blt     t1, t6, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
@@ -66,8 +63,7 @@ mpn_mul:
 
         # R[j+l_x] = c
         add     t3, t0, t6
-        add     t3, t3, t2                  # t3 = addr of R[j+l_x]
-        xc.st.w c7, 0(t3)                   # R[j+l_x] = C
+        xc.str.w c7, t2, t3                 # R[j+l_x] = C
 
         addi    t0, t0, 4
         blt     t0, t5, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
@@ -78,16 +74,15 @@ mpn_mul:
     mv  t0, t2          # src
     mv  t1, a0          # dst
     add t3, a2, a4
+    slli t3, t3, 2
     mv  t4, zero
 
     .mpn_cpy_back:
 
-        xc.ld.w  c14, 0(t0)
-        xc.st.w  c14, 0(t1)
+        xc.ldr.w  c14, t4, t0
+        xc.str.w  c14, t4, t1
         
-        addi t0, t0, 4
-        addi t1, t1, 4
-        addi t4, t4, 1
+        addi t4, t4, 4
 
         blt  t4, t3, .mpn_cpy_back
     
