@@ -8,6 +8,6 @@
 #include <scarv/mp/mpz.h>
 #include <scarv/mp/mrz.h>
 
-extern void test_mrz( int n, int l_min, int l_max );
+#include "test_util.h"
 
 #endif

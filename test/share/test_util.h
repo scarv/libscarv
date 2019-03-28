@@ -36,3 +36,16 @@ uint32_t test_util_rdinstret() {
 }
 
 #endif
+
+#define MEASURE(stmt) {                               \
+  uint32_t count_c = test_util_rdcycle();             \
+  uint32_t count_i = test_util_rdinstret();           \
+                                                      \
+  stmt;                                               \
+                                                      \
+           count_c = test_util_rdcycle()   - count_c; \
+           count_i = test_util_rdinstret() - count_i; \
+                                                      \
+  printf( "# cycles = %lu\n", count_c );              \
+  printf( "# instrs = %lu\n", count_i );              \
+}
