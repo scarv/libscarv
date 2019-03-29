@@ -16,7 +16,7 @@ BIN_DIR         = $(INSTALL_DIR)/bin
 HEADER_DIR      = $(INSTALL_DIR)/include/scarv
 WORK_DIR        = $(INSTALL_DIR)/work
 
-CFLAGS         += -Isrc/share
+#CFLAGS         += -Isrc/share
 
 # All object files to be compiled
 OBJS            =

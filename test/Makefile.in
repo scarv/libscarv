@@ -34,7 +34,7 @@ $(call map_test_bin,${1}) : ${2} ${3}
 	$(CC) $(CFLAGS) $(addprefix -I,${4}) \
         -I$(INSTALL_DIR)/include \
         -Itest/share \
-        -o $${@} $${^}
+        -o $${@} $(wildcard test/share/*.c) $${^}
 	$(OBJDUMP) -D $${@} > $(DISASM_DIR)/${1}.dis
 endef
 

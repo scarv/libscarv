@@ -2,7 +2,7 @@
 
 FILE* urandom = NULL; mrz_ctx_t ctx;
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 int test_mrz_rand_modulus( mrz_t r, int l_min, int l_max ) {
   uint8_t t;
@@ -39,12 +39,11 @@ void test_mrz_dump( char* id, mrz_t x, int l_x ) {
   printf( "', 16 )\n" );
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 void test_mrz_exp( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
-
-    printf("# test_mrz:mrz_exp %d / %d\n", i, n );
+    printf("# test_mrz:mrz_exp[%d/%d]\n", i, n );
 
     mrz_t N; int l_N;
     mrz_t x; int l_x;
@@ -68,34 +67,39 @@ void test_mrz_exp( int n, int l_min, int l_max ) {
 
     test_mrz_dump( "r", r, l_r );
 
-    printf( "t = pow( x, y, N )                   " "\n"   );
+    printf( "t = pow( x, y, N )                       " "\n"       );
 
-    printf( "if( r != t ) :                       " "\n"   );
-    printf( "  print( 'failed test_mrz:mrz_exp'  )" "\n"   );
-    printf( "  print( 'N == %%s' %% ( hex( N ) ) )" "\n"   );
-    printf( "  print( 'x == %%s' %% ( hex( x ) ) )" "\n"   );
-    printf( "  print( 'y == %%s' %% ( hex( y ) ) )" "\n"   );
-    printf( "  print( 'r == %%s' %% ( hex( r ) ) )" "\n"   );
-    printf( "  print( '  != %%s' %% ( hex( t ) ) )" "\n"   );
+    printf( "if ( r != t ) :                          " "\n"       );
+    printf( "  print( 'fail test_mrz:mrz_exp[%d/%d]' )" "\n", i, n );
+    printf( "  print( 'N == %%s' %% ( hex( N ) )     )" "\n"       );
+    printf( "  print( 'x == %%s' %% ( hex( x ) )     )" "\n"       );
+    printf( "  print( 'y == %%s' %% ( hex( y ) )     )" "\n"       );
+    printf( "  print( 'r == %%s' %% ( hex( r ) )     )" "\n"       );
+    printf( "  print( '  != %%s' %% ( hex( t ) )     )" "\n"       );
 
-    printf( "  sys.exit( 1 )                      " "\n\n" );
+    printf( "  sys.exit( 1 )                          " "\n\n"     );
   }
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 int main( int argc, char* argv[] ) {
-  printf( "import sys\n" );
+  opt_parse( argc, argv );
 
   if( NULL == ( urandom = fopen( "/dev/urandom", "rb" ) ) ) {
     abort();
   }
 
-  test_mrz_exp( 1000, 1, 32 );
+  printf( "import sys\n" );
+
+  int l_min = MIN( opt_mp_mpz_min_limb, CONF_MP_MRZ_MAX_LIMBS );
+  int l_max = MIN( opt_mp_mpz_max_limb, CONF_MP_MRZ_MAX_LIMBS );
+
+  test_mrz_exp( opt_trials, l_min, l_max );
 
   fclose( urandom );
 
   return 0;
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================

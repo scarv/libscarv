@@ -2,7 +2,7 @@
 
 FILE* urandom = NULL;
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 int  test_mpn_rand( limb_t* r, int l_min, int l_max ) {
   uint8_t t;
@@ -26,11 +26,11 @@ void test_mpn_dump( char* id, limb_t* x, int l_x ) {
   printf( "', 16 )\n" );
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 void test_mpn_add( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
-    printf("# test_mpn:mpn_add %d / %d\n", i, n );
+    printf( "id = 'test_mpn:mpn_add[%d/%d]'\n", i, n );
 
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
@@ -50,8 +50,8 @@ void test_mpn_add( int n, int l_min, int l_max ) {
 
       printf( "t = x + y                            " "\n"   );
     
-      printf( "if( r != t ) :                       " "\n"   );
-      printf( "  print( 'failed test_mpn:mpn_add'  )" "\n"   );
+      printf( "if ( r != t ) :                      " "\n"   );
+      printf( "  print( 'fail %%s' %% ( id       ) )" "\n"   );
       printf( "  print( 'x == %%s' %% ( hex( x ) ) )" "\n"   );
       printf( "  print( 'y == %%s' %% ( hex( y ) ) )" "\n"   );
       printf( "  print( 'r == %%s' %% ( hex( r ) ) )" "\n"   );
@@ -63,7 +63,7 @@ void test_mpn_add( int n, int l_min, int l_max ) {
 
 void test_mpn_sub( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
-    printf("# test_mpn:mpn_sub %d / %d\n", i, n);
+    printf( "id = 'test_mpn:mpn_sub[%d/%d]'\n", i, n );
 
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
@@ -95,8 +95,8 @@ void test_mpn_sub( int n, int l_min, int l_max ) {
       printf( "t = y - x                            " "\n"   );
     }
 
-      printf( "if( r != t ) :                       " "\n"   );
-      printf( "  print( 'failed test_mpn:mpn_sub'  )" "\n"   );
+      printf( "if ( r != t ) :                      " "\n"   );
+      printf( "  print( 'fail %%s' %% ( id       ) )" "\n"   );
       printf( "  print( 'x == %%s' %% ( hex( x ) ) )" "\n"   );
       printf( "  print( 'y == %%s' %% ( hex( y ) ) )" "\n"   );
       printf( "  print( 'r == %%s' %% ( hex( r ) ) )" "\n"   );
@@ -108,7 +108,7 @@ void test_mpn_sub( int n, int l_min, int l_max ) {
 
 void test_mpn_mul( int n, int l_min, int l_max ) {
   for( int i = 0; i < n; i++ ) {
-    printf("# test_mpn:mpn_mul %d / %d\n", i, n );
+    printf( "id = 'test_mpn:mpn_mul[%d/%d]'\n", i, n );
 
     limb_t x[ 2 * l_max + 2 ]; int l_x;
     limb_t y[ 2 * l_max + 2 ]; int l_y;
@@ -128,8 +128,8 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
     
       printf( "t = x * y                            " "\n"   );
 
-      printf( "if( r != t ) :                       " "\n"   );
-      printf( "  print( 'failed test_mpn:mpn_mul'  )" "\n"   );
+      printf( "if ( r != t ) :                      " "\n"   );
+      printf( "  print( 'fail %%s' %% ( id       ) )" "\n"   );
       printf( "  print( 'x == %%s' %% ( hex( x ) ) )" "\n"   );
       printf( "  print( 'y == %%s' %% ( hex( y ) ) )" "\n"   );
       printf( "  print( 'r == %%s' %% ( hex( r ) ) )" "\n"   );
@@ -139,22 +139,27 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
   }
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 int main( int argc, char* argv[] ) {
-  printf( "import sys\n" );
+  opt_parse( argc, argv );
 
   if( NULL == ( urandom = fopen( "/dev/urandom", "rb" ) ) ) {
     abort();
   }
 
-  test_mpn_add( 1000, 1, 16 );
-  test_mpn_sub( 1000, 1, 16 );
-  test_mpn_mul( 1000, 1, 16 );
+  printf( "import sys\n" );
+
+  int l_min = opt_mp_mpn_min_limb;
+  int l_max = opt_mp_mpn_max_limb;
+
+  test_mpn_add( opt_trials, l_min, l_max );
+  test_mpn_sub( opt_trials, l_min, l_max );
+  test_mpn_mul( opt_trials, l_min, l_max );
 
   fclose( urandom );
 
   return 0;
 }
 
-// ----------------------------------------------------------------------------
+// ============================================================================
