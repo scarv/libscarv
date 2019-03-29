@@ -1,7 +1,7 @@
 #ifndef __AES_CONF_H
 #define __AES_CONF_H
 
-#include "util.h"
+#include "scarv/util.h"
 
 #define AES_128_NB (  4 )
 #define AES_192_NB (  4 )

@@ -1,7 +1,7 @@
 #ifndef __AES_MULX_H
 #define __AES_MULX_H
 
-#include "util.h"
+#include "scarv/util.h"
 
 #define AES_MULX_PACKED(r,x) {          \
   uint32_t __t_0 =   (x) &  0x7F7F7F7F; \

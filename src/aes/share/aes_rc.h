@@ -1,7 +1,7 @@
 #ifndef __AES_RC_H
 #define __AES_RC_H
 
-#include "util.h"
+#include "scarv/util.h"
 
 #if defined( CONF_AES_PRECOMP_RC )
 extern uint8_t AES_RC[];

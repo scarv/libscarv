@@ -50,29 +50,29 @@ void opt_parse( int argc, char* argv[] ) {
 
   while( -1 != ( opt = getopt_long( argc, argv, "+", optspec, NULL ) ) ) {
     switch( opt ) {
-      case OPT_HELP         : opt_usage( argc, argv );
-                              break;
-      case OPT_DEBUG        : opt_debug           = strtoul( optarg, NULL, 10 );
-                              break;
+      case OPT_HELP            : opt_usage( argc, argv );
+                                 break;
+      case OPT_DEBUG           : opt_debug           = strtoul( optarg, NULL, 10 );
+                                 break;
 
-      case OPT_TRIALS       : opt_trials          = strtoul( optarg, NULL, 10 );
-                              break;
+      case OPT_TRIALS          : opt_trials          = strtoul( optarg, NULL, 10 );
+                                 break;
 
-      case OPT_MPN_LIMB_MIN : opt_mp_mpn_min_limb = strtoul( optarg, NULL, 10 );
-                              break;
-      case OPT_MPN_LIMB_MAX : opt_mp_mpn_max_limb = strtoul( optarg, NULL, 10 );
-                              break;
-      case OPT_MPZ_LIMB_MIN : opt_mp_mpz_min_limb = strtoul( optarg, NULL, 10 );
-                              break;
-      case OPT_MPZ_LIMB_MAX : opt_mp_mpz_max_limb = strtoul( optarg, NULL, 10 );
-                              break;
-      case OPT_MRZ_LIMB_MIN : opt_mp_mrz_min_limb = strtoul( optarg, NULL, 10 );
-                              break;
-      case OPT_MRZ_LIMB_MAX : opt_mp_mrz_max_limb = strtoul( optarg, NULL, 10 );
-                              break;
+      case OPT_MP_MPN_MIN_LIMB : opt_mp_mpn_min_limb = strtoul( optarg, NULL, 10 );
+                                 break;
+      case OPT_MP_MPN_MAX_LIMB : opt_mp_mpn_max_limb = strtoul( optarg, NULL, 10 );
+                                 break;
+      case OPT_MP_MPZ_MIN_LIMB : opt_mp_mpz_min_limb = strtoul( optarg, NULL, 10 );
+                                 break;
+      case OPT_MP_MPZ_MAX_LIMB : opt_mp_mpz_max_limb = strtoul( optarg, NULL, 10 );
+                                 break;
+      case OPT_MP_MRZ_MIN_LIMB : opt_mp_mrz_min_limb = strtoul( optarg, NULL, 10 );
+                                 break;
+      case OPT_MP_MRZ_MAX_LIMB : opt_mp_mrz_max_limb = strtoul( optarg, NULL, 10 );
+                                 break;
 
-      default               : exit( EXIT_FAILURE ); 
-                              break;
+      default                  : exit( EXIT_FAILURE ); 
+                                 break;
     }
   }
 }
