@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "sha2_512.h"
 
 #define SHA2_512_S0(a) ( U64_RTR( a,  1 ) ^ U64_RTR( a,  8 ) ^ U64_SHR( a,  7 ) )
@@ -17,7 +16,7 @@
   h  = t_1 + t_0;                                                       \
 }
 
-uint64_t K[] = { 
+static uint64_t K[] = { 
   0x428A2F98D728AE22, 0x7137449123EF65CD, 0xB5C0FBCFEC4D3B2F, 0xE9B5DBA58189DBBC,
   0x3956C25BF348B538, 0x59F111F1B605D019, 0x923F82A4AF194F9B, 0xAB1C5ED5DA6D8118,
   0xD807AA98A3030242, 0x12835B0145706FBE, 0x243185BE4EE4B28C, 0x550C7DC3D5FFB4E2,
@@ -40,12 +39,12 @@ uint64_t K[] = {
   0x4CC5D4BECB3E42B6, 0x597F299CFC657E2A, 0x5FCB6FAB3AD6FAEC, 0x6C44198C4A475817 
 };
 
-uint64_t H_0, H_1, H_2, H_3, H_4, H_5, H_6, H_7;
+static uint64_t H_0, H_1, H_2, H_3, H_4, H_5, H_6, H_7;
 
-uint8_t T[ 128 ];
+static uint8_t T[ 128 ];
 
-uint64_t n_left; // bytes remaining
-uint64_t n_done; // bytes processed so far
+static uint64_t n_left; // bytes remaining
+static uint64_t n_done; // bytes processed so far
 
 void sha2_512_comp( const uint8_t* x ) {
   uint64_t W[ 80 ];

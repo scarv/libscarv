@@ -1,10 +1,6 @@
+#include "test_chacha20.h"
 
-#include <stdio.h>
-#include <stdint.h>
-
-#include "scarv/chacha20/chacha20.h"
-
-#include "test_util.h"
+// ============================================================================
 
 //! Load r with random data.
 void test_chacha20_rand( uint32_t* r, int l_r ) {
@@ -58,7 +54,14 @@ void test_chacha20(int n) {
     
 }
 
+// ============================================================================
 
-int main(int argc, char ** argv) {
-    test_chacha20(30);
+int main( int argc, char* argv[] ) {
+  test_init( argc, argv, "sys, binascii, Crypto.Cipher.AES as AES" );
+
+  test_fini();
+
+  return 0;
 }
+
+// ============================================================================

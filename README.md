@@ -1,14 +1,84 @@
-# `libscarv`: A (software) library of cryptographic reference implementations
+# `libscarv`: cryptographic reference implementations for RISC-V
 
 <!--- -------------------------------------------------------------------- --->
 
-## Getting Started [![Documentation](https://codedocs.xyz/scarv/libscarv.svg)](https://codedocs.xyz/scarv/libscarv/)
+[![Build Status](https://travis-ci.com/scarv/libscarv.svg)](https://travis-ci.com/scarv/libscarv)
+[![Documentation](https://codedocs.xyz/scarv/libscarv.svg)](https://codedocs.xyz/scarv/libscarv)
 
-- It *isn't* a library you'd expect (or want) in production code.  In
-  short, it's really only intended for internal use: it offers 
-  a) a guide for (e.g., ISA) design and implementation work, 
-     plus
-  b) a means of benchmarking and evaluation.
+<!--- -------------------------------------------------------------------- --->
+
+*Acting as a component part of the
+[SCARV](https://www.scarv.org)
+project,
+`libscarv` is a collection of cryptographic reference implementations
+for RISC-V *and* the SCARV-related cryptographic ISE
+[XCrypto](https://github.com/scarv/xcrypto);
+the implementations are written in a mix of C and assembly language.
+Note that `libscarv` *isn't* a library you'd expect (or want) to see
+in production code: it's really only intended for internal use, as
+a) a guide for (e.g., ISE) design and implementation work, 
+   plus
+b) a resource for benchmarking and evaluation.*
+
+<!--- -------------------------------------------------------------------- --->
+
+## Organisation
+
+```
+├── bin                       - scripts (e.g., environment configuration)
+├── build                     - working directory for build
+├── src                       - source code for library
+└── test                      - source code for test suite
+```
+
+<!--- -------------------------------------------------------------------- --->
+
+## Quickstart
+
+1. Execute
+
+   ```sh
+   git clone https://github.com/scarv/libscarv.git
+   cd ./libscarv
+   source ./bin/conf.sh
+   ```
+
+   to clone and initialise the repository,
+   then configure the environment;
+   for example, you should find that the environment variable
+   `REPO_HOME`
+   is set appropriately.
+
+2. Build the library, plus associated outputs
+
+3. Use the test suite to validate the build:
+
+   1. create and populate a suitable Python
+      [virtual environment](https://docs.python.org/library/venv.html)
+      based on `${REPO_HOME}/requirements.txt` by executing
+   
+      ```
+      make venv
+      ```
+   
+      then activate it by executing
+   
+      ```
+      source ${REPO_HOME}/build/venv/bin/activate
+      ```
+
+   2. Execute
+
+      ```
+      make test
+      ```
+
+      to apply a suite of tests to each kernel in the library:
+      this may take some time to complete.
+
+<!--- -------------------------------------------------------------------- --->
+
+## Notes
 
 - The 
   `make`-based
@@ -158,5 +228,13 @@ Architecture    | Description
    [Efficient Software Implementation of AES on 32-Bit Platforms](https://link.springer.com/chapter/10.1007/3-540-36400-5_13).
    Cryptographic Hardware and Embedded Systems (CHES),
    Springer-Verlag LNCS 2523, 159--171, 2002.
+
+<!--- -------------------------------------------------------------------- --->
+
+## Acknowledgements
+
+This work has been supported in part by EPSRC via grant 
+[EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1),
+under the [RISE](http://www.ukrise.org) programme.
 
 <!--- -------------------------------------------------------------------- --->

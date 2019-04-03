@@ -3,6 +3,7 @@ SHA1_LIB  = scarvsha1
 
 SHA1_PATHS= src/sha1 \
             src/sha1/$(ARCH) \
+            src/share/util.c
 
 SHA1_SRCS = $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.c)) \
             $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.S)) \
@@ -10,7 +11,7 @@ SHA1_SRCS = $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.c)) \
 
 SHA1_HEAD = $(foreach DIR,${SHA1_PATHS},$(wildcard ${DIR}/*.h))
 
-SHA1_FLAGS= $(addprefix -I,$(SHA1_PATHS))
+SHA1_FLAGS= -I$(INSTALL_DIR)/include
 
 # Create targets for the headers
 $(foreach FILE,$(SHA1_HEAD),$(eval $(call tgt_include_header,$(FILE),sha1)))

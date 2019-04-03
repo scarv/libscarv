@@ -1,3 +1,6 @@
+ifndef REPO_HOME
+  $(error "execute 'source ./bin/conf.sh' to configure environment")
+endif
 
 ifndef ARCH
     $(error Please specify the ARCH variable)
@@ -162,8 +165,8 @@ $(eval $(call tgt_include_header,src/share/util.h,.))
 HEADERS += $(call map_include,src/share/util.h,.)
 
 include src/mp/Makefile.in
-#include src/sha1/Makefile.in
-#include src/sha2/Makefile.in
+include src/sha1/Makefile.in
+include src/sha2/Makefile.in
 #include src/keccak/Makefile.in
 #include src/prince/Makefile.in
 include src/aes/Makefile.in
@@ -193,12 +196,11 @@ $(LIBSCARV) : $(OBJS)
 # Utility targets
 #
 
-doxygen:
-	doxygen doxygen.cfg
+venv     : ${REPO_HOME}/requirements.txt
+	@${REPO_HOME}/bin/venv.sh
 
-clean:
-	rm -rf $(TRASH)
+doc      : ${REPO_HOME}/Doxyfile
+	@doxygen ${<}
 
-spotless: clean
-	rm -rf $(INSTALL_DIR)
-
+clean    :
+	@rm -rf ${REPO_HOME}/build/*

@@ -7,6 +7,7 @@ SHA2_PATHS= src/sha2 \
 
 SHA2_SRCS = $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.c)) \
             $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.S)) \
+            src/share/util.c
 
 SHA2_HEAD = $(foreach DIR,${SHA2_PATHS},$(wildcard ${DIR}/*.h))
 

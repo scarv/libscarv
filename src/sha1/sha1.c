@@ -6,12 +6,12 @@
   b  = U32_RTL( b, 30 );          \
 }
 
-uint32_t H_0, H_1, H_2, H_3, H_4;
+static uint32_t H_0, H_1, H_2, H_3, H_4;
 
-uint8_t T[ 64 ];
+static uint8_t T[ 64 ];
 
-uint64_t n_left; // bytes remaining
-uint64_t n_done; // bytes processed so far
+static uint64_t n_left; // bytes remaining
+static uint64_t n_done; // bytes processed so far
 
 void sha1_comp( const uint8_t* x ) {
   uint32_t W[ 80 ];
@@ -40,8 +40,7 @@ void sha1_comp( const uint8_t* x ) {
   U8_TO_U32_BE( W[ 15 ], x, 60 );
 
   for( int i = 16; i < 80; i += 1 ) { 
-    W[ i ] = RTL( W[ i -  3 ] ^ W[ i -  8 ] ^ 
-                  W[ i - 14 ] ^ W[ i - 16 ], 1, 32 );
+    W[ i ] = U32_RTL( W[ i -  3 ] ^ W[ i -  8 ] ^ W[ i - 14 ] ^ W[ i - 16 ], 1 );
   }
 
   #undef  SHA1_F

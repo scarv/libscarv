@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "sha2_256.h"
 
 #define SHA2_256_S0(a) ( U32_RTR( a,  7 ) ^ U32_RTR( a, 18 ) ^ U32_SHR( a,  3 ) )
@@ -17,9 +16,9 @@
   h  = t_1 + t_0;                                                       \
 }
   
-uint32_t W[ 64 ];
+static uint32_t W[ 64 ];
 
-uint32_t K[] = { 
+static uint32_t K[] = { 
   0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 
   0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5, 
   0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 
@@ -38,12 +37,12 @@ uint32_t K[] = {
   0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2 
 };
         
-uint32_t H [8];
+static uint32_t H [8];
 
-uint8_t T[ 64 ];
+static uint8_t T[ 64 ];
 
-uint64_t n_left; // bytes remaining
-uint64_t n_done; // bytes processed so far
+static uint64_t n_left; // bytes remaining
+static uint64_t n_done; // bytes processed so far
 
 #ifdef CONF_SHA2_256_COMP_EXTERN
 extern void sha2_256_comp( const uint8_t* x );

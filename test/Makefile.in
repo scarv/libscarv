@@ -54,7 +54,7 @@ $(call map_test_output,${1}) : $(call map_test_bin,${1})
 	mkdir -p $(dir $(call map_test_output,${1}))
 	$(TEST_CMD_PREFIX) $(call map_test_bin,${1}) $(TEST_CMD_SUFFIX) > \
 	    $(call map_test_output,${1})
-	cat $(call map_test_output,${1}) | python
+	cat $(call map_test_output,${1}) | python3
 endef
 
 
@@ -106,22 +106,21 @@ $(eval $(call tgt_run_test,test_aes))
 #TEST_PRINCE_PATH = $(call map_test_bin,test_prince)
 #$(eval $(call tgt_test,test_prince,$(TEST_PRINCE_SRCS),$(LIBSCARV),test/prince))
 #$(eval $(call tgt_run_test,test_prince))
+
 #
-##
-## Add SHA256 test
-#TEST_SHA256_SRCS = test/sha2/test_sha2_256.c
-#TEST_SHA256_PATH = $(call map_test_bin,test_sha2_256)
-#$(eval $(call tgt_test,test_sha2_256,$(TEST_SHA256_SRCS),$(LIBSCARV),test/sha2_256))
-#$(eval $(call tgt_run_test,test_sha2_256))
+# Add SHA1 test
+TEST_SHA1_SRCS = test/sha1/test_sha1.c
+TEST_SHA1_PATH = $(call map_test_bin,test_sha1)
+$(eval $(call tgt_test,test_sha1,$(TEST_SHA1_SRCS),$(LIBSCARV),test/sha1))
+$(eval $(call tgt_run_test,test_sha1))
+
 #
-##
-## Add SHA512 test
-#TEST_SHA512_SRCS = test/sha2/test_sha2_512.c
-#TEST_SHA512_PATH = $(call map_test_bin,test_sha2_512)
-#$(eval $(call tgt_test,test_sha2_512,$(TEST_SHA512_SRCS),$(LIBSCARV),test/sha2_512))
-#$(eval $(call tgt_run_test,test_sha2_512))
-#
-##
+# Add SHA2 test
+TEST_SHA2_SRCS = test/sha2/test_sha2.c
+TEST_SHA2_PATH = $(call map_test_bin,test_sha2)
+$(eval $(call tgt_test,test_sha2,$(TEST_SHA2_SRCS),$(LIBSCARV),test/sha2))
+$(eval $(call tgt_run_test,test_sha2))
+
 ## Add CHACHA20 test
 #TEST_CHACHA20_SRCS = test/chacha20/test_chacha20.c
 #TEST_CHACHA20_PATH = $(call map_test_bin,test_chacha20)

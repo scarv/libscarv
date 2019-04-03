@@ -1,49 +1,39 @@
 #include "test_mrz.h"
 
-FILE* urandom = NULL; mrz_ctx_t ctx;
-
 // ============================================================================
-
-int test_mrz_rand_modulus( mrz_t r, int l_min, int l_max ) {
-  uint8_t t;
-
-  fread( &t, sizeof( uint8_t ), 1, urandom );
-
-  int l_r = ( t % ( l_max + 1 - l_min) ) + l_min;
-
-  do {
-    fread( r, sizeof( limb_t ), l_r, urandom );
-  } while( !( r[ 0 ] & 1 ) );
-
-  return l_r;
-}
 
 int test_mrz_rand_operand( mrz_t r, mrz_t x, int l_x ) {
   int l_r = l_x;
 
   do {
-    fread( r, sizeof( limb_t ), l_r, urandom );
+    l_r = test_rand_byte( ( uint8_t* )( r ), l_r,   l_r,   sizeof( limb_t ) );
   }
   while( mpn_cmp( r, l_r, x, l_x ) >= 0 );
 
   return l_r;
 }
 
+int test_mrz_rand_modulus( mrz_t r, int l_min, int l_max ) {
+  int l_r;
+
+  do {
+    l_r = test_rand_byte( ( uint8_t* )( r ), l_min, l_max, sizeof( limb_t ) );
+  } while( !( r[ 0 ] & 1 ) );
+
+  return l_r;
+}
+
 void test_mrz_dump( char* id, mrz_t x, int l_x ) {
-  printf( "%s = int( '", id );
-
-  for( int i = l_x - 1; i >= 0; i-- ) {
-    printf( "%08lX", x[ i ] );
-  }
-
-  printf( "', 16 )\n" );
+  printf( "%s = int( '", id ); test_dump_msb( ( uint8_t* )( x ), l_x * sizeof( limb_t ) ); printf( "', 16 )\n" );
 }
 
 // ============================================================================
 
 void test_mrz_exp( int n, int l_min, int l_max ) {
+  mrz_ctx_t ctx;  
+
   for( int i = 0; i < n; i++ ) {
-    printf("# test_mrz:mrz_exp[%d/%d]\n", i, n );
+    test_id( "test_mrz", "exp", i, n );
 
     mrz_t N; int l_N;
     mrz_t x; int l_x;
@@ -62,42 +52,36 @@ void test_mrz_exp( int n, int l_min, int l_max ) {
     mrz_precomp( &ctx, N, l_N );
 
     mrz_mul( &ctx, r, x, ctx.rho_2 );
-    MEASURE( mrz_exp( &ctx, r, r, y, l_y ) );
+    TEST_MEASURE( mrz_exp( &ctx, r, r, y, l_y ) );
     mrz_mul( &ctx, r, r, ctx.rho_0 );
 
     test_mrz_dump( "r", r, l_r );
 
-    printf( "t = pow( x, y, N )                       " "\n"       );
+    printf( "t = pow( x, y, N )                   " "\n"   );
 
-    printf( "if ( r != t ) :                          " "\n"       );
-    printf( "  print( 'fail test_mrz:mrz_exp[%d/%d]' )" "\n", i, n );
-    printf( "  print( 'N == %%s' %% ( hex( N ) )     )" "\n"       );
-    printf( "  print( 'x == %%s' %% ( hex( x ) )     )" "\n"       );
-    printf( "  print( 'y == %%s' %% ( hex( y ) )     )" "\n"       );
-    printf( "  print( 'r == %%s' %% ( hex( r ) )     )" "\n"       );
-    printf( "  print( '  != %%s' %% ( hex( t ) )     )" "\n"       );
+    printf( "if ( r != t ) :                      " "\n"   );
+    printf( "  print( 'fail %%s' %% ( id       ) )" "\n"   );
+    printf( "  print( 'N == %%s' %% ( hex( N ) ) )" "\n"   );
+    printf( "  print( 'x == %%s' %% ( hex( x ) ) )" "\n"   );
+    printf( "  print( 'y == %%s' %% ( hex( y ) ) )" "\n"   );
+    printf( "  print( 'r == %%s' %% ( hex( r ) ) )" "\n"   );
+    printf( "  print( '  != %%s' %% ( hex( t ) ) )" "\n"   );
 
-    printf( "  sys.exit( 1 )                          " "\n\n"     );
+    printf( "  sys.exit( 1 )                      " "\n\n" );
   }
 }
 
 // ============================================================================
 
 int main( int argc, char* argv[] ) {
-  opt_parse( argc, argv );
-
-  if( NULL == ( urandom = fopen( "/dev/urandom", "rb" ) ) ) {
-    abort();
-  }
-
-  printf( "import sys\n" );
+  test_init( argc, argv, "sys" );
 
   int l_min = MIN( opt_mp_mpz_min_limb, CONF_MP_MRZ_MAX_LIMBS );
   int l_max = MIN( opt_mp_mpz_max_limb, CONF_MP_MRZ_MAX_LIMBS );
 
   test_mrz_exp( opt_trials, l_min, l_max );
 
-  fclose( urandom );
+  test_fini();
 
   return 0;
 }

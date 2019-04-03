@@ -1,10 +1,11 @@
 #ifndef __UTIL_H
 #define __UTIL_H
 
+#include  <stdarg.h>
 #include <stdbool.h>
-#include <stdint.h>
+#include  <stdint.h>
 
-#include <string.h>
+#include  <string.h>
 
 #define SIZEOF(x) ( sizeof(x)     )
 #define BITSOF(x) ( sizeof(x) * 8 )
