@@ -165,6 +165,7 @@ include src/mp/Makefile.in
 #include src/sha1/Makefile.in
 include src/sha2/Makefile.in
 include src/keccak/Makefile.in
+include src/kernels/Makefile.in
 include src/prince/Makefile.in
 include src/aes/Makefile.in
 include src/chacha20/Makefile.in
