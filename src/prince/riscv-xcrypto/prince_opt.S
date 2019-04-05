@@ -105,7 +105,7 @@ prince_shift_rowsa:
     li t1, 4
 
     xc.ld.liu  c0, 0xF000
-    xc.pperm.w c0, c0, 0, 1, 0, 1
+    xc.pbyte   c0, c0, 0, 1, 0, 1
     xc.ld.liu  c6,  0
     xc.ld.liu  c7, 16
     xc.ld.liu  c8, 64
