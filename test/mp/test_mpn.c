@@ -2,23 +2,23 @@
 
 // ============================================================================
 
-int test_mpn_rand( limb_t* r, int l_r_min, int l_r_max ) {
-  return test_rand_byte( ( uint8_t* )( r ), sizeof( limb_t ), l_r_min, l_r_max );
-}
-
 void test_mpn_dump( char* id, limb_t* x, int l_x ) {
   printf( "%s = int( '", id ); test_dump_msb( ( uint8_t* )( x ), l_x * sizeof( limb_t ) ); printf( "', 16 )\n" );
+}
+
+int test_mpn_rand( limb_t* r, int l_r_min, int l_r_max ) {
+  return test_rand_seq( ( uint8_t* )( r ), l_r_min, l_r_max, sizeof( limb_t ) );
 }
 
 // ============================================================================
 
 void test_mpn_add( int n, int l_min, int l_max ) {
-  for( int i = 0; i < n; i++ ) {
-    test_id( "test_mpn", "add", i, n );
+  limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
+  limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
+  limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-    limb_t x[ 2 * l_max + 2 ]; int l_x;
-    limb_t y[ 2 * l_max + 2 ]; int l_y;
-    limb_t r[ 2 * l_max + 2 ]; int l_r;
+  for( int i = 1; i <= n; i++ ) {
+    test_id( "test_mpn", "add", i, n );
 
     l_x = test_mpn_rand( x, l_min, l_max );
     l_y = test_mpn_rand( y, l_min, l_max );
@@ -43,15 +43,19 @@ void test_mpn_add( int n, int l_min, int l_max ) {
 
       printf( "  sys.exit( 1 )                      " "\n\n" );
   }
+
+  free( x );
+  free( y );
+  free( r );
 }
 
 void test_mpn_sub( int n, int l_min, int l_max ) {
-  for( int i = 0; i < n; i++ ) {
-    test_id( "test_mpn", "sub", i, n );
+  limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
+  limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
+  limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-    limb_t x[ 2 * l_max + 2 ]; int l_x;
-    limb_t y[ 2 * l_max + 2 ]; int l_y;
-    limb_t r[ 2 * l_max + 2 ]; int l_r;
+  for( int i = 1; i <= n; i++ ) {
+    test_id( "test_mpn", "sub", i, n );
 
     l_x = test_mpn_rand( x, l_min, l_max );
     l_y = test_mpn_rand( y, l_min, l_max );
@@ -88,15 +92,19 @@ void test_mpn_sub( int n, int l_min, int l_max ) {
 
       printf( "  sys.exit( 1 )                      " "\n\n" );
   }
+
+  free( x );
+  free( y );
+  free( r );
 }
 
 void test_mpn_mul( int n, int l_min, int l_max ) {
-  for( int i = 0; i < n; i++ ) {
-    test_id( "test_mpn", "mul", i, n );
+  limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
+  limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
+  limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-    limb_t x[ 2 * l_max + 2 ]; int l_x;
-    limb_t y[ 2 * l_max + 2 ]; int l_y;
-    limb_t r[ 2 * l_max + 2 ]; int l_r;
+  for( int i = 1; i <= n; i++ ) {
+    test_id( "test_mpn", "mul", i, n );
 
     l_x = test_mpn_rand( x, l_min, l_max );
     l_y = test_mpn_rand( y, l_min, l_max );
@@ -121,6 +129,10 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
 
       printf( "  sys.exit( 1 )                      " "\n\n" );
   }
+
+  free( x );
+  free( y );
+  free( r );
 }
 
 // ============================================================================
@@ -128,12 +140,9 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  int l_min = opt_mp_mpn_min_limb;
-  int l_max = opt_mp_mpn_max_limb;
-
-  test_mpn_add( opt_trials, l_min, l_max );
-  test_mpn_sub( opt_trials, l_min, l_max );
-  test_mpn_mul( opt_trials, l_min, l_max );
+  test_mpn_add( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
+  test_mpn_sub( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
+  test_mpn_mul( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
 
   test_fini();
 

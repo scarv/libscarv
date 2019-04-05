@@ -2,27 +2,27 @@
 
 // ============================================================================
 
-int test_aes_rand( uint8_t* r ) {
-  return test_rand_byte( r, sizeof( uint8_t ), 16, 16 );
-}
-
 void test_aes_dump( char* id, uint8_t* x ) {
   printf( "%s = binascii.a2b_hex( '", id ); test_dump_lsb( x, 16 ); printf( "' )\n" );
+}
+
+int test_aes_rand( uint8_t* r ) {
+  return test_rand_seq( r, 16, 16, sizeof( uint8_t ) );
 }
 
 // ============================================================================
 
 #if defined( CONF_AES_ENABLE_ENC )
 void test_aes_enc( int n ) {
-  for( int i = 0; i < n; i++ ) {    
+  uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
+
+  #if defined( CONF_AES_PRECOMP_RK )  
+  uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
+  #endif
+
+  for( int i = 1; i <= n; i++ ) {    
     test_id( "test_aes", "end", i, n );
-
-    uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
-
-    #if defined( CONF_AES_PRECOMP_RK )  
-    uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
-    #endif
-
+    
     test_aes_rand(      m );
     test_aes_rand(      k );
 
@@ -53,14 +53,14 @@ void test_aes_enc( int n ) {
 
 #if defined( CONF_AES_ENABLE_DEC )
 void test_aes_dec( int n ) {
-  for( int i = 0; i < n; i++ ) {    
+  uint8_t m[ 16 ], c[ 16 ], k[ 16 ];
+
+  #if defined( CONF_AES_PRECOMP_RK )  
+  uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
+  #endif
+
+  for( int i = 1; i <= n; i++ ) {    
     test_id( "test_aes", "dec", i, n );
-
-    uint8_t m[ 16 ], c[ 16 ], k[ 16 ];
-
-    #if defined( CONF_AES_PRECOMP_RK )  
-    uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
-    #endif
 
     test_aes_rand(      c );
     test_aes_rand(      k );

@@ -89,8 +89,8 @@ extern int opt_sha2_max_data;
 void test_dump_lsb( uint8_t* x, int l_x );
 void test_dump_msb( uint8_t* x, int l_x );
 
-bool test_rand_bool();
-int  test_rand_byte( uint8_t* x, int s, int l_x_min, int l_x_max );
+int test_rand_int();
+int test_rand_seq( uint8_t* x, int s, int l_x_min, int l_x_max );
 
 void test_id( char* x, char* y, int i, int n );
 

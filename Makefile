@@ -3,7 +3,10 @@ ifndef REPO_HOME
 endif
 
 ifndef ARCH
-    $(error Please specify the ARCH variable)
+  $(error "undefined environment variable: ARCH"   )
+endif
+ifndef KERNELS
+  $(error "undefined environment variable: KERNELS")
 endif
 
 #
@@ -164,14 +167,8 @@ all: headers objects disasm libs tests
 $(eval $(call tgt_include_header,src/share/util.h,.))
 HEADERS += $(call map_include,src/share/util.h,.)
 
-include src/mp/Makefile.in
-include src/sha1/Makefile.in
-include src/sha2/Makefile.in
-#include src/keccak/Makefile.in
-#include src/prince/Makefile.in
-include src/aes/Makefile.in
-#include src/chacha20/Makefile.in
-
+# includes
+$(foreach KERNEL,${KERNELS},$(eval include ./src/${KERNEL}/Makefile.in))
 include test/Makefile.in
 
 TRASH += $(HEADERS) $(OBJS) $(DISASM) $(LIBS) $(TESTS)
@@ -182,19 +179,11 @@ libs:    $(LIBS)
 disasm:  $(DISASM)
 tests:   $(HEADERS) $(LIBS) $(TESTS)
 
-run-tests: $(TEST_OUTPUTS)
-
-#
-# Main libscarv.a, containing everything.
-#
-
 $(LIBSCARV) : $(OBJS)
 	@mkdir -p $(dir $@)
 	$(AR) rcs $@ $^
 
-#
-# Utility targets
-#
+test     : $(TEST_OUTPUTS)
 
 venv     : ${REPO_HOME}/requirements.txt
 	@${REPO_HOME}/bin/venv.sh

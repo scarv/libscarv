@@ -28,14 +28,27 @@ b) a resource for benchmarking and evaluation.*
 ├── bin                       - scripts (e.g., environment configuration)
 ├── build                     - working directory for build
 ├── src                       - source code for library
+│   ├── aes
+│   └── aes
 └── test                      - source code for test suite
+    ├── aes
+    └── aes
 ```
 
 <!--- -------------------------------------------------------------------- --->
 
 ## Quickstart
 
-1. Execute
+1. Install any associated pre-requisites, e.g.,
+
+   - a
+     [Python 3](https://www.python.org)
+     distribution,
+   - the
+     [Doxygen](http://www.doxygen.nl)
+     documentation generation system.
+
+2. Execute
 
    ```sh
    git clone https://github.com/scarv/libscarv.git
@@ -49,11 +62,16 @@ b) a resource for benchmarking and evaluation.*
    `REPO_HOME`
    is set appropriately.
 
-2. Build the library, plus associated outputs
+3. Fix the library configuration
 
-3. Use the test suite to validate the build:
+   ```
+   export ARCH="riscv"
+   export KERNELS="aes mp sha1 sha2"
+   ```
 
-   1. create and populate a suitable Python
+4. Build and test the library
+
+   1. Create and populate a suitable Python
       [virtual environment](https://docs.python.org/library/venv.html)
       based on `${REPO_HOME}/requirements.txt` by executing
    
@@ -67,18 +85,57 @@ b) a resource for benchmarking and evaluation.*
       source ${REPO_HOME}/build/venv/bin/activate
       ```
 
-   2. Execute
+   2. Execute 
+
+      ```
+      make build
+      ```
+      
+      to build the library and associated outputs.
+
+   3. Execute
 
       ```
       make test
       ```
 
-      to apply a suite of tests to each kernel in the library:
-      this may take some time to complete.
+      to validate the build, applying a suite of tests to each
+      kernel in the library: doing so may take some time!
 
 <!--- -------------------------------------------------------------------- --->
 
 ## Notes
+
+- library as a whole is just a collection of kernels
+
+- the implementation of a given kernel is in
+
+  ${REPO_HOME}/src/X
+
+  with an associated test program in
+
+  ${REPO_HOME}/test/X
+
+- the implementation of each kernel is configurable, st.
+  a *family* of implementations can be selected between
+  using configuration options: the namespace for those
+  is 
+ 
+  LIBSCARV_CONF_X
+
+- the library makes extensive use of pre-processor
+
+  <domain separator>_<kernel identifier>_<kernel function>_<property>
+
+  e.g.,
+
+  LIBSCARV_AES_ENC_ENABLE
+
+- ENABLE enables (i.e., includes) or disables (i.e., excludes) some functionality
+  EXTERN uses a architecture-specific (typically assembly language implementation) vs. architecture-specific (typically C implementation) of some functionality
+
+
+
 
 - The 
   `make`-based

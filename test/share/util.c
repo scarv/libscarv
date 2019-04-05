@@ -6,9 +6,9 @@ int   opt_trials          = 10000;
 char  opt_prg[ 80 ]       = "/dev/urandom";
 
 int   opt_mp_mpn_min_limb =     4;
-int   opt_mp_mpn_max_limb =    32;
+int   opt_mp_mpn_max_limb =    16;
 int   opt_mp_mpz_min_limb =     4;
-int   opt_mp_mpz_max_limb =    32;
+int   opt_mp_mpz_max_limb =    16;
 int   opt_mp_mrz_min_limb =     4;
 int   opt_mp_mrz_max_limb =    32;
 
@@ -115,24 +115,16 @@ void test_dump_msb( uint8_t* x, int l_x ) {
   }
 }
 
-bool test_rand_bool() {
-  uint8_t t;
+int test_rand_int() {
+  int t;
 
-  fread( &t, sizeof( uint8_t ), 1, prg );
+  fread( &t, sizeof( int ), 1, prg );
 
-  return ( t & 1 ) ? ( true ) : ( false );
+  return t;
 }
 
-int  test_rand_byte( uint8_t* x, int s, int l_x_min, int l_x_max ) {
-  uint8_t t;
-
-  fread( &t, sizeof( uint8_t ), 1, prg );
-
-  int l_x = ( l_x_min == l_x_max ) ? ( l_x_min ) : ( ( t % ( l_x_max + 1 - l_x_min) ) + l_x_min );
-
-  fread( x, s, l_x, prg );
-
-  return l_x;
+int test_rand_seq( uint8_t* x, int l_x_min, int l_x_max, int size ) {
+  return fread( x, size, ( l_x_min >= l_x_max ) ? ( l_x_min ) : ( ( abs( test_rand_int() ) % ( l_x_max + 1 - l_x_min ) ) + l_x_min ), prg );
 }
 
 void test_id( char* x, char* y, int i, int n ) {

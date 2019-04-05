@@ -2,20 +2,20 @@
 
 // ============================================================================
 
-int test_sha2_rand( uint8_t* r, int l_r_min, int l_r_max ) {
-  return test_rand_byte( r, sizeof( uint8_t ), l_r_min, l_r_max );
-}
-
 void test_sha2_dump( char* id, uint8_t* x, int l_x ) {
   printf( "%s = binascii.a2b_hex( '", id ); test_dump_lsb( x, l_x ); printf( "' )\n" );
+}
+
+int test_sha2_rand( uint8_t* r, int l_r_min, int l_r_max ) {
+  return test_rand_seq( r, l_r_min, l_r_max, sizeof( uint8_t ) );
 }
 
 // ============================================================================
 
 void test_sha2_256( int n, int l_min, int l_max ) {
-  uint8_t* x = ( uint8_t* )( malloc( opt_sha2_max_data ) ), r[ SHA2_256_SIZEOF_DIGEST ];
+  uint8_t* x = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) ), r[ SHA2_256_SIZEOF_DIGEST ];
 
-  for( int i = 0; i < n; i++ ) {
+  for( int i = 1; i <= n; i++ ) {
     test_id( "test_sha2", "sha2_256", i, n );
 
     int l_r = SHA2_256_SIZEOF_DIGEST, l_x = test_sha2_rand( x, l_min, l_max );
@@ -36,12 +36,14 @@ void test_sha2_256( int n, int l_min, int l_max ) {
 
     printf( "  sys.exit( 1 )                                   " "\n\n" );
   }
+
+  free( x );
 }
 
 void test_sha2_512( int n, int l_min, int l_max ) {
-  uint8_t* x = ( uint8_t* )( malloc( opt_sha2_max_data ) ), r[ SHA2_512_SIZEOF_DIGEST ];
+  uint8_t* x = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) ), r[ SHA2_512_SIZEOF_DIGEST ];
 
-  for( int i = 0; i < n; i++ ) {
+  for( int i = 1; i <= n; i++ ) {
     test_id( "test_sha2", "sha2_512", i, n );
 
     int l_r = SHA2_512_SIZEOF_DIGEST, l_x = test_sha2_rand( x, l_min, l_max );
@@ -62,6 +64,8 @@ void test_sha2_512( int n, int l_min, int l_max ) {
 
     printf( "  sys.exit( 1 )                                   " "\n\n" );
   }
+
+  free( x );
 }
 
 // ============================================================================
