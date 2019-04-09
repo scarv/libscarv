@@ -134,3 +134,10 @@ TEST_KERNEL_PRESENT_SLAYER_SRCS = test/kernels/test_present_slayer.c
 TEST_KERNEL_PRESENT_SLAYER_PATH = $(call map_test_bin,test_present_slayer)
 $(eval $(call tgt_test,test_present_slayer,$(TEST_KERNEL_PRESENT_SLAYER_SRCS),$(LIBSCARV),test/present_slayer))
 $(eval $(call tgt_run_test,test_present_slayer))
+
+#
+# Add bitperm test
+TEST_KERNEL_BITPERM_SLAYER_SRCS = test/kernels/test_bitperm.c
+TEST_KERNEL_BITPERM_SLAYER_PATH = $(call map_test_bin,test_bitperm)
+$(eval $(call tgt_test,test_bitperm,$(TEST_KERNEL_BITPERM_SLAYER_SRCS),$(LIBSCARV),test/bitperm))
+$(eval $(call tgt_run_test,test_bitperm))
