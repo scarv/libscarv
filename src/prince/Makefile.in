@@ -30,3 +30,4 @@ DISASM  += $(PRINCE_DISASM)
 # libscarvprince to the list of static libraries to build
 LIBS += $(call map_static_lib,$(PRINCE_LIB))
 $(eval $(call tgt_static_lib,$(PRINCE_OBJS),$(PRINCE_LIB)))
+

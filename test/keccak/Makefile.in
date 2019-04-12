@@ -1,0 +1,13 @@
+#
+# Add KeccakP400 test
+TEST_KECCAKP400_SRCS = test/keccak/test_keccakP400.c
+TEST_KECCAKP400_PATH = $(call map_test_bin,test_keccak)
+$(eval $(call tgt_test,test_keccakP400,$(TEST_KECCAKP400_SRCS),$(LIBSCARV),test/keccakP400))
+$(eval $(call tgt_run_test,test_keccakP400))
+
+#
+# Add KeccakP1600 test
+TEST_KECCAKP1600_SRCS = test/keccak/test_keccakP1600.c
+TEST_KECCAKP1600_PATH = $(call map_test_bin,test_keccak)
+$(eval $(call tgt_test,test_keccakP1600,$(TEST_KECCAKP1600_SRCS),$(LIBSCARV),test/keccakP1600))
+$(eval $(call tgt_run_test,test_keccakP1600))

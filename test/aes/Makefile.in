@@ -1,0 +1,6 @@
+#
+# Add AES test
+TEST_AES_SRCS = test/aes/test_aes.c
+TEST_AES_PATH = $(call map_test_bin,test_aes)
+$(eval $(call tgt_test,test_aes,$(TEST_AES_SRCS),$(LIBSCARV),test/aes))
+$(eval $(call tgt_run_test,test_aes))

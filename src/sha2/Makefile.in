@@ -31,3 +31,4 @@ DISASM  += $(SHA2_DISASM)
 # libscarvsha2 to the list of static libraries to build
 LIBS += $(call map_static_lib,$(SHA2_LIB))
 $(eval $(call tgt_static_lib,$(SHA2_OBJS),$(SHA2_LIB)))
+

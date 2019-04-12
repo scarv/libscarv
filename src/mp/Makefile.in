@@ -35,3 +35,4 @@ DISASM  += $(MP_DISASM)
 # libscarvmp to the list of static libraries to build
 LIBS += $(call map_static_lib,$(MP_LIB))
 $(eval $(call tgt_static_lib,$(MP_OBJS),$(MP_LIB)))
+

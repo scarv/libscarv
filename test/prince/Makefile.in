@@ -1,0 +1,5 @@
+# Add Prince test
+TEST_PRINCE_SRCS = test/prince/test_prince.c
+TEST_PRINCE_PATH = $(call map_test_bin,test_prince)
+$(eval $(call tgt_test,test_prince,$(TEST_PRINCE_SRCS),$(LIBSCARV),test/prince))
+$(eval $(call tgt_run_test,test_prince))
