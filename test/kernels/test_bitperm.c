@@ -32,12 +32,12 @@ int main(int argc, char ** argv) {
     uint32_t in   = 0x00000001;
     uint32_t out  = perm(in,mask);
 
-    printf("m=0x%08X, i=0x%08X, o=0x%08X\n", mask, in, out);
+    printf("# m=0x%08X, i=0x%08X, o=0x%08X\n", mask, in, out);
     
     in   = out;
     out  = iperm(in,mask);
 
-    printf("m=0x%08X, i=0x%08X, o=0x%08X\n", mask, in, out);
+    printf("# m=0x%08X, i=0x%08X, o=0x%08X\n", mask, in, out);
 
 }
 
