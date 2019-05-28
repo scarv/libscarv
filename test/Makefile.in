@@ -55,6 +55,7 @@ $(call map_test_output,${1}) : $(call map_test_bin,${1})
 	$(TEST_CMD_PREFIX) $(call map_test_bin,${1}) $(TEST_CMD_SUFFIX) > \
 	    $(call map_test_output,${1})
 	cat $(call map_test_output,${1}) | python
+run_${1}: $(call map_test_output,${1})
 endef
 
 
