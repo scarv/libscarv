@@ -4,16 +4,12 @@
 .global sparx_encrypt_64_128
 .func
 // void sparx_encrypt_64_128(uint16_t * x, uint16_t k[][2*3])
-// 
-#define N_STEPS            8
-#define ROUNDS_PER_STEPS   3
-#define N_BRANCHES         2
-#define K_SIZE             4
-// 
-// Length of x (in a0) = 2*N_BRANCHES = 4 * 16-bit
-// Length of k (in a1) = [N_BRANCHES*N_STEPS+1][2*ROUNDS_PER_STEPS]
-//                     = [       17           ][       6          ]
-// 
+// This is an ugly first go at directly translating the
+// generated assembly from GCC into XCrypto assembly.
+// It represents the simplest set of transformations GCC could do.
+// In reality, the whole cipher state fits into the XCRs, so all the loads
+// and stores could be removed but this would cost code density and not
+// be a fair comparison.
 sparx_encrypt_64_128:
 
    xc.ld.hu    c4,(0),0(a0)
