@@ -4,23 +4,27 @@
 
 uint32_t __attribute__ ((noinline)) perm(uint32_t in, uint32_t mask) {
 
+    #ifdef __XCRYPTO
     asm volatile (
         "xc.gpr2xcr c0,a0           \n"
         "xc.gpr2xcr c1,a1           \n"
         "xc.pbit    c0,c1,0b11111   \n"
         "xc.xcr2gpr a0,c0           \n"
     );
+    #endif
 
 }
 
 uint32_t __attribute__ ((noinline)) iperm(uint32_t in, uint32_t mask) {
 
+    #ifdef __XCRYPTO
     asm volatile (
         "xc.gpr2xcr c0,a0           \n"
         "xc.gpr2xcr c1,a1           \n"
         "xc.ipbit   c0,c1,0b11111   \n"
         "xc.xcr2gpr a0,c0           \n"
     );
+    #endif
 
 }
 

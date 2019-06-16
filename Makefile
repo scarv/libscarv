@@ -169,6 +169,7 @@ include src/kernels/Makefile.in
 include src/prince/Makefile.in
 include src/aes/Makefile.in
 include src/chacha20/Makefile.in
+include src/sparx/Makefile.in
 
 include test/Makefile.in
 

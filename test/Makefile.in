@@ -142,3 +142,10 @@ TEST_KERNEL_BITPERM_SLAYER_SRCS = test/kernels/test_bitperm.c
 TEST_KERNEL_BITPERM_SLAYER_PATH = $(call map_test_bin,test_bitperm)
 $(eval $(call tgt_test,test_bitperm,$(TEST_KERNEL_BITPERM_SLAYER_SRCS),$(LIBSCARV),test/bitperm))
 $(eval $(call tgt_run_test,test_bitperm))
+
+#
+# Add SPARX test
+TEST_SPARX_SRCS = test/sparx/test_sparx.c
+TEST_SPARX_PATH = $(call map_test_bin,test_sparx)
+$(eval $(call tgt_test,test_sparx,$(TEST_SPARX_SRCS),$(LIBSCARV),test/sparx))
+$(eval $(call tgt_run_test,test_sparx))
