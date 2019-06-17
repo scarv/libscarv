@@ -194,7 +194,6 @@ all: headers objects disasm libs tests
 $(eval $(call tgt_include_header,src/share/util.h,.))
 HEADERS += $(call map_include,src/share/util.h,.)
 
-# includes
 $(foreach KERNEL, ${KERNELS}, $(eval include ./src/${KERNEL}/Makefile.in ./test/${KERNEL}/Makefile.in))
 
 TRASH += $(HEADERS) $(OBJS) $(DISASM) $(LIBS) $(TESTS)

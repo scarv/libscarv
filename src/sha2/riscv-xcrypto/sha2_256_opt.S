@@ -15,7 +15,7 @@
 //
 .macro SHA2_U8_TO_U32_BE T0, W, X, O
     xc.ld.w     \T0, \O(\X)
-    xc.pperm.w  \T0, \T0, 3,2,1,0
+    xc.pbyte    \T0, \T0, 3,2,1,0
     xc.st.w     \T0, \O(\W)
 .endm
 

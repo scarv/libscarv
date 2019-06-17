@@ -14,7 +14,7 @@ aes_enc_exp_step:
 	xc.gpr2xcr  c8, a2
 
 	xc.aessub.enc c4, c3, c3
-	xc.pperm.w c4, c4, 1, 2, 3, 0
+	xc.pbyte   c4, c4, 1, 2, 3, 0
 	xc.bop	c4, c4, c8, 0x66	#xor
 	
 	xc.bop	c4, c4, c0, 0x66	#xor

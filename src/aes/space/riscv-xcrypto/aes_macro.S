@@ -58,15 +58,15 @@
 .endm
 
 .macro AES_ENC_ROW_XC XS0 XS1 XS2 XS3 
-	xc.pperm.w \XS1, \XS1, 1, 2, 3, 0
-	xc.pperm.w \XS2, \XS2, 2, 3, 0, 1
-	xc.pperm.w \XS3, \XS3, 3, 0, 1, 2
+	xc.pbyte   \XS1, \XS1, 1, 2, 3, 0
+	xc.pbyte   \XS2, \XS2, 2, 3, 0, 1
+	xc.pbyte   \XS3, \XS3, 3, 0, 1, 2
 
 .endm
 .macro AES_DEC_ROW_XC XS0 XS1 XS2 XS3 
-	xc.pperm.w \XS1, \XS1, 3, 0, 1, 2
-	xc.pperm.w \XS2, \XS2, 2, 3, 0, 1
-	xc.pperm.w \XS3, \XS3, 1, 2, 3, 0
+	xc.pbyte  \XS1, \XS1, 3, 0, 1, 2
+	xc.pbyte  \XS2, \XS2, 2, 3, 0, 1
+	xc.pbyte  \XS3, \XS3, 1, 2, 3, 0
 .endm
 
 .macro AES_ENC_MIX_XC XD0 XD1 XD2 XD3 XS0 XS1 XS2 XS3 MULX

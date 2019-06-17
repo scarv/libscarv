@@ -73,6 +73,15 @@ KeccakP1600Round:
     # - 1 lane = 2 words = 8 bytes
     #
 
+    xc.ld.liu c0, 0xFFFF
+
+    xc.ext  c1, c0,  0, 1
+    xc.ins  c2, c1,  0, 1
+    xc.ext  c1, c0,  0, 32
+    xc.ins  c3, c1,  0, 32
+    xc.ext  c1, c0,  8, 9
+    xc.ins  c4, c1,  8, 9
+
     addi    sp, sp, -40
     sw      s3, 4(sp)
     sw      s4, 8(sp)

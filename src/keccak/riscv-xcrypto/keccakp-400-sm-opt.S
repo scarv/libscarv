@@ -79,7 +79,7 @@ KeccakP400Round:
         xc.ld.hu   c2,(0), 40(a3)           # t0 = A[x+5*y], y = 4
 
         xc.bop     c0, c1, c2, 0b10010110    # XOR3
-        xc.pperm.w c1, c0, 2,3,2,3
+        xc.pbyte   c1, c0, 2,3,2,3
         xc.bop     c0, c0, c1, 0x66          # XOR2
 
         xc.st.h    c0,(0), 0(a2)            # C[x] = t0
