@@ -69,29 +69,30 @@ prince_gf_mul:
     # a2    = uint16_t mat [16]
     #
     
-    li t0, 0
-    li t1, 16
-    li t3, 0                # result
+    xc.gpr2xcr c0, zero
+    xc.gpr2xcr c1, zero
+    xc.gpr2xcr c2, a0
+    li         t0, 0
+    li         t1, 32
 
-    .prince_fg_mul_l0:
+    pgfmul_0:
 
-        lhu  a3, 0(a2)      # a3 =  mat[i]
+        xc.ldr.hu c3(0), a2, t0
 
-        srl  t4, a0, t0     # t4 = in >> t1
-        andi t4, t4, 0x1    # t4 = (in >> t1) & 0x1
+        xc.ext    c4, c2, 0, 1  // Put 0'th bit of c2 in c4
 
-        slli t4, t4, 31     #
-        srai t4, t4, 31     # Create 32-bit mask from result in t4
+        xc.cmov.t c5, c3, c4
+        xc.cmov.f c5, c1, c4    // if c4, c5 = c3, else c3=0
 
-        and  a3, a3, t4     # And with loaded element of matrix to
-        xor  t3, t3, a3     # remove branch on hash value.
+        xc.bop    c0, c0, c5, 0x66 // XOR
 
-        addi t0, t0, 1
-        addi a2, a2, 2      # Step through mat, 1 halfword an interation
-        bltu t0, t1, .prince_fg_mul_l0
+        xc.psrl.i w, c2, c2, 1  // Shift down c0
 
-    mv a0, t3
-    mv a1, zero
+        addi t0, t0, 2
+        bltu t0, t1, pgfmul_0
+
+    xc.xcr2gpr a0, c0
+    mv         a1, zero
 
     ret
 .endfunc
@@ -99,79 +100,48 @@ prince_gf_mul:
 
 .func prince_shift_rows
 .global prince_shift_rows
-prince_shift_rowsa:
+prince_shift_rows:
+
+    # a1,a0 = in
+    # a2    = inverse
 
     li t0, 0
     li t1, 4
 
-    xc.ld.liu  c0, 0xF000
-    xc.pbyte   c0, c0, 0, 1, 0, 1
-    xc.ld.liu  c6,  0
-    xc.ld.liu  c7, 16
-    xc.ld.liu  c8, 64
-    xc.ld.hiu  c6,  0
-    xc.ld.hiu  c7,  0
-    xc.ld.hiu  c8,  0
+    xc.ld.liu c2, 0xF000
+    xc.pbyte  c2, c2, 0,1,0,1
+
+    xc.gpr2xcr c0, a0
+    xc.gpr2xcr c1, a1
+
+    li t2, 16
+    li t3, 0 
+    li t4, 0 
     
-    xc.gpr2xcr c10, zero
-    xc.gpr2xcr c11, zero
+    beqz a2, psr_0
+
+    li t2, -16
+    li t3, 64
+    li t4, 64
+
+    xc.gpr2xcr c6, t2
+    xc.gpr2xcr c7, t3
+    xc.gpr2xcr c8, t4
+    xc.gpr2xcr c9, t4
+
+    psr_0:
         
-    xc.gpr2xcr c12, a0
-    xc.gpr2xcr c13, a1
+        // row = in & smask
+        xc.bop       c3, c0, c2, 0x88   // c3 = c0 & c2
+        xc.bop       c4, c1, c2, 0x88   // c4 = c1 & c2
 
-    bnez a2, .psr_1
+        xc.psll.i w, c2, c2, 4          // Shift the mask down
 
-    .psr_0:
-
-        xc.bop     c3, c13, c0, 0x88     # c2,c3 - in & (rowmask >> 4*i)
-        xc.bop     c2, c12, c0, 0x88
-
-        xc.msrl (c4,c5), c2, c3, c8     # row >> shift
-        xc.msll (c2,c3), c2, c3, c6     # row << (64-shift)
-
-        xc.bop  c2, c2, c4, 0xEE        # OR
-        xc.bop  c3, c3, c5, 0xEE        # OR
-        
-        xc.bop  c10, c10, c2, 0xEE      # OR
-        xc.bop  c11, c11, c3, 0xEE      # OR
-
-        xc.psub  w, c8, c8, c7
-        xc.padd  w, c6, c6, c7
-
-        xc.psrl.i w, c0, c0, 4          
+        // compute the shift
+        //xc.msrl.i 
 
         addi t0, t0, 1
-        bltu t0, t1, .psr_0
-    
-    xc.xcr2gpr a1, c11
-    xc.xcr2gpr a0, c10
-
-    ret
-
-    .psr_1:
-
-        xc.bop     c3, c13, c0, 0x88     # c2,c3 - in & (rowmask >> 4*i)
-        xc.bop     c2, c12, c0, 0x88
-
-        xc.msrl (c4,c5), c2, c3, c6     # row >> shift
-        xc.msll (c2,c3), c2, c3, c8     # row << (64-shift)
-
-        xc.bop  c2, c2, c4, 0xEE        # OR
-        xc.bop  c3, c3, c5, 0xEE        # OR
-        
-        xc.bop  c10, c10, c2, 0xEE      # OR
-        xc.bop  c11, c11, c3, 0xEE      # OR
-
-        xc.psub  w, c8, c8, c7
-        xc.padd  w, c6, c6, c7
-
-        xc.psrl.i w, c0, c0, 4          
-
-        addi t0, t0, 1
-        bltu t0, t1, .psr_1
-    
-    xc.xcr2gpr a1, c11
-    xc.xcr2gpr a0, c10
+        bltu t0, t1, psr_0
 
     ret
 
