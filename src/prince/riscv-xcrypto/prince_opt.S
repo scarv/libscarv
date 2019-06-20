@@ -69,81 +69,36 @@ prince_gf_mul:
     # a2    = uint16_t mat [16]
     #
     
-    xc.gpr2xcr c0, zero
+    xc.gpr2xcr c0, zero         // Value to be returned.
     xc.gpr2xcr c1, zero
     xc.gpr2xcr c2, a0
-    li         t0, 0
-    li         t1, 32
+    addi       t1, a2, 32
 
+    // Loop through two iterations at a time.
     pgfmul_0:
 
-        xc.ldr.hu c3(0), a2, t0
+        xc.ld.hu c3,(0), 0(a2)
+        xc.ld.hu c6,(0), 2(a2)
 
         xc.ext    c4, c2, 0, 1  // Put 0'th bit of c2 in c4
+        xc.ext    c7, c2, 1, 1  // Put 1'th bit of c2 in c7
 
         xc.cmov.t c5, c3, c4
-        xc.cmov.f c5, c1, c4    // if c4, c5 = c3, else c3=0
+        xc.cmov.f c5, c1, c4    // if c4, c5 = c3, else c5=0
+        
+        xc.cmov.t c8, c6, c7
+        xc.cmov.f c8, c1, c7    // if c7, c8 = c6, else c8=0
 
-        xc.bop    c0, c0, c5, 0x66 // XOR
+        xc.bop    c0, c8, c5, 0x96 // XOR c0, c8 and c5. Result in c0.
 
-        xc.psrl.i w, c2, c2, 1  // Shift down c0
+        xc.psrl.i w, c2, c2, 2  // Shift down c0
 
-        addi t0, t0, 2
-        bltu t0, t1, pgfmul_0
+        addi a2, a2, 4
+        bltu a2, t1, pgfmul_0
 
     xc.xcr2gpr a0, c0
     mv         a1, zero
 
     ret
-.endfunc
-
-
-.func prince_shift_rows
-.global prince_shift_rows
-prince_shift_rows:
-
-    # a1,a0 = in
-    # a2    = inverse
-
-    li t0, 0
-    li t1, 4
-
-    xc.ld.liu c2, 0xF000
-    xc.pbyte  c2, c2, 0,1,0,1
-
-    xc.gpr2xcr c0, a0
-    xc.gpr2xcr c1, a1
-
-    li t2, 16
-    li t3, 0 
-    li t4, 0 
-    
-    beqz a2, psr_0
-
-    li t2, -16
-    li t3, 64
-    li t4, 64
-
-    xc.gpr2xcr c6, t2
-    xc.gpr2xcr c7, t3
-    xc.gpr2xcr c8, t4
-    xc.gpr2xcr c9, t4
-
-    psr_0:
-        
-        // row = in & smask
-        xc.bop       c3, c0, c2, 0x88   // c3 = c0 & c2
-        xc.bop       c4, c1, c2, 0x88   // c4 = c1 & c2
-
-        xc.psll.i w, c2, c2, 4          // Shift the mask down
-
-        // compute the shift
-        //xc.msrl.i 
-
-        addi t0, t0, 1
-        bltu t0, t1, psr_0
-
-    ret
-
 .endfunc
 
