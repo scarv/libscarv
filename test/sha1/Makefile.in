@@ -1,5 +1,0 @@
-# Add SHA1 test
-TEST_SHA1_SRCS = test/sha1/test_sha1.c
-TEST_SHA1_PATH = $(call map_test_bin,test_sha1)
-$(eval $(call tgt_test,test_sha1,$(TEST_SHA1_SRCS),$(LIBSCARV),test/sha1))
-$(eval $(call tgt_run_test,test_sha1))

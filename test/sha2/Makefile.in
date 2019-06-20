@@ -1,6 +1,0 @@
-#
-# Add SHA2 test
-TEST_SHA2_SRCS = test/sha2/test_sha2.c
-TEST_SHA2_PATH = $(call map_test_bin,test_sha2)
-$(eval $(call tgt_test,test_sha2,$(TEST_SHA2_SRCS),$(LIBSCARV),test/sha2))
-$(eval $(call tgt_run_test,test_sha2))

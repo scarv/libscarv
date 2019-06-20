@@ -1,5 +1,0 @@
-# Add CHACHA20 test
-TEST_CHACHA20_SRCS = test/chacha20/test_chacha20.c
-TEST_CHACHA20_PATH = $(call map_test_bin,test_chacha20)
-$(eval $(call tgt_test,test_chacha20,$(TEST_CHACHA20_SRCS),$(LIBSCARV),test/chacha20))
-$(eval $(call tgt_run_test,test_chacha20))
