@@ -20,10 +20,11 @@ include ${REPO_HOME}/conf/${ARCH}.conf
     %-test     :
 	@make --directory="${REPO_HOME}/src/test"     ${*}
 
-build-doc      :
-	@doxygen ${REPO_HOME}/Doxyfile
-clean-doc      :
-	@rm --force --recursive ${REPO_HOME}/build/doc	
+venv  : ${REPO_HOME}/requirements.txt
+	@${REPO_HOME}/bin/venv.sh
 
-spotless :
+doc   : ${REPO_HOME}/Doxyfile
+	@doxygen ${<}
+
+clean :
 	@rm --force --recursive ${REPO_HOME}/build/*

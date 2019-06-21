@@ -20,15 +20,15 @@ endef
 
 define rule_header
 $(call map_include,${1},${2},${3},${4}) : ${2}
-	cat $${^} | envsubst > $${@}
+	@cat $${^} | envsubst > $${@}
 endef
 define rule_object
 $(call map_lib,    ${1},${2},${3},${4}) : ${2}
-	$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/include -c -o $${@} $${<}
+	@$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/include -c -o $${@} $${<}
 endef
 define rule_dump
 $(call map_lib,    ${1},${2},${3},${4}) : ${4} : %.o
-	$${TOOL_PREFIX}objdump --disassemble-all $${<} > $${@} 
+	@$${TOOL_PREFIX}objdump --disassemble-all $${<} > $${@} 
 endef
 
 # =============================================================================
@@ -64,10 +64,10 @@ BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 BUILD_TARGETS = ${REPO_HOME}/build/lib/libscarv.a
 
 ${BUILD_PATHS} :
-	mkdir --parents ${@}
+	@mkdir --parents ${@}
 
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
-	${PREFIX}ar rcs ${@} ${^}
+	@${PREFIX}ar rcs ${@} ${^}
 
 clean    :
 	@rm --force --recursive ${BUILD_PATHS}

@@ -1,0 +1,16 @@
+# Copyright (C) 2019 SCARV project <info@scarv.org>
+#
+# Use of this source code is restricted per the MIT license, a copy of which 
+# can be found at https://opensource.org/licenses/MIT (or should be included 
+# as LICENSE.txt within the associated archive or repository).
+
+KERNEL          = mp/mrz
+
+KERNEL_PATHS    = ${REPO_HOME}/src/test/share
+KERNEL_PATHS   += ${REPO_HOME}/src/test/${KERNEL}
+
+KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
+KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
+KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
+
+$(eval $(call generate,${KERNEL},${KERNEL_PATHS},${KERNEL_HEADERS},${KERNEL_SOURCES}))

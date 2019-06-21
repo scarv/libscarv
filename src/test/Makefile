@@ -28,13 +28,13 @@ BUILD_SCRIPTS += $(call map_log,$(notdir ${1}).py )
 BUILD_RESULTS += $(call map_log,$(notdir ${1}).log)
 
 $(call map_bin,$(notdir ${1}).elf) : ${3} ${4} 
-	$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/include -L $${REPO_HOME}/build/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
+	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/include -L $${REPO_HOME}/build/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
 
 $(call map_log,$(notdir ${1}).py ) : $(call map_bin,$(notdir ${1}).elf)
-	$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
+	@$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
 
 $(call map_log,$(notdir ${1}).log) : $(call map_log,$(notdir ${1}).py )
-	python3 -O $${<} > $${@}
+	@python3 -O $${<} > $${@}
 endef
 
 # =============================================================================
@@ -48,7 +48,7 @@ BUILD_FILES  += ${BUILD_RESULTS}
 BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
 ${BUILD_PATHS} :
-	mkdir --parents ${@}
+	@mkdir --parents ${@}
 
 clean    :
 	@rm --force --recursive ${BUILD_PATHS}
@@ -58,5 +58,6 @@ build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
 generate : build                               ${BUILD_SCRIPTS}
 
 validate : build generate                      ${BUILD_RESULTS}
+	@cat ${REPO_HOME}/build/log/*.log | grep 'fail'
 
 # =============================================================================
