@@ -58,6 +58,6 @@ build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
 generate : build                               ${BUILD_SCRIPTS}
 
 validate : build generate                      ${BUILD_RESULTS}
-	@-cat ${REPO_HOME}/build/${ARCH}/log/*.log | grep 'fail'
+	@( cat ${REPO_HOME}/build/${ARCH}/log/*.log | grep 'fail' ) || true
 
 # =============================================================================
