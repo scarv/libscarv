@@ -9,10 +9,10 @@
 # ${1} = kernel identifier
 
 define map_bin
-  ${REPO_HOME}/build/bin/test_$(strip ${1})
+  ${REPO_HOME}/build/${ARCH}/bin/test_$(strip ${1})
 endef
 define map_log
-  ${REPO_HOME}/build/log/test_$(strip ${1})
+  ${REPO_HOME}/build/${ARCH}/log/test_$(strip ${1})
 endef
 
 # =============================================================================
@@ -28,7 +28,7 @@ BUILD_SCRIPTS += $(call map_log,$(notdir ${1}).py )
 BUILD_RESULTS += $(call map_log,$(notdir ${1}).log)
 
 $(call map_bin,$(notdir ${1}).elf) : ${3} ${4} 
-	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/include -L $${REPO_HOME}/build/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
+	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/${ARCH}/include -L $${REPO_HOME}/build/${ARCH}/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
 
 $(call map_log,$(notdir ${1}).py ) : $(call map_bin,$(notdir ${1}).elf)
 	@$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
@@ -58,6 +58,6 @@ build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
 generate : build                               ${BUILD_SCRIPTS}
 
 validate : build generate                      ${BUILD_RESULTS}
-	@cat ${REPO_HOME}/build/log/*.log | grep 'fail'
+	@-cat ${REPO_HOME}/build/${ARCH}/log/*.log | grep 'fail'
 
 # =============================================================================

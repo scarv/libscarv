@@ -12,10 +12,10 @@
 # ${4} = target pattern
 
 define map_include
-  $(patsubst ${3},${REPO_HOME}/build/include/scarv/$(strip ${1})/$(strip ${4}),$(notdir ${2}))
+  $(patsubst ${3},${REPO_HOME}/build/${ARCH}/include/scarv/$(strip ${1})/$(strip ${4}),$(notdir ${2}))
 endef
 define map_lib
-  $(patsubst ${3},${REPO_HOME}/build/lib/$(strip ${1})/$(strip ${4}),          $(notdir ${2}))
+  $(patsubst ${3},${REPO_HOME}/build/${ARCH}/lib/$(strip ${1})/$(strip ${4}),          $(notdir ${2}))
 endef
 
 define rule_header
@@ -24,7 +24,7 @@ $(call map_include,${1},${2},${3},${4}) : ${2}
 endef
 define rule_object
 $(call map_lib,    ${1},${2},${3},${4}) : ${2}
-	@$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/include -c -o $${@} $${<}
+	@$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/${ARCH}/include -c -o $${@} $${<}
 endef
 define rule_dump
 $(call map_lib,    ${1},${2},${3},${4}) : ${4} : %.o
@@ -61,7 +61,7 @@ BUILD_FILES  += ${BUILD_DUMPS}
 
 BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-BUILD_TARGETS = ${REPO_HOME}/build/lib/libscarv.a
+BUILD_TARGETS = ${REPO_HOME}/build/${ARCH}/lib/libscarv.a
 
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}

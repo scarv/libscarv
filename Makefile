@@ -15,9 +15,9 @@ export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefi
 
 include ${REPO_HOME}/conf/${ARCH}.conf
 
-    %-libscarv :
+%-libscarv :
 	@make --directory="${REPO_HOME}/src/libscarv" ${*}
-    %-test     :
+%-test     :
 	@make --directory="${REPO_HOME}/src/test"     ${*}
 
 venv  : ${REPO_HOME}/requirements.txt

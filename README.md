@@ -11,9 +11,10 @@
 [SCARV](https://www.scarv.org)
 project,
 `libscarv` is a library of cryptographic reference implementations for 
-RISC-V *and* the SCARV-related cryptographic ISE
-[XCrypto](https://github.com/scarv/xcrypto);
-the implementations are written in a mix of C and assembly language.
+RISC-V generally, *and* the SCARV-related cryptographic ISE
+[XCrypto](https://github.com/scarv/xcrypto)
+specifically; the implementations are written in a mixture of C and/or
+assembly language.
 Note that `libscarv` definitely isn't a library you'd expect (or want)
 to see in production code: it's really only intended for internal use, 
 e.g., as
@@ -28,22 +29,20 @@ b) a resource for benchmarking and evaluation.*
 ```
 ├── bin                       - scripts (e.g., environment configuration)
 ├── build                     - working directory for build
-├── src                       - source code for library
-│   ├── aes
-│   ├── chacha20
-│   ├── keccak
-│   ├── mp
-│   ├── prince
-│   ├── sha1
-│   └── sha2
-└── test                      - source code for test suite
-    ├── aes
-    ├── chacha20
-    ├── keccak
-    ├── mp
-    ├── prince
-    ├── sha1
-    └── sha2
+├── conf                      - architecture-specific configuration
+└── src                       
+    ├── libscarv              - source code for library
+    │   ├─ block                - block ciphers
+    │   ├─ hash                 - hash functions
+    │   ├─ mp                   - multi-precision integer arithmetic
+    │   ├─ share                - shared functions, macros, etc.
+    │   └─ stream               - stream ciphers
+    └── test                  - source code for test suite
+        ├─ block                - block ciphers
+        ├─ hash                 - hash functions
+        ├─ mp                   - multi-precision integer arithmetic
+        ├─ share                - shared functions, macros, etc.
+        └─ stream               - stream ciphers
 ```
 
 <!--- -------------------------------------------------------------------- --->
@@ -124,7 +123,7 @@ b) a resource for benchmarking and evaluation.*
 
       ```sh
       export ARCH="riscv"
-      export KERNELS="aes mp sha1 sha2"
+      export KERNELS="block/aes mp/* hash/sha*"
       ```
 
 4. Use targets in the top-level `Makefile` to drive a set of
@@ -141,7 +140,7 @@ b) a resource for benchmarking and evaluation.*
    - execute 
 
      ```sh
-     make build
+     make build-libscarv
      ```
       
      to build the library,
@@ -149,10 +148,113 @@ b) a resource for benchmarking and evaluation.*
    - execute
 
      ```sh
-     make test
+     make build-test
      ```
 
-     to test the library.
+     to build the test suite, then
+
+     ```sh
+     make generate-test
+     make validate-test
+     ```
+
+     to apply it,
+
+   - execute
+
+     ```sh
+     make        clean
+     ```
+
+     to clean-up
+     (e.g., remove everything built in `${REPO_HOME}/build`).
+
+<!--- -------------------------------------------------------------------- --->
+
+## Notes
+
+#### The `libscarv` library
+
+- The `libscarv` library is a set of individual kernels; 
+  the             implementation for some kernel `X` is housed in
+
+  ```sh
+  ${REPO_HOME}/src/libscarv/X
+  ```
+
+  Note that kernel identifiers, i.e., `X`, are somewhat hierarchical:
+  the identifier for AES is `block/aes` not `aes`, for example.
+
+#### The `libscarv` test suite
+
+- Forming part of a larger test suite, each kernel has an associated
+  test driver;
+  the test driver implementation for some kernel `X` is housed in
+
+  ```sh
+  ${REPO_HOME}/src/test/X
+  ```
+
+- For a given kernel `X`, the test process is essentially:
+
+  1. build the test driver, producing a test executable
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/bin/X
+     ```
+
+  2. execute the test executable, an thereby generate a Python-based
+     validation (meta-)program
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/log/X.py
+     ```
+
+  3. execute the validation (meta-)program, producing output into
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/log/X.log
+     ```
+
+     Essentially this means using Python (or appropriate library for
+     it) as a 
+     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
+     if/where need be.
+
+  The test strategy used depends on the kernel: some use randomised 
+  testing, whereas others fixed, hard-coded test vectors.
+
+- Note that for the 
+  `riscv` 
+  and `
+  riscv-xcrypto` 
+  target architectures, execution of the test executable implies
+  *simulation* via a suitable version of Spike, i.e., either
+  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
+  or
+  [`scarv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim),
+  as supported by the proxy kernel.
+
+#### The build system
+
+- Various environment variables control the build system:
+
+  - The 
+    `ARCH`
+    environment variable specifies
+    the target architecture:
+  
+    | Architecture    | Description                                                                             |
+    | :-------------- | :-------------------------------------------------------------------------------------- |
+    | `native`        | Architecture-agnostic: whatever the default GCC targets                                 |
+    | `riscv`         | Architecture-specific: RISC-V RV32IMAC                                                  |
+    | `riscv-xcrypto` | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
+  
+  - The
+    `KERNELS`
+    environment variable specifies
+    the subset of kernels included in the built library.
+
 
 <!--- -------------------------------------------------------------------- --->
 
