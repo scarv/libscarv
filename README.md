@@ -255,7 +255,6 @@ b) a resource for benchmarking and evaluation.*
     environment variable specifies
     the subset of kernels included in the built library.
 
-
 <!--- -------------------------------------------------------------------- --->
 
 ## Acknowledgements
