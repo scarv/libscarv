@@ -8,34 +8,22 @@ ifndef REPO_HOME
   $(error "execute 'source ./bin/conf.sh' to configure environment")
 endif
 
-export
+export ARCH    ?= native
+export KERNELS ?= mp block/* stream/* hash/*
 
-# Provide a default value for ARCH and KERNELS if need be, then "expand" any 
-# wildcards in the list of kernels
+export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefix ${REPO_HOME}/src/libscarv/,${KERNELS})))
 
-ARCH    ?= native
-KERNELS ?= mp block/* stream/* hash/*
+include ${REPO_HOME}/conf/${ARCH}.conf
 
-KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%, %, $(wildcard $(addprefix ${REPO_HOME}/src/libscarv/, ${KERNELS})))
-
-# Include architecture-dependent configuration, then use the list of symbols
-# to define associated Makefile varibles (so the source code and build match
-# where necessary)
-
-include ${REPO_HOME}/src/conf/${ARCH}.conf
-
-$(foreach SYMBOL, ${CONF}, $(eval ${SYMBOL} = 1))
-
-# Define a set of top-level targets, recursively deferring to sub-Makefiles 
-# if need be
-
-%-libscarv :
+    %-libscarv :
 	@make --directory="${REPO_HOME}/src/libscarv" ${*}
-%-test     :
+    %-test     :
 	@make --directory="${REPO_HOME}/src/test"     ${*}
 
-doc      :
+build-doc      :
 	@doxygen ${REPO_HOME}/Doxyfile
+clean-doc      :
+	@rm --force --recursive ${REPO_HOME}/build/doc	
 
 spotless :
 	@rm --force --recursive ${REPO_HOME}/build/*

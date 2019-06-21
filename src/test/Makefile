@@ -8,12 +8,11 @@
 
 # ${1} = kernel identifier
 
-define bin_map
-  ${REPO_HOME}/build/bin/test_${1}
+define map_bin
+  ${REPO_HOME}/build/bin/test_$(strip ${1})
 endef
-
-define log_map
-  ${REPO_HOME}/build/log/test_${1}
+define map_log
+  ${REPO_HOME}/build/log/test_$(strip ${1})
 endef
 
 # =============================================================================
@@ -24,40 +23,40 @@ endef
 # ${4} = source files (i.e., %.c, %.S)
 
 define generate
-TARGET_TARGETS += $(call bin_map,$(notdir ${1}).elf)
-TARGET_RESULTS += $(call log_map,$(notdir ${1}).py )
-TARGET_RESULTS += $(call log_map,$(notdir ${1}).log)
+BUILD_TARGETS += $(call map_bin,$(notdir ${1}).elf)
+BUILD_SCRIPTS += $(call map_log,$(notdir ${1}).py )
+BUILD_RESULTS += $(call map_log,$(notdir ${1}).log)
 
-$(call bin_map,$(notdir ${1}).elf) : ${3} ${4} 
-	@$${PREFIX}gcc $$(addprefix -D, $${CONF}) $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/include -L $${REPO_HOME}/build/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
-$(call log_map,$(notdir ${1}).py ) : $(call bin_map,$(notdir ${1}).elf)
-	@$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
-$(call log_map,$(notdir ${1}).log) : $(call log_map,$(notdir ${1}).py )
-	@python3 -O $${<} > $${@}
+$(call map_bin,$(notdir ${1}).elf) : ${3} ${4} 
+	$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/include -L $${REPO_HOME}/build/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
+
+$(call map_log,$(notdir ${1}).py ) : $(call map_bin,$(notdir ${1}).elf)
+	$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
+
+$(call map_log,$(notdir ${1}).log) : $(call map_log,$(notdir ${1}).py )
+	python3 -O $${<} > $${@}
 endef
 
 # =============================================================================
 
-TARGET_DIRS     = ${REPO_HOME}/build/bin
-TARGET_DIRS    += ${REPO_HOME}/build/log
-
-TARGET_TARGETS  = 
-TARGET_RESULTS  = 
-
 include $(patsubst %, ${REPO_HOME}/src/test/%/Makefile.in, ${KERNELS})
 
-TARGET_DIRS    := $(sort ${TARGET_DIRS}   )
+BUILD_FILES   = ${BUILD_TARGETS} 
+BUILD_FILES  += ${BUILD_SCRIPTS} 
+BUILD_FILES  += ${BUILD_RESULTS}
 
-TARGET_TARGETS := $(sort ${TARGET_TARGETS})
-TARGET_RESULTS := $(sort ${TARGET_RESULTS})
+BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-${TARGET_DIRS} :
-	@mkdir --parents ${@}
+${BUILD_PATHS} :
+	mkdir --parents ${@}
 
-build : ${TARGET_DIRS} ${TARGET_TARGETS}
+clean    :
+	@rm --force --recursive ${BUILD_PATHS}
 
-clean :
+build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
 
-run   : build          ${TARGET_RESULTS}
+generate : build                               ${BUILD_SCRIPTS}
+
+validate : build generate                      ${BUILD_RESULTS}
 
 # =============================================================================

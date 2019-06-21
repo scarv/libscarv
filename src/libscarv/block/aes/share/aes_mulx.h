@@ -1,6 +1,7 @@
 #ifndef __AES_MULX_H
 #define __AES_MULX_H
 
+#include <scarv/share/conf.h>
 #include <scarv/share/util.h>
 
 #define AES_MULX_PACKED(r,x) {          \

@@ -1,6 +1,7 @@
 #ifndef __AES_RC_H
 #define __AES_RC_H
 
+#include <scarv/share/conf.h>
 #include <scarv/share/util.h>
 
 #if defined( CONF_AES_PRECOMP_RC )

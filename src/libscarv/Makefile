@@ -11,20 +11,24 @@
 # ${3} = source pattern
 # ${4} = target pattern
 
-define include_map
-  $(patsubst ${3},${REPO_HOME}/build/include/scarv/${1}/${4},$(notdir ${2}))
+define map_include
+  $(patsubst ${3},${REPO_HOME}/build/include/scarv/$(strip ${1})/$(strip ${4}),$(notdir ${2}))
 endef
-define     lib_map
-  $(patsubst ${3},${REPO_HOME}/build/lib/${1}/${4},          $(notdir ${2}))
+define map_lib
+  $(patsubst ${3},${REPO_HOME}/build/lib/$(strip ${1})/$(strip ${4}),          $(notdir ${2}))
 endef
 
-define include_rule
-$(call include_map,${1},${2},${3},${4}) : ${2}
-	@cp $${^} $${@}
+define rule_header
+$(call map_include,${1},${2},${3},${4}) : ${2}
+	cat $${^} | envsubst > $${@}
 endef
-define     lib_rule
-$(call     lib_map,${1},${2},${3},${4}) : ${2}
-	@$${PREFIX}gcc $$(addprefix -D, $${CONF}) $${CC_DIRS} $${CC_FLAGS} -I ${REPO_HOME}/build/include -c -o $${@} $${<}
+define rule_object
+$(call map_lib,    ${1},${2},${3},${4}) : ${2}
+	$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/include -c -o $${@} $${<}
+endef
+define rule_dump
+$(call map_lib,    ${1},${2},${3},${4}) : ${4} : %.o
+	$${TOOL_PREFIX}objdump --disassemble-all $${<} > $${@} 
 endef
 
 # =============================================================================
@@ -34,44 +38,40 @@ endef
 # ${2} = source files (i.e., %.c, %.S)
 
 define generate
-TARGET_DIRS    += $(foreach FILE,$(filter %.h,${2}),$(dir $(call include_map,${1},${FILE},%.h,%.h)))
-TARGET_DIRS    += $(foreach FILE,$(filter %.c,${3}),$(dir $(call     lib_map,${1},${FILE},%.c,%.o)))
-TARGET_DIRS    += $(foreach FILE,$(filter %.S,${3}),$(dir $(call     lib_map,${1},${FILE},%.S,%.o)))
+BUILD_HEADERS += $(foreach FILE,$(filter %.h,${2}),$(call map_include,${1},${FILE},%.h,%.h      ))
+BUILD_OBJECTS += $(foreach FILE,$(filter %.c,${3}),$(call map_lib,    ${1},${FILE},%.c,%.o      ))
+BUILD_OBJECTS += $(foreach FILE,$(filter %.S,${3}),$(call map_lib,    ${1},${FILE},%.S,%.o      ))
+BUILD_DUMPS   += $(foreach FILE,$(filter %.c,${3}),$(call map_lib,    ${1},${FILE},%.c,%.objdump))
+BUILD_DUMPS   += $(foreach FILE,$(filter %.S,${3}),$(call map_lib,    ${1},${FILE},%.S,%.objdump))
 
-TARGET_HEADERS += $(foreach FILE,$(filter %.h,${2}),$(call include_map,${1},${FILE},%.h,%.h))
-TARGET_OBJECTS += $(foreach FILE,$(filter %.c,${3}),$(call     lib_map,${1},${FILE},%.c,%.o))
-TARGET_OBJECTS += $(foreach FILE,$(filter %.S,${3}),$(call     lib_map,${1},${FILE},%.S,%.o))
-
-$(foreach FILE,$(filter %.h, ${2}),$(eval $(call include_rule,${1},${FILE},%.h,%.h)))
-$(foreach FILE,$(filter %.c, ${3}),$(eval $(call     lib_rule,${1},${FILE},%.c,%.o)))
-$(foreach FILE,$(filter %.S, ${3}),$(eval $(call     lib_rule,${1},${FILE},%.S,%.o)))
+$(foreach FILE,$(filter %.h, ${2}),$(eval $(call rule_header,${1},${FILE},%.h,%.h      )))
+$(foreach FILE,$(filter %.c, ${3}),$(eval $(call rule_object,${1},${FILE},%.c,%.o      )))
+$(foreach FILE,$(filter %.S, ${3}),$(eval $(call rule_object,${1},${FILE},%.S,%.o      )))
+$(foreach FILE,$(filter %.c, ${3}),$(eval $(call rule_dump,  ${1},${FILE},%.c,%.objdump)))
+$(foreach FILE,$(filter %.S, ${3}),$(eval $(call rule_dump,  ${1},${FILE},%.S,%.objdump)))
 endef
 
 # =============================================================================
 
-TARGET_DIRS     = ${REPO_HOME}/build/lib ${REPO_HOME}/build/include/scarv
-
-TARGET_HEADERS  = 
-TARGET_OBJECTS  = 
-
 include $(patsubst %, ${REPO_HOME}/src/libscarv/%/Makefile.in, ${KERNELS} share)
 
-TARGET_DIRS    := $(sort ${TARGET_DIRS}   )
+BUILD_FILES   = ${BUILD_HEADERS} 
+BUILD_FILES  += ${BUILD_OBJECTS} 
+BUILD_FILES  += ${BUILD_DUMPS}
 
-TARGET_HEADERS := $(sort ${TARGET_HEADERS})
-TARGET_OBJECTS := $(sort ${TARGET_OBJECTS})
+BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-TARGET_TARGETS  = ${REPO_HOME}/build/lib/libscarv.a
+BUILD_TARGETS = ${REPO_HOME}/build/lib/libscarv.a
 
-${TARGET_DIRS} :
-	@mkdir --parents ${@}
+${BUILD_PATHS} :
+	mkdir --parents ${@}
 
-${TARGET_TARGETS} : %.a : ${TARGET_OBJECTS}
-	@${PREFIX}ar rcs ${@} ${^}
-
-build    :                      ${TARGET_DIRS} ${TARGET_HEADERS} ${TARGET_OBJECTS} ${TARGET_TARGETS}
+${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
+	${PREFIX}ar rcs ${@} ${^}
 
 clean    :
-	@rm --force --recursive ${TARGET_DIRS} ${TARGET_HEADERS} ${TARGET_OBJECTS} ${TARGET_TARGETS}
+	@rm --force --recursive ${BUILD_PATHS}
+
+build    :                      ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
 
 # =============================================================================

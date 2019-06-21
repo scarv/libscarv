@@ -6,12 +6,12 @@
 
 KERNEL          = block/aes
 
-SOURCE_DIRS     = ${REPO_HOME}/src/libscarv/${KERNEL}/share
-SOURCE_DIRS    += ${REPO_HOME}/src/libscarv/${KERNEL}/space
-SOURCE_DIRS    += ${REPO_HOME}/src/libscarv/${KERNEL}/space/${ARCH}
+KERNEL_PATHS    = ${REPO_HOME}/src/libscarv/${KERNEL}/share
+KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${CONF_AES_TYPE}
+KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${CONF_AES_TYPE}/${ARCH}
 
-SOURCE_HEADERS  = $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.h))
-SOURCE_SOURCES  = $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.c))
-SOURCE_SOURCES += $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.S))
+KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
+KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
+KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
-$(eval $(call generate,${KERNEL},${SOURCE_HEADERS},${SOURCE_SOURCES}))
+$(eval $(call generate,${KERNEL},${KERNEL_HEADERS},${KERNEL_SOURCES}))

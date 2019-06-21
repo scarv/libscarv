@@ -4,12 +4,13 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-KERNEL   = share
+KERNEL          = share
 
-DIRS     = ${REPO_HOME}/src/libscarv/${KERNEL}
+KERNEL_PATHS    = ${REPO_HOME}/src/libscarv/${KERNEL}
+KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${ARCH}
 
-HEADERS  = $(foreach DIR,${DIRS},$(wildcard ${DIR}/*.h))
-SOURCES  = $(foreach DIR,${DIRS},$(wildcard ${DIR}/*.c))
-SOURCES += $(foreach DIR,${DIRS},$(wildcard ${DIR}/*.S))
+KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
+KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
+KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
-$(eval $(call generate,${KERNEL},${HEADERS},${SOURCES}))
+$(eval $(call generate,${KERNEL},${KERNEL_HEADERS},${KERNEL_SOURCES}))

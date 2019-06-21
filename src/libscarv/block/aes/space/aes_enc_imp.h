@@ -1,6 +1,7 @@
 #ifndef __AES_ENC_IMP_H
 #define __AES_ENC_IMP_H
 
+#include <scarv/share/conf.h>
 #include <scarv/share/util.h>
 
 #include <scarv/block/aes/aes_conf.h>
