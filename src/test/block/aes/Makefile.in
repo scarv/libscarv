@@ -6,11 +6,11 @@
 
 KERNEL          = block/aes
 
-SOURCE_DIRS     = ${REPO_HOME}/src/test/share
-SOURCE_DIRS    += ${REPO_HOME}/src/test/${KERNEL}
+KERNEL_PATHS    = ${REPO_HOME}/src/test/share
+KERNEL_PATHS   += ${REPO_HOME}/src/test/${KERNEL}
 
-SOURCE_HEADERS  = $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.h))
-SOURCE_SOURCES  = $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.c))
-SOURCE_SOURCES += $(foreach DIR,${SOURCE_DIRS},$(wildcard ${DIR}/*.S))
+KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
+KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
+KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
-$(eval $(call generate,${KERNEL},${SOURCE_DIRS},${SOURCE_HEADERS},${SOURCE_SOURCES}))
+$(eval $(call generate,${KERNEL},${KERNEL_PATHS},${KERNEL_HEADERS},${KERNEL_SOURCES}))

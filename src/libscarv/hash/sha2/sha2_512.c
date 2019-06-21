@@ -1,4 +1,4 @@
-#include "sha2_512.h"
+#include <scarv/hash/sha2/sha2_512.h>
 
 #define SHA2_512_S0(a) ( U64_RTR( a,  1 ) ^ U64_RTR( a,  8 ) ^ U64_SHR( a,  7 ) )
 #define SHA2_512_S1(a) ( U64_RTR( a, 19 ) ^ U64_RTR( a, 61 ) ^ U64_SHR( a,  6 ) )

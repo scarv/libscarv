@@ -1,7 +1,10 @@
 #ifndef __MPN_CMP_H
 #define __MPN_CMP_H
 
-#include  "mpn.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
+#include <scarv/mp/mpn/mpn.h>
 
 extern int mpn_cmp  ( const limb_t* x, int l_x, const limb_t* y, int l_y );
 

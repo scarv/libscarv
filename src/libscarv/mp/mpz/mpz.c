@@ -1,4 +1,4 @@
-#include "scarv/mp/mpz.h"
+#include <scarv/mp/mpz/mpz.h>
 
 int mpz_size( const mpz_t* x ) {
   return x->l;

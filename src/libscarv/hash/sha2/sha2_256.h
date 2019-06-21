@@ -1,7 +1,8 @@
 #ifndef __SHA2_256_H
 #define __SHA2_256_H
 
-#include "scarv/util.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
 
 #define SHA2_256_SIZEOF_BLOCK  ( 64 )
 #define SHA2_256_SIZEOF_DIGEST ( 32 )

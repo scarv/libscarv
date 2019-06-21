@@ -1,4 +1,4 @@
-#include "sha1.h"
+#include <scarv/hash/sha1/sha1.h>
 
 #define SHA1_R(a,b,c,d,e,w,k) {   \
   e += U32_RTL( a,  5 );          \

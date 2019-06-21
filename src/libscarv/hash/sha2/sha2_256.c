@@ -1,4 +1,4 @@
-#include "sha2_256.h"
+#include <scarv/hash/sha2/sha2_256.h>
 
 #define SHA2_256_S0(a) ( U32_RTR( a,  7 ) ^ U32_RTR( a, 18 ) ^ U32_SHR( a,  3 ) )
 #define SHA2_256_S1(a) ( U32_RTR( a, 17 ) ^ U32_RTR( a, 19 ) ^ U32_SHR( a, 10 ) )
@@ -44,9 +44,6 @@ static uint8_t T[ 64 ];
 static uint64_t n_left; // bytes remaining
 static uint64_t n_done; // bytes processed so far
 
-#ifdef CONF_SHA2_256_COMP_EXTERN
-extern void sha2_256_comp( const uint8_t* x );
-#else
 void sha2_256_comp( const uint8_t* x ) {
 
   uint32_t a = H[0];
@@ -100,7 +97,6 @@ void sha2_256_comp( const uint8_t* x ) {
   H[6] += g;
   H[7] += h;
 }
-#endif // CONF_SHA2_256_COMP_EXTERN
 
 void sha2_256_padd( uint8_t* x ) {
   int n_b = SHA2_256_SIZEOF_BLOCK;

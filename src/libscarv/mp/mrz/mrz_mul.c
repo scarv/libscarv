@@ -1,6 +1,6 @@
-#include "scarv/mp/mrz_mul.h"
+#include <scarv/mp/mrz/mrz_mul.h>
 
-#if !defined( CONF_MP_MRZ_MUL_EXTERN ) && defined( CONF_MP_MRZ_MUL_REDC )
+#if !( CONF_MP_MRZ_MUL_EXTERN ) && ( CONF_MP_MRZ_MUL_REDC )
 void mrz_mul( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x, const mrz_t y ) {
   limb_t    R[ 2 * ctx->l_N + 2 ];
 
@@ -11,7 +11,7 @@ void mrz_mul( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x, const mrz_t y ) {
 }
 #endif
 
-#if !defined( CONF_MP_MRZ_MUL_EXTERN ) && defined( CONF_MP_MRZ_MUL_CIOS )
+#if !( CONF_MP_MRZ_MUL_EXTERN ) && ( CONF_MP_MRZ_MUL_CIOS )
 void mrz_mul( const mrz_ctx_t* ctx, mrz_t r, const mrz_t x, const mrz_t y ) {
   limb_t u, R[ 2 * ctx->l_N + 2 ], *Rp = R, c;
 

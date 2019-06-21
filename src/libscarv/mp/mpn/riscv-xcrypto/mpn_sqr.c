@@ -1,12 +1,12 @@
 #include "scarv/mp/mpn_sqr.h"
 
-#if !defined( CONF_MP_MPN_SQR_EXTERN ) && defined( CONF_MP_MPN_SQR_OPERAND_SCANNING )
+#if !( CONF_MP_MPN_SQR_EXTERN ) && ( CONF_MP_MPN_SQR_OPERAND_SCANNING )
 void mpn_sqr( limb_t* r, const limb_t* x, int l_x ) {
     mpn_mul(r, x, l_x, x, l_x);
 }
 #endif
 
-#if !defined( CONF_MP_MPN_SQR_EXTERN ) && defined( CONF_MP_MPN_SQR_PRODUCT_SCANNING )
+#if !( CONF_MP_MPN_SQR_EXTERN ) && ( CONF_MP_MPN_SQR_PRODUCT_SCANNING )
 void mpn_sqr( limb_t* r, const limb_t* x, int l_x ) {
     mpn_mul(r, x, l_x, x, l_x);
 }

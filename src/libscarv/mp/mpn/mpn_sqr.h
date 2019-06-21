@@ -1,7 +1,10 @@
 #ifndef __MPN_SQR_H
 #define __MPN_SQR_H
 
-#include  "mpn.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
+#include <scarv/mp/mpn/mpn.h>
 
 extern void mpn_sqr  ( limb_t* r, const limb_t* x, int l_x );
 

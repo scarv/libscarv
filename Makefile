@@ -9,7 +9,7 @@ ifndef REPO_HOME
 endif
 
 export ARCH    ?= native
-export KERNELS ?= mp block/* stream/* hash/*
+export KERNELS ?= mp/* block/* stream/* hash/*
 
 export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefix ${REPO_HOME}/src/libscarv/,${KERNELS})))
 

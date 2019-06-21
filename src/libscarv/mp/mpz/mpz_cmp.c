@@ -1,4 +1,4 @@
-#include "scarv/mp/mpz.h"
+#include <scarv/mp/mpz/mpz_cmp.h>
 
 int mpz_cmp( const mpz_t* x, const mpz_t* y ) {
   if     ( ( x->s <  0 ) && ( y->s >= 0 ) ) {

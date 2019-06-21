@@ -1,4 +1,4 @@
-#include "scarv/mp/mrz.h"
+#include <scarv/mp/mrz/mrz.h>
 
 void mrz_precomp( mrz_ctx_t* ctx, const limb_t* N, int l_N ) {
   memset( ctx, 0, SIZEOF( mrz_ctx_t ) );

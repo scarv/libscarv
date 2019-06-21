@@ -1,9 +1,12 @@
 #ifndef __MPZ_H
 #define __MPZ_H
 
-#include "scarv/util.h"
-#include "scarv/mp/limb.h"
-#include "scarv/mp/mpn.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
+#include <scarv/mp/limb/limb.h>
+
+#include <scarv/mp/mpn/mpn.h>
 
 #define MPZ_SIGN_POS ( +1 )
 #define MPZ_SIGN_NEG ( -1 )
@@ -56,10 +59,10 @@ extern int    mpz_size( const mpz_t* x );
 // get n-th limb  in x
 extern limb_t mpz_getlimbn( const mpz_t* x, int n );
 
-#include "mpz_cmp.h"
+#include <scarv/mp/mpz/mpz_cmp.h>
 
-#include "mpz_add.h"
-#include "mpz_sub.h"
-#include "mpz_mul.h"
+#include <scarv/mp/mpz/mpz_add.h>
+#include <scarv/mp/mpz/mpz_sub.h>
+#include <scarv/mp/mpz/mpz_mul.h>
 
 #endif

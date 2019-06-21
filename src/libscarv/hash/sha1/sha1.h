@@ -1,7 +1,8 @@
 #ifndef __SHA1_H
 #define __SHA1_H
 
-#include "scarv/util.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
 
 #define SHA1_SIZEOF_BLOCK  ( 64 )
 #define SHA1_SIZEOF_DIGEST ( 20 )

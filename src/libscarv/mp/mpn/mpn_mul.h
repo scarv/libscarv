@@ -1,7 +1,10 @@
 #ifndef __MPN_MUL_H
 #define __MPN_MUL_H
 
-#include  "mpn.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
+#include <scarv/mp/mpn/mpn.h>
 
 extern void mpn_mul  ( limb_t* r, const limb_t* x, int l_x, const limb_t* y, int l_y );
 
