@@ -13,4 +13,4 @@ KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
 KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
 KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
-$(eval $(call generate,${KERNEL},${KERNEL_HEADERS},${KERNEL_SOURCES}))
+$(eval $(call generate,${KERNEL},${KERNEL_PATHS},${KERNEL_HEADERS},${KERNEL_SOURCES}))

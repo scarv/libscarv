@@ -1,84 +1,94 @@
 
 .text
 
+#define N_STEPS 8
+#define ROUNDS_PER_STEPS 3
+#define N_BRANCHES 2
+
 .global sparx_encrypt_64_128
 .func
 // void sparx_encrypt_64_128(uint16_t * x, uint16_t k[][2*3])
-// This is an ugly first go at directly translating the
-// generated assembly from GCC into XCrypto assembly.
-// It represents the simplest set of transformations GCC could do.
-// In reality, the whole cipher state fits into the XCRs, so all the loads
-// and stores could be removed but this would cost code density and not
-// be a fair comparison.
 sparx_encrypt_64_128:
 
-   xc.ld.hu    c4,(0),0(a0)
-   addi    t3,a1,12
-   addi    t5,a1,204
-   addi    t4,a0,8
+    // a0 - uint16_t x [6]
+    // a1 - uint16_t k [16][6]
+    
+    mv      a2, a0          // For stepping through x
+    mv      t2, a1          // For stepping through k
 
-   spx_l4:
-        mv    a6,a0
-        mv    a7,t3
+    li      t0, 0           // s = 0 = a0 = &k[0]
+    li      t1, N_STEPS     //            = end of loop
 
-   spx_l3:
-        xc.ld.hu    c5,(0),2(a6)
-        addi    a2,a7,-12
+    l_s:
+        
+        mv   t3, a0          // t3 = b = 0
+        addi t4, t3, N_BRANCHES*4
 
-   spx_l1:
-       xc.ld.hu    c3,(0),0(a2)
-       addi    a2,a2,4
-       xc.bop      c4,c4,c3,0x66
-       xc.st.h    c4,(0),0(a6)
-       xc.ld.hu    c1,(0),-2(a2)
-       xc.prot.i  h,c4,c4,16-9
-       xc.bop     c5,c5,c1,0x66
-       xc.padd    h, c4,c4,c5
-       xc.prot.i h,c5,c5,16-2
-       xc.bop     c5,c5,c4,0x66
-       xc.st.h    c4,(0),0(a6)
-       xc.st.h    c5,(0),2(a6)
+        l_b:
+            
+            addi t6, t2, ROUNDS_PER_STEPS*2*2
+            
+            xc.ld.hu    c2,(0),0(t3) // c2 = twob = x[2*b  ]
+            xc.ld.hu    c3,(0),2(t3) // c3 = twob1= x[2*b+1]
 
-       bne    a7,a2, spx_l1
+            l_r:
+                
+                xc.ld.hu    c0,(0),0(t2) // c0 = koff[2*r  ]
+                xc.ld.hu    c1,(0),2(t2) // c3 = koff[2*r+1]
 
-       addi    a6,a6,4
-       addi    a7,a7,12
+                xc.bop      c2, c2, c0, 0x66
+                xc.bop      c3, c3, c1, 0x66
 
-       beq    a6,t4,spx_l2
+                xc.prot.i   h, c2, c2,16-9
+                xc.padd     h, c2, c2, c3
+                
+                addi t2, t2, 4
+                
+                xc.prot.i   h, c3, c3,16-2
+                xc.bop         c3, c3, c2, 0x66
 
-       xc.ld.hu    c4,(0),0(a6)
-       j    spx_l3
+                bltu t2, t6, l_r
+            
+            xc.st.h     c2,(0),0(t3) // c2 = twob = x[2*b  ]
+            xc.st.h     c3,(0),2(t3) // c3 = twob1= x[2*b+1]
 
-   spx_l2:
+            addi t3, t3, 4
+            bltu t3, t4, l_b
 
-      xc.ld.hu   c6,(0),0(a0)
-      xc.ld.hu   c2,(0),2(a0)
-      xc.ld.hu   c4,(0),4(a0)
-      xc.ld.hu   c7,(0),6(a0)
-      xc.bop     c3,c6,c2,0x66
-      xc.prot.i  h,c5,c3,8
-      xc.bop     c4,c5,c6, 0x96
-      xc.bop     c5,c2,c7, 0x96
-      xc.st.h    c4,(0),0(a0)
-      xc.st.h    c6,(0),4(a0)
-      xc.st.h    c5,(0),2(a0)
-      xc.st.h    c2,(0),6(a0)
-      addi    t3,t3,24
+        xc.ld.hu  c0,(0),0(a0)
+        xc.ld.hu  c1,(0),2(a0)
+        // Don't need to load next two halfwords as they are
+        // already in c2,c3 from the previous loops.
 
-      bne    t5,t3,spx_l4
+        xc.bop    c4, c0, c1, 0x66
+        xc.prot.i h, c4, c4, 16-8
 
-      xc.ld.hu   c3,(0),192(a1)
-      xc.bop     c4,c4,c3,0x66
-      xc.st.h    c4,(0),0(a0)
-      xc.ld.hu   c4,(0),194(a1)
-      xc.bop     c5,c5,c4,0x66
-      xc.st.h    c5,(0),2(a0)
-      xc.ld.hu   c5,(0),196(a1)
-      xc.bop     c6,c6,c5,0x66
-      xc.st.h    c6,(0),4(a0)
-      xc.ld.hu   c5,(0),198(a1)
-      xc.bop     c2,c2,c5,0x66
-      xc.st.h    c2,(0),6(a0)
+        xc.bop    c2, c0, c4, 0x96
+        xc.bop    c3, c1, c4, 0x96
+        
+        addi t0, t0, 1          // 
+        
+        xc.st.h   c0, (0), 4(a0)
+        xc.st.h   c1, (0), 6(a0)
+        xc.st.h   c2, (0), 0(a0)
+        xc.st.h   c3, (0), 2(a0)
+
+        bltu t0, t1, l_s        // 
+    
+    xc.ld.hu  c4,(0),192(a1)
+    xc.ld.hu  c5,(0),194(a1)
+    xc.ld.hu  c6,(0),196(a1)
+    xc.ld.hu  c7,(0),198(a1)
+
+    xc.bop    c4, c2, c4, 0x66
+    xc.bop    c5, c3, c5, 0x66
+    xc.bop    c6, c0, c6, 0x66
+    xc.bop    c7, c1, c7, 0x66
+        
+    xc.st.h   c4, (0), 0(a0)
+    xc.st.h   c5, (0), 2(a0)
+    xc.st.h   c6, (0), 4(a0)
+    xc.st.h   c7, (0), 6(a0)
 
     ret
 

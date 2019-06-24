@@ -7,53 +7,59 @@
 # =============================================================================
 
 # ${1} = kernel identifier
-# ${2} = source file
-# ${3} = source pattern
-# ${4} = target pattern
+# ${2} = kernel paths
+# ${3} = source file
+# ${4} = source pattern
+# ${5} = target pattern
 
-define map_include
-  $(patsubst ${3},${REPO_HOME}/build/${ARCH}/include/scarv/$(strip ${1})/$(strip ${4}),$(notdir ${2}))
+define map_header
+  $(patsubst ${4},$(strip ${REPO_HOME})/build/$(strip ${ARCH})/include/scarv/$(strip ${1})/$(strip ${5}),$(notdir ${3}))
 endef
-define map_lib
-  $(patsubst ${3},${REPO_HOME}/build/${ARCH}/lib/$(strip ${1})/$(strip ${4}),          $(notdir ${2}))
+define map_object
+  $(patsubst ${4},$(strip ${REPO_HOME})/build/$(strip ${ARCH})/lib/$(strip ${1})/$(strip ${5}),          $(notdir ${3}))
+endef
+define map_dump
+  $(patsubst ${4},$(strip ${REPO_HOME})/build/$(strip ${ARCH})/lib/$(strip ${1})/$(strip ${5}),          $(notdir ${3}))
 endef
 
 define rule_header
-$(call map_include,${1},${2},${3},${4}) : ${2}
+$(call map_header,${1},${2},${3},${4},${5}) : ${3}
 	@cat $${^} | envsubst > $${@}
 endef
 define rule_object
-$(call map_lib,    ${1},${2},${3},${4}) : ${2}
-	@$${TOOL_PREFIX}gcc -I ${REPO_HOME}/build/${ARCH}/include -c -o $${@} $${<}
+$(call map_object,${1},${2},${3},${4},${5}) : ${3}
+	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -c -o $${@} $${<}
 endef
 define rule_dump
-$(call map_lib,    ${1},${2},${3},${4}) : ${4} : %.o
+$(call map_dump,  ${1},${2},${3},${4},${5}) : ${5} : %.o
 	@$${TOOL_PREFIX}objdump --disassemble-all $${<} > $${@} 
 endef
 
 # =============================================================================
 
 # ${1} = kernel identifier
-# ${2} = header files (i.e.,      %.h)
-# ${2} = source files (i.e., %.c, %.S)
+# ${2} = kernel paths
+# ${3} = header files (i.e.,      %.h)
+# ${4} = source files (i.e., %.c, %.S)
 
 define generate
-BUILD_HEADERS += $(foreach FILE,$(filter %.h,${2}),$(call map_include,${1},${FILE},%.h,%.h      ))
-BUILD_OBJECTS += $(foreach FILE,$(filter %.c,${3}),$(call map_lib,    ${1},${FILE},%.c,%.o      ))
-BUILD_OBJECTS += $(foreach FILE,$(filter %.S,${3}),$(call map_lib,    ${1},${FILE},%.S,%.o      ))
-BUILD_DUMPS   += $(foreach FILE,$(filter %.c,${3}),$(call map_lib,    ${1},${FILE},%.c,%.objdump))
-BUILD_DUMPS   += $(foreach FILE,$(filter %.S,${3}),$(call map_lib,    ${1},${FILE},%.S,%.objdump))
+BUILD_HEADERS += $(foreach FILE,$(filter %.h,${3}),$(call map_header,${1},${2},${FILE},%.h,%.h      ))
+BUILD_OBJECTS += $(foreach FILE,$(filter %.c,${4}),$(call map_object,${1},${2},${FILE},%.c,%.o      ))
+BUILD_OBJECTS += $(foreach FILE,$(filter %.S,${4}),$(call map_object,${1},${2},${FILE},%.S,%.o      ))
+BUILD_DUMPS   += $(foreach FILE,$(filter %.c,${4}),$(call map_dump,  ${1},${2},${FILE},%.c,%.objdump))
+BUILD_DUMPS   += $(foreach FILE,$(filter %.S,${4}),$(call map_dump,  ${1},${2},${FILE},%.S,%.objdump))
 
-$(foreach FILE,$(filter %.h, ${2}),$(eval $(call rule_header,${1},${FILE},%.h,%.h      )))
-$(foreach FILE,$(filter %.c, ${3}),$(eval $(call rule_object,${1},${FILE},%.c,%.o      )))
-$(foreach FILE,$(filter %.S, ${3}),$(eval $(call rule_object,${1},${FILE},%.S,%.o      )))
-$(foreach FILE,$(filter %.c, ${3}),$(eval $(call rule_dump,  ${1},${FILE},%.c,%.objdump)))
-$(foreach FILE,$(filter %.S, ${3}),$(eval $(call rule_dump,  ${1},${FILE},%.S,%.objdump)))
+$(foreach FILE,$(filter %.h, ${3}),$(eval $(call rule_header,${1},${2},${FILE},%.h,%.h      )))
+$(foreach FILE,$(filter %.c, ${4}),$(eval $(call rule_object,${1},${2},${FILE},%.c,%.o      )))
+$(foreach FILE,$(filter %.S, ${4}),$(eval $(call rule_object,${1},${2},${FILE},%.S,%.o      )))
+$(foreach FILE,$(filter %.c, ${4}),$(eval $(call rule_dump,  ${1},${2},${FILE},%.c,%.objdump)))
+$(foreach FILE,$(filter %.S, ${4}),$(eval $(call rule_dump,  ${1},${2},${FILE},%.S,%.objdump)))
 endef
 
 # =============================================================================
 
-include $(patsubst %, ${REPO_HOME}/src/libscarv/%/Makefile.in, ${KERNELS} share)
+include ${REPO_HOME}/conf/${ARCH}.mk ${REPO_HOME}/conf/${ARCH}.conf 
+include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/share/Makefile.in
 
 BUILD_FILES   = ${BUILD_HEADERS} 
 BUILD_FILES  += ${BUILD_OBJECTS} 
@@ -67,11 +73,18 @@ ${BUILD_PATHS} :
 	@mkdir --parents ${@}
 
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
-	@${PREFIX}ar rcs ${@} ${^}
+	@${TOOL_PREFIX}ar rcs ${@} ${^}
 
-clean    :
+test :
+	@echo ${ARCH}
+	@echo ${KERNELS}
+	@echo ${BUILD_HEADERS}
+	@echo ${BUILD_OBJECTS}
+	@echo ${BUILD_DUMPS}
+
+clean :
 	@rm --force --recursive ${BUILD_PATHS}
 
-build    :                      ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
+build :                         ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
 
 # =============================================================================

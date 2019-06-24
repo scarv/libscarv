@@ -8,38 +8,42 @@
 
 # ${1} = kernel identifier
 
-define map_bin
-  ${REPO_HOME}/build/${ARCH}/bin/test_$(strip ${1})
+define map_target
+  $(strip ${REPO_HOME})/build/$(strip ${ARCH})/bin/test_$(strip ${1})
 endef
-define map_log
-  ${REPO_HOME}/build/${ARCH}/log/test_$(strip ${1})
+define map_script
+  $(strip ${REPO_HOME})/build/$(strip ${ARCH})/test/test_$(strip ${1})
+endef
+define map_result
+  $(strip ${REPO_HOME})/build/$(strip ${ARCH})/test/test_$(strip ${1})
 endef
 
 # =============================================================================
 
 # ${1} = kernel identifier
-# ${2} = directories
+# ${2} = kernel paths
 # ${3} = header files (i.e.,      %.h)
 # ${4} = source files (i.e., %.c, %.S)
 
 define generate
-BUILD_TARGETS += $(call map_bin,$(notdir ${1}).elf)
-BUILD_SCRIPTS += $(call map_log,$(notdir ${1}).py )
-BUILD_RESULTS += $(call map_log,$(notdir ${1}).log)
+BUILD_TARGETS += $(call map_target,$(notdir ${1}).elf)
+BUILD_SCRIPTS += $(call map_script,$(notdir ${1}).py )
+BUILD_RESULTS += $(call map_result,$(notdir ${1}).log)
 
-$(call map_bin,$(notdir ${1}).elf) : ${3} ${4} 
-	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I, ${2}) -I $${REPO_HOME}/build/${ARCH}/include -L $${REPO_HOME}/build/${ARCH}/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
+$(call map_target,$(notdir ${1}).elf) : ${3} ${4} 
+	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -L $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
 
-$(call map_log,$(notdir ${1}).py ) : $(call map_bin,$(notdir ${1}).elf)
+$(call map_script,$(notdir ${1}).py ) : $(call map_target,$(notdir ${1}).elf)
 	@$${TEST_PREFIX} $${<}${TEST_SUFFIX} > $${@} 
 
-$(call map_log,$(notdir ${1}).log) : $(call map_log,$(notdir ${1}).py )
+$(call map_result,$(notdir ${1}).log) : $(call map_script,$(notdir ${1}).py )
 	@python3 -O $${<} > $${@}
 endef
 
 # =============================================================================
 
-include $(patsubst %, ${REPO_HOME}/src/test/%/Makefile.in, ${KERNELS})
+include ${REPO_HOME}/conf/${ARCH}.mk
+include $(patsubst %,${REPO_HOME}/src/test/%/Makefile.in,${KERNELS})
 
 BUILD_FILES   = ${BUILD_TARGETS} 
 BUILD_FILES  += ${BUILD_SCRIPTS} 
@@ -50,6 +54,13 @@ BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}
 
+test :
+	echo ${ARCH}
+	echo ${KERNELS}
+	echo ${BUILD_TARGETS}
+	echo ${BUILD_SCRIPTS}
+	echo ${BUILD_RESULTS}
+
 clean    :
 	@rm --force --recursive ${BUILD_PATHS}
 
@@ -58,6 +69,6 @@ build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
 generate : build                               ${BUILD_SCRIPTS}
 
 validate : build generate                      ${BUILD_RESULTS}
-	@( cat ${REPO_HOME}/build/${ARCH}/log/*.log | grep 'fail' ) || true
+	@( cat ${REPO_HOME}/build/${ARCH}/test/*.log | grep 'fail' ) || true
 
 # =============================================================================

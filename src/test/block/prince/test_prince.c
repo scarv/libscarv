@@ -7,6 +7,8 @@
 
 const uint32_t num_prince_vectors = 4;
 
+extern uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]);
+
 //! Known I/O vectors for prince.
 uint64_t prince_test_vectors[5][4] = {
 // plaintext       ,  k0              ,  k1              ,  cipher

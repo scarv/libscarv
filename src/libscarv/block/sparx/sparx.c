@@ -211,15 +211,36 @@ void sparx_encrypt(uint16_t * x, uint16_t k[][2*ROUNDS_PER_STEPS])
     {
         for (b=0 ; b<N_BRANCHES ; b++)
         {
+            uint16_t * koff = &k[N_BRANCHES*s+b][0];
+            
+            uint16_t   twob = x[2*b  ];
+            uint16_t   twob1= x[2*b+1];
+
             for (r=0 ; r<ROUNDS_PER_STEPS ; r++)
             {
-                x[2*b  ] ^= k[N_BRANCHES*s + b][2*r    ];
-                x[2*b+1] ^= k[N_BRANCHES*s + b][2*r + 1];
-                A(x + 2*b, x + 2*b+1);
+                twob  ^= koff[2*r    ];
+                twob1 ^= koff[2*r + 1];
+
+                twob   = ROTL(twob ,9);
+                twob  +=      twob1   ;
+                
+                twob1  = ROTL(twob1,2);
+                twob1 ^=      twob    ;
             }
+
+            x[2*b  ] = twob ;
+            x[2*b+1] = twob1;
         }
-        L(x);
+
+        uint16_t tmp = ROTL((x[0] ^ x[1]), 8);
+
+        x[2] ^= x[0] ^ tmp;
+        x[3] ^= x[1] ^ tmp;
+        SWAP(x[0], x[2]);
+        SWAP(x[1], x[3]);
+
     }
+
     for (b=0 ; b<N_BRANCHES ; b++)
     {
         x[2*b  ] ^= k[N_BRANCHES*N_STEPS][2*b  ];

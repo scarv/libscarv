@@ -115,15 +115,15 @@ b) a resource for benchmarking and evaluation.*
       and
       library content (i.e., the set of kernels included)
       by setting the environment variables
-      `ARCH`
+      `ARCHS`
       and
       `KERNELS`
       appropriately,
       e.g., via
 
       ```sh
-      export ARCH="riscv"
-      export KERNELS="block/aes mp/* hash/sha*"
+      export ARCHS="riscv"
+      export KERNELS="block/aes hash/sha* mp/*"
       ```
 
 4. Use targets in the top-level `Makefile` to drive a set of
@@ -176,44 +176,58 @@ b) a resource for benchmarking and evaluation.*
 #### The `libscarv` library
 
 - The `libscarv` library is a set of individual kernels; 
-  the             implementation for some kernel `X` is housed in
+  for some
+  kernel
+  `X`,
+  the associated             implementation is housed in
 
   ```sh
   ${REPO_HOME}/src/libscarv/X
   ```
 
-  Note that kernel identifiers, i.e., `X`, are somewhat hierarchical:
-  the identifier for AES is `block/aes` not `aes`, for example.
+- The directory housing a kernel implementation is structured per
+
+  ```sh
+  ${REPO_HOME}/src/libscarv/X
+  ${REPO_HOME}/src/libscarv/X/native
+  ${REPO_HOME}/src/libscarv/X/riscv
+  ${REPO_HOME}/src/libscarv/X/riscv-xcrypto
+  ```
+ 
+  i.e., there are sub-directories for *each* target architecture.
 
 #### The `libscarv` test suite
 
 - Forming part of a larger test suite, each kernel has an associated
   test driver;
-  the test driver implementation for some kernel `X` is housed in
+  for some
+  kernel
+  `X`,
+  the associated test driver implementation is housed in
 
   ```sh
   ${REPO_HOME}/src/test/X
   ```
 
-- For a given kernel `X`, the test process is essentially:
+- For a given kernel, the test process is essentially:
 
   1. build the test driver, producing a test executable
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/bin/X
+     ${REPO_HOME}/build/${ARCH}/bin/test_X
      ```
 
   2. execute the test executable, an thereby generate a Python-based
      validation (meta-)program
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/log/X.py
+     ${REPO_HOME}/build/${ARCH}/test/test_X.py
      ```
 
   3. execute the validation (meta-)program, producing output into
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/log/X.log
+     ${REPO_HOME}/build/${ARCH}/test/test_X.log
      ```
 
      Essentially this means using Python (or appropriate library for
@@ -237,23 +251,60 @@ b) a resource for benchmarking and evaluation.*
 
 #### The build system
 
-- Various environment variables control the build system:
+- The 
+  `ARCHS`
+  environment variable specifies a list of 
+  target architectures
+  to consider, identifiers for which are one of the following:
+  
+  | Architecture      | Description                                                                             |
+  | :---------------- | :-------------------------------------------------------------------------------------- |
+  | `native`          | Architecture-agnostic: whatever the default GCC targets                                 |
+  | `riscv`           | Architecture-specific: RISC-V RV32IMAC                                                  |
+  | `riscv-xcrypto`   | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
+ 
+- The
+  `KERNELS`
+  environment variable specifies a list of
+  kernels
+  to consider, identifiers for which are one of the following:
+  
+  | Kernel            | Description                                                                             |
+  | :---------------- | :-------------------------------------------------------------------------------------- |
+  | `block/aes`       |                                                                                         |
+  | `block/prince`    |                                                                                         |
+  | `block/sparx`     |                                                                                         |
+  | `hash/keccak`     |                                                                                         |
+  | `hash/sha1`       |                                                                                         |
+  | `hash/sha2`       |                                                                                         |
+  | `mp/limb`         |                                                                                         |
+  | `mp/mpn`          |                                                                                         |
+  | `mp/mpz`          |                                                                                         |
+  | `mp/mrz`          |                                                                                         |
+  | `stream/chacha20` |                                                                                         |
 
-  - The 
-    `ARCH`
-    environment variable specifies
-    the target architecture:
-  
-    | Architecture    | Description                                                                             |
-    | :-------------- | :-------------------------------------------------------------------------------------- |
-    | `native`        | Architecture-agnostic: whatever the default GCC targets                                 |
-    | `riscv`         | Architecture-specific: RISC-V RV32IMAC                                                  |
-    | `riscv-xcrypto` | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
-  
-  - The
-    `KERNELS`
-    environment variable specifies
-    the subset of kernels included in the built library.
+  Note that a limited form of wildcard is supported: for example,
+
+  - rather than 
+    `hash/sha1 hash/sha2`,
+    one could use
+    `hash/sha*`,
+  - rather than 
+    `hash/keccak hash/sha1 hash/sha2`,
+    one could use
+    `hash/*`.
+
+- For some 
+  target architecture
+  `X`,
+  two separate configuration files are required:
+
+  - `${REPO_HOME}/conf/X.mk`,
+    which specifies configuration wrt. the built itself
+    (e.g., options that control the toolchain),
+  - `${REPO_HOME}/conf/X.conf`,
+    which specifies configuration wrt. the library
+    (i.e., options that control features in the source code).
 
 <!--- -------------------------------------------------------------------- --->
 
