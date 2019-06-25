@@ -1,6 +1,6 @@
 #include "aes_enc.h"
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )
+#if defined( LIBSCARV_CONF_AES_TBOX_PRECOMP )
 #define AES_ENC_TBOX_X {                                                                      \
   TUPLE(63,C6,A5      ), TUPLE(7C,F8,84      ), TUPLE(77,EE,99      ), TUPLE(7B,F6,8D      ), \
   TUPLE(F2,FF,0D      ), TUPLE(6B,D6,BD      ), TUPLE(6F,DE,B1      ), TUPLE(C5,91,54      ), \
@@ -85,23 +85,25 @@ uint32_t AES_ENC_TBOX_4[] = AES_ENC_TBOX_X;
 #undef TUPLE
 #endif
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_RK )
+#include <scarv/block/aes/aes_enc_imp.h>
+
+#if defined( LIBSCARV_CONF_AES_KEY_PRECOMP )
 void aes_enc_exp( uint8_t* r, const uint8_t* k ) {
   uint32_t* rp = ( uint32_t* )( r );
   
-  for( int i =  0; i < ( Nk              ); i++ ) {
+  for( int i =  0; i < ( AES_128_NK              ); i++ ) {
     U8_TO_U32_LE( rp[ i ], k, 4 * i );
   }
 
-  for( int i = Nk; i < ( Nb * ( Nr + 1 ) ); i++ ) {
-    uint32_t t_0 = rp[ i -  1 ];
-    uint32_t t_1 = rp[ i - Nb ];
+  for( int i = AES_128_NK; i < ( AES_128_NB * ( AES_128_NR + 1 ) ); i++ ) {
+    uint32_t t_0 = rp[ i -          1 ];
+    uint32_t t_1 = rp[ i - AES_128_NB ];
 
-    if     ( ( ( i % Nk ) == 0 )                         ) {
-      t_0 = AES_RC[ i / Nk ] ^ ( AES_ENC_TBOX_4[ ( t_0 >>  8 ) & 0xFF ] & 0x000000FF ) ^
-                               ( AES_ENC_TBOX_4[ ( t_0 >> 16 ) & 0xFF ] & 0x0000FF00 ) ^
-                               ( AES_ENC_TBOX_4[ ( t_0 >> 24 ) & 0xFF ] & 0x00FF0000 ) ^
-                               ( AES_ENC_TBOX_4[ ( t_0 >>  0 ) & 0xFF ] & 0xFF000000 ) ;
+    if( ( i % AES_128_NK ) == 0 ) {
+      t_0 = AES_RCON[ i / AES_128_NK ] ^ ( AES_ENC_TBOX_4[ ( t_0 >>  8 ) & 0xFF ] & 0x000000FF ) ^
+                                         ( AES_ENC_TBOX_4[ ( t_0 >> 16 ) & 0xFF ] & 0x0000FF00 ) ^
+                                         ( AES_ENC_TBOX_4[ ( t_0 >> 24 ) & 0xFF ] & 0x00FF0000 ) ^
+                                         ( AES_ENC_TBOX_4[ ( t_0 >>  0 ) & 0xFF ] & 0xFF000000 ) ;
     }
 
     rp[ i ] = t_0 ^ t_1;
@@ -118,7 +120,7 @@ void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
   //      1 initial   round
     AES_ENC_RND_INIT();
   // Nr - 1 interated rounds
-  for( int i = 1; i < Nr; i++ ) {
+  for( int i = 1; i < AES_128_NR; i++ ) {
     AES_ENC_RND_ITER();
   }
   //      1 final     round

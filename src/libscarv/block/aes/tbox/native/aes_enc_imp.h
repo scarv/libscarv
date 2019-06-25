@@ -1,5 +1,5 @@
-#ifndef __AES_ENC_IMP_H
-#define __AES_ENC_IMP_H
+#ifndef __LIBSCARV_AES_ENC_IMP_H
+#define __LIBSCARV_AES_ENC_IMP_H
 
 #define AES_ENC_RND_INIT() {                                                 \
   t_0 = rkp[ 0 ] ^ t_0;                                                      \
@@ -7,7 +7,7 @@
   t_2 = rkp[ 2 ] ^ t_2;                                                      \
   t_3 = rkp[ 3 ] ^ t_3;                                                      \
                                                                              \
-  rkp += Nb;                                                                 \
+  rkp += AES_128_NB;                                                         \
 }
 #define AES_ENC_RND_ITER() {                                                 \
   t_4 = rkp[ 0 ] ^ ( AES_ENC_TBOX_0[ ( t_0 >>  0 ) & 0xFF ]              ) ^ \
@@ -27,7 +27,7 @@
                    ( AES_ENC_TBOX_2[ ( t_1 >> 16 ) & 0xFF ]              ) ^ \
                    ( AES_ENC_TBOX_3[ ( t_2 >> 24 ) & 0xFF ]              ) ; \
                                                                              \
-  rkp += Nb; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;                     \
+  rkp += AES_128_NB; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;             \
 }
 #define AES_ENC_RND_FINI() {                                                 \
   t_4 = rkp[ 0 ] ^ ( AES_ENC_TBOX_4[ ( t_0 >>  0 ) & 0xFF ] & 0x000000FF ) ^ \
@@ -47,7 +47,7 @@
                    ( AES_ENC_TBOX_4[ ( t_1 >> 16 ) & 0xFF ] & 0x00FF0000 ) ^ \
                    ( AES_ENC_TBOX_4[ ( t_2 >> 24 ) & 0xFF ] & 0xFF000000 ) ; \
                                                                              \
-  rkp += Nb; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;                     \
+  rkp += AES_128_NB; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;             \
 }
 
 #endif

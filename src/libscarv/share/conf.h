@@ -23,19 +23,9 @@
   */
 #define LIBSCARV_CONF_AES_TYPE                 ${LIBSCARV_CONF_AES_TYPE}
 
-/** Enable AES encryption functionality.
-  */
-#define LIBSCARV_CONF_AES_ENC_ENABLE           ${LIBSCARV_CONF_AES_ENC_ENABLE}
-/** Enable AES decryption functionality.
-  */
-#define LIBSCARV_CONF_AES_DEC_ENABLE           ${LIBSCARV_CONF_AES_DEC_ENABLE}
-
 /** Use an external, architecture-specific implementation of @p aes_enc.
   */
 #define LIBSCARV_CONF_AES_ENC_EXTERN           ${LIBSCARV_CONF_AES_ENC_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_enc_exp.
-  */
-#define LIBSCARV_CONF_AES_ENC_EXP_EXTERN       ${LIBSCARV_CONF_AES_ENC_EXP_EXTERN}
 /** Use an external, architecture-specific implementation of @p aes_enc_init (i.e., first  round).
   */
 #define LIBSCARV_CONF_AES_ENC_INIT_EXTERN      ${LIBSCARV_CONF_AES_ENC_INIT_EXTERN}
@@ -49,9 +39,6 @@
 /** Use an external, architecture-specific implementation of @p aes_dec.
   */
 #define LIBSCARV_CONF_AES_DEC_EXTERN           ${LIBSCARV_CONF_AES_DEC_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_dec_exp.
-  */
-#define LIBSCARV_CONF_AES_DEC_EXP_EXTERN       ${LIBSCARV_CONF_AES_DEC_EXP_EXTERN}
 /** Use an external, architecture-specific implementation of @p aes_dec_init (i.e., first  round).
   */
 #define LIBSCARV_CONF_AES_DEC_INIT_EXTERN      ${LIBSCARV_CONF_AES_DEC_INIT_EXTERN}
@@ -62,21 +49,21 @@
   */
 #define LIBSCARV_CONF_AES_DEC_FINI_EXTERN      ${LIBSCARV_CONF_AES_DEC_FINI_EXTERN}
 
+/** Pre-compute a table for field division       by the indeterminate (i.e., a / x).
+  */
+#define LIBSCARV_CONF_AES_DIVX_PRECOMP         ${LIBSCARV_CONF_AES_DIVX_PRECOMP}
+/** Pre-compute a table for field multiplication by the indeterminate (i.e., a * x).
+  */
+#define LIBSCARV_CONF_AES_MULX_PRECOMP         ${LIBSCARV_CONF_AES_MULX_PRECOMP}
+/** Pre-compute round constants (rather than evolve from starting point).
+  */
+#define LIBSCARV_CONF_AES_RCON_PRECOMP         ${LIBSCARV_CONF_AES_RCON_PRECOMP}
 /** Pre-compute a set of AES S-boxes  (for encryption and/or decryption).
   */
 #define LIBSCARV_CONF_AES_SBOX_PRECOMP         ${LIBSCARV_CONF_AES_SBOX_PRECOMP}
 /** Pre-compute a set of AES T-tables (for encryption and/or decryption).
   */
 #define LIBSCARV_CONF_AES_TBOX_PRECOMP         ${LIBSCARV_CONF_AES_TBOX_PRECOMP}
-/** Pre-compute a table for field multiplication by the indeterminate (i.e., a * x).
-  */
-#define LIBSCARV_CONF_AES_MULX_PRECOMP         ${LIBSCARV_CONF_AES_MULX_PRECOMP}
-/** Pre-compute a table for field division       by the indeterminate (i.e., a / x).
-  */
-#define LIBSCARV_CONF_AES_DIVX_PRECOMP         ${LIBSCARV_CONF_AES_DIVX_PRECOMP}
-/** Pre-compute round constants (rather than evolve from starting point).
-  */
-#define LIBSCARV_CONF_AES_RCON_PRECOMP         ${LIBSCARV_CONF_AES_RCON_PRECOMP}
 
 /** Evolve round key in a forward direction (i.e., the starting point is the first round key).
   */

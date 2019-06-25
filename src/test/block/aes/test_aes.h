@@ -3,11 +3,7 @@
 
 #include "util.h"
 
-#if ( LIBSCARV_CONF_AES_ENC_ENABLE )
 #include <scarv/block/aes/aes_enc.h>
-#endif
-#if ( LIBSCARV_CONF_AES_DEC_ENABLE )
 #include <scarv/block/aes/aes_dec.h>
-#endif
 
 #endif

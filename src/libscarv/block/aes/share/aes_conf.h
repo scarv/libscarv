@@ -16,8 +16,4 @@
 #define AES_192_NR ( 12 )
 #define AES_256_NR ( 14 )
 
-#define Nb AES_128_NB
-#define Nk AES_128_NK
-#define Nr AES_128_NR
-
 #endif

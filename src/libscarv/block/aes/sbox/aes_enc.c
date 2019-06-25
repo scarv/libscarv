@@ -1,19 +1,22 @@
 #include <scarv/block/aes/aes_enc.h>
 
-#if ( LIBSCARV_CONF_AES_ROUND_SPLIT ) && ( !LIBSCARV_CONF_AES_ENC_INIT_EXTERN )
+#if ( LIBSCARV_CONF_AES_ROUND_SPLIT )
+extern void aes_enc_rnd_key( uint8_t* s, const uint8_t* rk );
+extern void aes_enc_rnd_sub( uint8_t* s                    );
+extern void aes_enc_rnd_row( uint8_t* s                    );
+extern void aes_enc_rnd_mix( uint8_t* s                    );
+
 void aes_enc_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_key( s, rk );
 }
-#endif
-#if ( LIBSCARV_CONF_AES_ROUND_SPLIT ) && ( !LIBSCARV_CONF_AES_ENC_ITER_EXTERN )
+
 void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_sub( s     );
   aes_enc_rnd_row( s     );
   aes_enc_rnd_mix( s     );
   aes_enc_rnd_key( s, rk );
 }
-#endif
-#if ( LIBSCARV_CONF_AES_ROUND_SPLIT ) && ( !LIBSCARV_CONF_AES_ENC_FINI_EXTERN ) 
+
 void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
   aes_enc_rnd_sub( s     );
   aes_enc_rnd_row( s     );
@@ -21,9 +24,8 @@ void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
 }
 #endif
 
-#if ( !LIBSCARV_CONF_AES_ENC_EXP_STEP_EXTERN )
 void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rcon ) {
-  #if !( LIBSCARV_CONF_AES_ROUND_PACK )
+  #if ( !LIBSCARV_CONF_AES_ROUND_PACK )
   r[  0 ] = rcon ^ AES_ENC_SBOX[ rk[ 13 ] ] ^ rk[  0 ];
   r[  1 ] =        AES_ENC_SBOX[ rk[ 14 ] ] ^ rk[  1 ];
   r[  2 ] =        AES_ENC_SBOX[ rk[ 15 ] ] ^ rk[  2 ];
@@ -68,78 +70,68 @@ void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rcon ) {
              rp[ 3 ] = t_3;
   #endif
 }
-#endif
 
-#if ( LIBSCARV_CONF_AES_PRECOMP_RK )
+#if ( LIBSCARV_CONF_AES_KEY_PRECOMP )
 void aes_enc_exp( uint8_t* r, const uint8_t* k ) {
-  uint8_t* rcp =      AES_RC;
-  uint8_t*  rp =                   r;
+  uint8_t* rcp = AES_RCON;
+  uint8_t*  rp = r;
 
-    #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
-    U8_TO_U8_N(   r, k );
-    #else
-    U8_TO_U8_T(   r, k );
-    #endif
+  #if ( !LIBSCARV_CONF_AES_ROUND_PACK )
+  U8_TO_U8_N(   r, k );
+  #else
+  U8_TO_U8_T(   r, k );
+  #endif
 
-  for( int i = 1; i < ( Nr + 1 ); i++ ) {
-    aes_enc_exp_step( rp + ( 4 * Nb ), rp, *(++rcp) ); rp += ( 4 * Nb );
+  for( int i = 1; i < ( AES_128_NR + 1 ); i++ ) {
+    aes_enc_exp_step( rp + ( 4 * AES_128_NB ), rp, *(++rcp) ); rp += ( 4 * AES_128_NB );
   }
 }
 #endif
 
-#if !( LIBSCARV_CONF_AES_ENC_EXTERN ) 
-void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx ) {  
-  uint8_t  s[ 4 * Nb ];
+#if ( !LIBSCARV_CONF_AES_ENC_EXTERN ) 
+void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {  
+  uint8_t  s[ 4 * AES_128_NB ];
 
-  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK )
-  uint8_t rk[ 4 * Nb ]; 
-  uint8_t* rcp =  AES_RC; 
+  #if                                        ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
+  uint8_t rk[ 4 * AES_128_NB ]; 
+  uint8_t* rcp =  AES_RCON; 
   uint8_t* rkp =  rk;
   #else
   uint8_t* rkp =  k; 
   #endif
 
-  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
+  #if   ( !LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   s, m );
   #else
   U8_TO_U8_T(   s, m );
   #endif
-  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK ) && !( LIBSCARV_CONF_AES_ROUND_PACK )
+
+  #if   ( !LIBSCARV_CONF_AES_ROUND_PACK ) && ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
   U8_TO_U8_N( rkp, k );
-  #elif !( LIBSCARV_CONF_AES_PRECOMP_RK ) &&  ( LIBSCARV_CONF_AES_ROUND_PACK )
+  #elif (  LIBSCARV_CONF_AES_ROUND_PACK ) && ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
   U8_TO_U8_T( rkp, k );
   #endif
 
   //      1 initial   round
     aes_enc_rnd_init( s, rkp );
   // Nr - 1 interated rounds
-  for( int i = 1; i < Nr; i++ ) {
-    #if   !( LIBSCARV_CONF_AES_PRECOMP_RK )
+  for( int i = 1; i < AES_128_NR; i++ ) {
+    #if ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
     aes_enc_exp_step( rkp, rkp, *(++rcp) );
     #else
-    rkp += ( 4 * Nb );
+    rkp += ( 4 * AES_128_NB );
     #endif
-		
-    #if ( LIBSCARV_CONF_AES_ENC_ITER_EXTERN ) 
-    aes_enc_rnd_iter( s, rkp,  sbox,  mulx );
-    #else
     aes_enc_rnd_iter( s, rkp );
-    #endif		
   }
   //      1 final     round
-  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK )
-  aes_enc_exp_step( rkp, rkp, *(++rcp) );
-  #else
-  rkp += ( 4 * Nb );
-  #endif
-	
-  #if ( LIBSCARV_CONF_AES_ENC_FINI_EXTERN )
-  aes_enc_rnd_fini( s, rkp,  sbox);
-  #else
-  aes_enc_rnd_fini( s, rkp );
-  #endif
+    #if ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
+    aes_enc_exp_step( rkp, rkp, *(++rcp) );
+    #else
+    rkp += ( 4 * AES_128_NB );
+    #endif
+    aes_enc_rnd_fini( s, rkp );
 
-  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
+  #if   ( !LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   r, s );
   #else
   U8_TO_U8_T(   r, s );

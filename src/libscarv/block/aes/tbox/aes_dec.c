@@ -1,6 +1,6 @@
 #include "aes_dec.h"
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )
+#if defined( LIBSCARV_CONF_AES_TBOX_PRECOMP )
 #define AES_DEC_TBOX_X {                                                                      \
   TUPLE(52,A7,51,F4,50), TUPLE(09,65,7E,41,53), TUPLE(6A,A4,1A,17,C3), TUPLE(D5,5E,3A,27,96), \
   TUPLE(30,6B,3B,AB,CB), TUPLE(36,45,1F,9D,F1), TUPLE(A5,58,AC,FA,AB), TUPLE(38,03,4B,E3,93), \
@@ -85,17 +85,19 @@ uint32_t AES_DEC_TBOX_4[] = AES_DEC_TBOX_X;
 #undef TUPLE
 #endif
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_RK )
+#include <scarv/block/aes/aes_dec_imp.h>
+
+#if defined( LIBSCARV_CONF_AES_KEY_PRECOMP )
 void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
   uint32_t* rp = ( uint32_t* )( r );
 
   aes_enc_exp( r, k );
   
-  for( int i = 1; i < Nr; i++ ) {
-    uint32_t t_0 = rp[ ( Nb * i ) + 0 ];
-    uint32_t t_1 = rp[ ( Nb * i ) + 1 ];
-    uint32_t t_2 = rp[ ( Nb * i ) + 2 ];
-    uint32_t t_3 = rp[ ( Nb * i ) + 3 ];
+  for( int i = 1; i < AES_128_NR; i++ ) {
+    uint32_t t_0 = rp[ ( i * AES_128_NB ) + 0 ];
+    uint32_t t_1 = rp[ ( i * AES_128_NB ) + 1 ];
+    uint32_t t_2 = rp[ ( i * AES_128_NB ) + 2 ];
+    uint32_t t_3 = rp[ ( i * AES_128_NB ) + 3 ];
 
     t_0 = AES_DEC_TBOX_0[ AES_ENC_TBOX_4[ ( t_0 >>  0 ) & 0xFF ] & 0xFF ] ^
           AES_DEC_TBOX_1[ AES_ENC_TBOX_4[ ( t_0 >>  8 ) & 0xFF ] & 0xFF ] ^
@@ -114,16 +116,16 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
           AES_DEC_TBOX_2[ AES_ENC_TBOX_4[ ( t_3 >> 16 ) & 0xFF ] & 0xFF ] ^
           AES_DEC_TBOX_3[ AES_ENC_TBOX_4[ ( t_3 >> 24 ) & 0xFF ] & 0xFF ] ;
 
-    rp[ ( Nb * i ) + 0 ] = t_0;
-    rp[ ( Nb * i ) + 1 ] = t_1;
-    rp[ ( Nb * i ) + 2 ] = t_2;
-    rp[ ( Nb * i ) + 3 ] = t_3;
+    rp[ ( i * AES_128_NB ) + 0 ] = t_0;
+    rp[ ( i * AES_128_NB ) + 1 ] = t_1;
+    rp[ ( i * AES_128_NB ) + 2 ] = t_2;
+    rp[ ( i * AES_128_NB ) + 3 ] = t_3;
   }
 }
 #endif
 
 void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k ) {
-  uint32_t *rkp = ( Nb * Nr ) + ( uint32_t* )( k ), t_0, t_1, t_2, t_3, t_4, t_5, t_6, t_7;
+  uint32_t *rkp = ( AES_128_NB * AES_128_NR ) + ( uint32_t* )( k ), t_0, t_1, t_2, t_3, t_4, t_5, t_6, t_7;
 
   U8_TO_U32_LE( t_0, c,  0 ); U8_TO_U32_LE( t_1, c,  4 );
   U8_TO_U32_LE( t_2, c,  8 ); U8_TO_U32_LE( t_3, c, 12 );
@@ -131,7 +133,7 @@ void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k ) {
   //      1 initial   round
     AES_DEC_RND_INIT();
   // Nr - 1 interated rounds
-  for( int i = 1; i < Nr; i++ ) {
+  for( int i = 1; i < AES_128_NR; i++ ) {
     AES_DEC_RND_ITER();
   }
   //      1 final     round

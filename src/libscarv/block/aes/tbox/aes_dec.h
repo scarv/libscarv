@@ -1,28 +1,31 @@
-#ifndef __AES_DEC_H
-#define __AES_DEC_H
+#ifndef __LIBSCARV_AES_DEC_H
+#define __LIBSCARV_AES_DEC_H
 
-#include "util.h"
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
 
-#include "aes_conf.h"
-#include "aes_rc.h"
+#include <scarv/block/aes/aes_conf.h>
+#include <scarv/block/aes/aes_divx.h>
+#include <scarv/block/aes/aes_mulx.h>
+#include <scarv/block/aes/aes_rcon.h>
+#include <scarv/block/aes/aes_sbox.h>
 
-#include "aes_enc.h"
-#include "aes_dec_imp.h"
+#include <scarv/block/aes/aes_enc.h>
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )
+#if ( LIBSCARV_CONF_AES_TBOX_PRECOMP )
 extern uint32_t AES_DEC_TBOX_0[];
 extern uint32_t AES_DEC_TBOX_1[];
 extern uint32_t AES_DEC_TBOX_2[];
 extern uint32_t AES_DEC_TBOX_3[];
 extern uint32_t AES_DEC_TBOX_4[];
 #else
-#error "no implementation for !defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )"
+#error "no implementation for !LIBSCARV_CONF_AES_TBOX_PRECOMP"
 #endif
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_RK )
+#if ( LIBSCARV_CONF_AES_KEY_PRECOMP )
 extern void aes_dec_exp( uint8_t* r, const uint8_t* k );
 #else
-#error "no implementation for !defined( LIBSCARV_CONF_AES_PRECOMP_RK )"
+#error "no implementation for !LIBSCARV_CONF_AES_KEY_PRECOMP"
 #endif
 
 extern void aes_dec( uint8_t* r, uint8_t* c, uint8_t* rk );
