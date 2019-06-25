@@ -176,22 +176,19 @@ b) a resource for benchmarking and evaluation.*
 #### The `libscarv` library
 
 - The `libscarv` library is a set of individual kernels; 
-  for some
-  kernel
-  `X`,
   the associated             implementation is housed in
 
   ```sh
-  ${REPO_HOME}/src/libscarv/X
+  ${REPO_HOME}/src/libscarv/${KERNEL}
   ```
 
 - The directory housing a kernel implementation is structured per
 
   ```sh
-  ${REPO_HOME}/src/libscarv/X
-  ${REPO_HOME}/src/libscarv/X/native
-  ${REPO_HOME}/src/libscarv/X/riscv
-  ${REPO_HOME}/src/libscarv/X/riscv-xcrypto
+  ${REPO_HOME}/src/libscarv/${KERNEL}
+  ${REPO_HOME}/src/libscarv/${KERNEL}/native
+  ${REPO_HOME}/src/libscarv/${KERNEL}/riscv
+  ${REPO_HOME}/src/libscarv/${KERNEL}/riscv-xcrypto
   ```
  
   i.e., there are sub-directories for *each* target architecture.
@@ -200,13 +197,10 @@ b) a resource for benchmarking and evaluation.*
 
 - Forming part of a larger test suite, each kernel has an associated
   test driver;
-  for some
-  kernel
-  `X`,
   the associated test driver implementation is housed in
 
   ```sh
-  ${REPO_HOME}/src/test/X
+  ${REPO_HOME}/src/test/${KERNEL}
   ```
 
 - For a given kernel, the test process is essentially:
@@ -214,20 +208,20 @@ b) a resource for benchmarking and evaluation.*
   1. build the test driver, producing a test executable
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/bin/test_X
+     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
      ```
 
   2. execute the test executable, an thereby generate a Python-based
      validation (meta-)program
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_X.py
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
      ```
 
   3. execute the validation (meta-)program, producing output into
 
      ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_X.log
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
      ```
 
      Essentially this means using Python (or appropriate library for
@@ -294,17 +288,45 @@ b) a resource for benchmarking and evaluation.*
     one could use
     `hash/*`.
 
-- For some 
-  target architecture
-  `X`,
-  two separate configuration files are required:
+- Two classes of configuration file are required:
 
-  - `${REPO_HOME}/conf/X.mk`,
-    which specifies configuration wrt. the built itself
-    (e.g., options that control the toolchain),
-  - `${REPO_HOME}/conf/X.conf`,
-    which specifies configuration wrt. the library
-    (i.e., options that control features in the source code).
+  1. `${REPO_HOME}/conf/${ARCH}.mk`,
+     which specifies configuration wrt. the built itself
+     (e.g., options that control the toolchain),
+  2. `${REPO_HOME}/conf/${ARCH}.conf`,
+     which specifies configuration wrt. the library
+     (i.e., options that control features in the source code).
+
+- A given kernel implementation *may* be configurable via the second 
+  class of configuration file, st. a *family* of implementations can 
+  be selected between: 
+
+  - the configuration header file
+    [`${REPO_HOME}/src/libscarv/share/conf.h`](./src/libscarv/share/conf.h)
+    is populated using the configuration file; 
+    it includes documentation for each configuration symbol,
+
+  - configuration symbols are made available in the source code via
+    application of the
+    [C pre-processor](https://en.wikipedia.org/wiki/C_preprocessor),
+    and follow a standard namespace, i.e.,
+
+    ```
+    LIBSCARV_CONF_${KERNEL}_${FUNCTION}_${PROPERTY}
+    ```
+
+    with some standard(ish) properties including the following:
+
+    | Property  | Description                                                                                                                        |
+    | :-------- | :--------------------------------------------------------------------------------------------------------------------------------- |
+    |  `ENABLE` |  enables (i.e., includes) functionality (assuming default is to disable it)                                                        |
+    | `DISABLE` | disables (i.e., excludes) functionality (assuming default is to  enable it)                                                        |
+    | `PRECOMP` | support functionality via pre-computation                                                                                          |
+    |  `EXTERN` | uses a architecture-specific (typically assembly language) vs. architecture-specific (typically C) implementation of functionality |
+
+  - if a kernel cannot support a given configuration symbol, it must
+    produce an error: it should be impossible to build the library 
+    using a configuration that would cause it to (silently) fail,
 
 <!--- -------------------------------------------------------------------- --->
 

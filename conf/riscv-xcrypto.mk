@@ -17,10 +17,10 @@ export TOOL_PREFIX_TARGET = riscv32-
 export TOOL_PREFIX_VENDOR = unknown-
 export TOOL_PREFIX_ABI    = elf-
 
-export TOOL_PREFIX        = ${RISCV}/bin/${PREFIX_TARGET}${PREFIX_VENDOR}${PREFIX_ABI}
+export TOOL_PREFIX        = ${RISCV}/bin/${TOOL_PREFIX_TARGET}${TOOL_PREFIX_VENDOR}${TOOL_PREFIX_ABI}
 
-export TEST_PREFIX        = 
-export TEST_SUFFIX        = 
+export TEST_PREFIX        = ${RISCV}/bin/spike --isa=${ARCH_SUBSET} ${RISCV}/riscv32-unknown-elf/bin/pk
+export TEST_SUFFIX        = | tail -n+2
 
 export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 

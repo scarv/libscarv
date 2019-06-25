@@ -13,6 +13,9 @@ export KERNELS ?= block/* hash/* mp/* stream/*
 
 export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefix ${REPO_HOME}/src/libscarv/,${KERNELS})))
 
+%-docker   :
+	@docker run --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/xcrypto" --env ARCHS="${ARCHS}" --env KERNELS="${KERNELS}" --volume ${PWD}:/mnt/scarv/xcrypto --rm scarv/xcrypto ${*}
+
 %-libscarv :
 	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/libscarv" ${*})
 %-test     :

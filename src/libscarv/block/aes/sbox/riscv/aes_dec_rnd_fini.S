@@ -1,3 +1,4 @@
+.include "scarv/share/conf.h"
 .include "aes_macro.S"
 
 #ifdef CONF_AES_ROUND_PACK

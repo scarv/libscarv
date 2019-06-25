@@ -1,10 +1,11 @@
+.include "scarv/share/conf.h"
 .include "aes_macro.S"
 
 #ifdef CONF_AES_ROUND_PACK
 
 .section .text
-.global aes_enc_rnd_init
-aes_enc_rnd_init:
+.global aes_dec_rnd_init
+aes_dec_rnd_init:
 // a0 =  uint32_t * s 
 // a1 =  uint32_t * k
 
@@ -17,3 +18,4 @@ AES_STW_RV  t0,t1,t2,t3,a0
 ret
 
 #endif
+

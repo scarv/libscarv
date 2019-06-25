@@ -14,4 +14,13 @@ KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
 KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
 KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
+ifeq (${CONF_AES_ENC_ENABLE},0)
+KERNEL_SOURCES := $(shell echo ${KERNEL_SOURCES} | tr ' ' '\n' | sed -e '/.*\(aes_enc\).*/d')
+KERNEL_HEADERS := $(shell echo ${KERNEL_HEADERS} | tr ' ' '\n' | sed -e '/.*\(aes_enc\).*/d')
+endif
+ifeq (${CONF_AES_DEC_ENABLE},0)
+KERNEL_SOURCES := $(shell echo ${KERNEL_SOURCES} | tr ' ' '\n' | sed -e '/.*\(aes_dec\).*/d')
+KERNEL_HEADERS := $(shell echo ${KERNEL_HEADERS} | tr ' ' '\n' | sed -e '/.*\(aes_dec\).*/d')
+endif
+
 $(eval $(call generate,${KERNEL},${KERNEL_PATHS},${KERNEL_HEADERS},${KERNEL_SOURCES}))

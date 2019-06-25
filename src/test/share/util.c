@@ -1,23 +1,23 @@
 #include "util.h"
 
-int   opt_debug           =     1;
+int   opt_debug           =    1;
 
-int   opt_trials          = 10000;
+int   opt_trials          = 1000;
 char  opt_prg[ 80 ]       = "/dev/urandom";
 
-int   opt_mp_mpn_min_limb =     4;
-int   opt_mp_mpn_max_limb =    16;
-int   opt_mp_mpz_min_limb =     4;
-int   opt_mp_mpz_max_limb =    16;
-int   opt_mp_mrz_min_limb =     4;
-int   opt_mp_mrz_max_limb =    32;
+int   opt_mp_mpn_min_limb =    4;
+int   opt_mp_mpn_max_limb =   16;
+int   opt_mp_mpz_min_limb =    4;
+int   opt_mp_mpz_max_limb =   16;
+int   opt_mp_mrz_min_limb =    4;
+int   opt_mp_mrz_max_limb =   32;
 
-int   opt_sha1_min_data   =     0;
-int   opt_sha1_max_data   =  1024;
-int   opt_sha2_min_data   =     0;
-int   opt_sha2_max_data   =  1024;
+int   opt_sha1_min_data   =    0;
+int   opt_sha1_max_data   = 1024;
+int   opt_sha2_min_data   =    0;
+int   opt_sha2_max_data   = 1024;
 
-FILE* prg                 =  NULL;
+FILE* prg                 = NULL;
 
 void opt_parse( int argc, char* argv[] ) {
   int opt;
@@ -118,7 +118,9 @@ void test_dump_msb( uint8_t* x, int l_x ) {
 int test_rand_int() {
   int t;
 
-  fread( &t, sizeof( int ), 1, prg );
+  while( !fread( &t, sizeof( int ), 1, prg ) ) {
+    /* spin */
+  }
 
   return t;
 }

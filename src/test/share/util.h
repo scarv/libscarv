@@ -1,6 +1,8 @@
 #ifndef __TEST_UTIL_H
 #define __TEST_UTIL_H
 
+#include <scarv/share/conf.h>
+
 #include <stdbool.h>
 #include  <stdint.h>
 #include   <stdio.h>
@@ -32,11 +34,11 @@
 #define OPT_SHA2_MIN_DATA   (   14 )
 #define OPT_SHA2_MAX_DATA   (   15 )
 
-#if   defined( LIBSCARV_ARCH_GENERIC       )
+#if   ( CONF_ARCH == CONF_ARCH_NATIVE        )
   #define TEST_MEASURE(stmt) {                                \
     stmt;                                                     \
   }
-#elif defined( LIBSCARV_ARCH_RISCV         )
+#elif ( CONF_ARCH == CONF_ARCH_RISCV         )
   #define TEST_MEASURE(stmt) {                                \
     uint32_t   cycle_pre,   cycle_post;                       \
     uint32_t instret_pre, instret_post;                       \
@@ -50,7 +52,7 @@
     printf( "# cycles = %lu\n",   cycle_post -   cycle_pre ); \
     printf( "# instrs = %lu\n", instret_post - instret_pre ); \
   }
-#elif defined( LIBSCARV_ARCH_RISCV_XCRYPTO )
+#elif ( CONF_ARCH == CONF_ARCH_RISCV_XCRYPTO )
   #define TEST_MEASURE(stmt) {                                \
     uint32_t   cycle_pre,   cycle_post;                       \
     uint32_t instret_pre, instret_post;                       \
