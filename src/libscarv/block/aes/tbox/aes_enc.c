@@ -1,6 +1,6 @@
 #include "aes_enc.h"
 
-#if defined( CONF_AES_PRECOMP_TBOX )
+#if defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )
 #define AES_ENC_TBOX_X {                                                                      \
   TUPLE(63,C6,A5      ), TUPLE(7C,F8,84      ), TUPLE(77,EE,99      ), TUPLE(7B,F6,8D      ), \
   TUPLE(F2,FF,0D      ), TUPLE(6B,D6,BD      ), TUPLE(6F,DE,B1      ), TUPLE(C5,91,54      ), \
@@ -85,7 +85,7 @@ uint32_t AES_ENC_TBOX_4[] = AES_ENC_TBOX_X;
 #undef TUPLE
 #endif
 
-#if defined( CONF_AES_PRECOMP_RK )
+#if defined( LIBSCARV_CONF_AES_PRECOMP_RK )
 void aes_enc_exp( uint8_t* r, const uint8_t* k ) {
   uint32_t* rp = ( uint32_t* )( r );
   

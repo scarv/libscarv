@@ -60,8 +60,8 @@
 }
 
 void aes_dec_rnd_key( uint8_t* s, const uint8_t* rk ) {
-  #if !( CONF_AES_ROUND_PACK   )
-  #if !( CONF_AES_ROUND_UNROLL )
+  #if !( LIBSCARV_CONF_AES_ROUND_PACK   )
+  #if !( LIBSCARV_CONF_AES_ROUND_UNROLL )
   for( int i = 0; i < 16; i++ ) {
     s[ i ] = s[ i ] ^ rk[ i ];
   }
@@ -83,7 +83,7 @@ void aes_dec_rnd_key( uint8_t* s, const uint8_t* rk ) {
 }
 
 void aes_dec_rnd_sub( uint8_t* s ) {
-  #if !( CONF_AES_ROUND_UNROLL )
+  #if !( LIBSCARV_CONF_AES_ROUND_UNROLL )
   for( int i = 0; i < 16; i++ ) {
     s[ i ] = AES_DEC_SBOX[ s[ i ] ];
   }
@@ -96,7 +96,7 @@ void aes_dec_rnd_sub( uint8_t* s ) {
 }
 
 void aes_dec_rnd_row( uint8_t* s ) {
-  #if !( CONF_AES_ROUND_PACK   )
+  #if !( LIBSCARV_CONF_AES_ROUND_PACK   )
   AES_DEC_RND_ROW_STEP(  1,  5,  9, 13,
                          5,  9, 13,  1 );
   AES_DEC_RND_ROW_STEP(  2,  6, 10, 14,
@@ -113,8 +113,8 @@ void aes_dec_rnd_row( uint8_t* s ) {
 }
 
 void aes_dec_rnd_mix( uint8_t* s ) {
-  #if !( CONF_AES_ROUND_PACK   )
-  #if !( CONF_AES_ROUND_UNROLL )
+  #if !( LIBSCARV_CONF_AES_ROUND_PACK   )
+  #if !( LIBSCARV_CONF_AES_ROUND_UNROLL )
   for( int i = 0; i < 4; i++, s += 4 ) {
     AES_DEC_RND_MIX_STEP(  0,  1,  2,  3 );
   }

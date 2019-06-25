@@ -1,6 +1,6 @@
 #include <scarv/mp/mpn/mpn_add.h>
 
-#if !( CONF_MP_MPN_ADD_EXTERN ) && ( CONF_MP_MPN_ADD_GUARD  )
+#if !( LIBSCARV_CONF_MP_MPN_ADD_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_ADD_GUARD  )
 limb_t mpn_add( limb_t* r, const limb_t* x, int l_x, 
                            const limb_t* y, int l_y ) {
 
@@ -19,7 +19,7 @@ limb_t mpn_add( limb_t* r, const limb_t* x, int l_x,
 }
 #endif
 
-#if !( CONF_MP_MPN_ADD_EXTERN ) && ( CONF_MP_MPN_ADD_UNROLL )
+#if !( LIBSCARV_CONF_MP_MPN_ADD_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_ADD_UNROLL )
 limb_t mpn_add( limb_t* r, const limb_t* x, int l_x, 
                            const limb_t* y, int l_y ) {
 

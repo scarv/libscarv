@@ -13,10 +13,10 @@
              (r) = __t_2 ^  __t_4;      \
 }
 
-#if defined( CONF_AES_PRECOMP_MULX )
+#if defined( LIBSCARV_CONF_AES_PRECOMP_MULX )
 extern uint8_t AES_MULX[];
 #else
-#error "no implementation for !defined( CONF_AES_PRECOMP_MULX )"
+#error "no implementation for !defined( LIBSCARV_CONF_AES_PRECOMP_MULX )"
 #endif
 
 #endif

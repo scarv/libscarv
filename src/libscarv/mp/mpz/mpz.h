@@ -48,7 +48,7 @@
 }
 
 typedef struct __mpz_t {
-  limb_t d[ CONF_MP_MPZ_MAX_LIMBS ];
+  limb_t d[ LIBSCARV_CONF_MP_MPZ_MAX_LIMBS ];
 
   int    l;
   int    s;

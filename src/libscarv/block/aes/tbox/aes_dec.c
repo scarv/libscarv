@@ -1,6 +1,6 @@
 #include "aes_dec.h"
 
-#if defined( CONF_AES_PRECOMP_TBOX )
+#if defined( LIBSCARV_CONF_AES_PRECOMP_TBOX )
 #define AES_DEC_TBOX_X {                                                                      \
   TUPLE(52,A7,51,F4,50), TUPLE(09,65,7E,41,53), TUPLE(6A,A4,1A,17,C3), TUPLE(D5,5E,3A,27,96), \
   TUPLE(30,6B,3B,AB,CB), TUPLE(36,45,1F,9D,F1), TUPLE(A5,58,AC,FA,AB), TUPLE(38,03,4B,E3,93), \
@@ -85,7 +85,7 @@ uint32_t AES_DEC_TBOX_4[] = AES_DEC_TBOX_X;
 #undef TUPLE
 #endif
 
-#if defined( CONF_AES_PRECOMP_RK )
+#if defined( LIBSCARV_CONF_AES_PRECOMP_RK )
 void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
   uint32_t* rp = ( uint32_t* )( r );
 

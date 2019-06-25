@@ -1,6 +1,6 @@
 #include <scarv/mp/mpn/mpn_mul.h>
 
-#if !( CONF_MP_MPN_MUL_EXTERN ) && ( CONF_MP_MPN_MUL_OPERAND_SCANNING )
+#if !( LIBSCARV_CONF_MP_MPN_MUL_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_MUL_OPERAND_SCANNING )
 void mpn_mul( limb_t* r, const limb_t* x, int l_x, 
                          const limb_t* y, int l_y ) {
 
@@ -28,7 +28,7 @@ void mpn_mul( limb_t* r, const limb_t* x, int l_x,
 }
 #endif
 
-#if !( CONF_MP_MPN_MUL_EXTERN ) && ( CONF_MP_MPN_MUL_PRODUCT_SCANNING )
+#if !( LIBSCARV_CONF_MP_MPN_MUL_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_MUL_PRODUCT_SCANNING )
 void mpn_mul( limb_t* r, const limb_t* x, int l_x, 
                          const limb_t* y, int l_y ) {
 

@@ -1,7 +1,7 @@
 .include "scarv/share/conf.h"
 .include "aes_macro.S"
 
-#ifdef CONF_AES_ROUND_PACK
+#ifdef LIBSCARV_CONF_AES_ROUND_PACK
 
 .section .text
 .global aes_dec_rnd_init

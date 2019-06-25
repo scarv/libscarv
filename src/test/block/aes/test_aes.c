@@ -12,11 +12,11 @@ int test_aes_rand( uint8_t* r ) {
 
 // ============================================================================
 
-#if ( CONF_AES_ENC_ENABLE )
+#if ( LIBSCARV_CONF_AES_ENC_ENABLE )
 void test_aes_enc( int n ) {
   uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
 
-  #if ( CONF_AES_PRECOMP_RK )  
+  #if ( LIBSCARV_CONF_AES_PRECOMP_RK )  
   uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
   #endif
 
@@ -29,7 +29,7 @@ void test_aes_enc( int n ) {
     test_aes_dump( "m", m );
     test_aes_dump( "k", k );
 
-    #if ( CONF_AES_PRECOMP_RK )  
+    #if ( LIBSCARV_CONF_AES_PRECOMP_RK )  
     aes_enc_exp( rk, k ); TEST_MEASURE( aes_enc( c, m, rk, AES_ENC_SBOX, AES_MULX ) );
     #else  
                           TEST_MEASURE( aes_enc( c, m,  k, AES_ENC_SBOX, AES_MULX ) );
@@ -51,11 +51,11 @@ void test_aes_enc( int n ) {
 }
 #endif
 
-#if ( CONF_AES_DEC_ENABLE )
+#if ( LIBSCARV_CONF_AES_DEC_ENABLE )
 void test_aes_dec( int n ) {
   uint8_t m[ 16 ], c[ 16 ], k[ 16 ];
 
-  #if ( CONF_AES_PRECOMP_RK )  
+  #if ( LIBSCARV_CONF_AES_PRECOMP_RK )  
   uint8_t rk[ ( Nr + 1 ) * ( 4 * Nb ) ];
   #endif
 
@@ -68,7 +68,7 @@ void test_aes_dec( int n ) {
     test_aes_dump( "c", c );
     test_aes_dump( "k", k );
 
-    #if ( CONF_AES_PRECOMP_RK )  
+    #if ( LIBSCARV_CONF_AES_PRECOMP_RK )  
     aes_dec_exp( rk, k ); TEST_MEASURE( aes_dec( m, c, rk, AES_DEC_SBOX, AES_MULX ) );
     #else  
                           TEST_MEASURE( aes_dec( m, c,  k, AES_DEC_SBOX, AES_MULX ) );
@@ -95,13 +95,13 @@ void test_aes_dec( int n ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys, binascii, Crypto.Cipher.AES as AES" );
 
-  printf( "%d\n", CONF_AES_ENC_ENABLE );
-  printf( "%d\n", CONF_AES_DEC_ENABLE );
+  printf( "%d\n", LIBSCARV_CONF_AES_ENC_ENABLE );
+  printf( "%d\n", LIBSCARV_CONF_AES_DEC_ENABLE );
 
-  #if ( CONF_AES_ENC_ENABLE )
+  #if ( LIBSCARV_CONF_AES_ENC_ENABLE )
   test_aes_enc( opt_trials );
   #endif
-  #if ( CONF_AES_DEC_ENABLE )
+  #if ( LIBSCARV_CONF_AES_DEC_ENABLE )
   test_aes_dec( opt_trials );
   #endif
 

@@ -1,5 +1,5 @@
-#ifndef __AES_CONF_H
-#define __AES_CONF_H
+#ifndef __AES_LIBSCARV_CONF_H
+#define __AES_LIBSCARV_CONF_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

@@ -216,7 +216,7 @@ void KeccakP400RoundReference(tKeccak400Lane *A, unsigned int indexRound)
     A[index(0, 0)] ^= KeccakP400RoundConstants[indexRound];
 }
 
-#ifndef CONF_KECCAKP400_ROUND_EXTERN
+#ifndef LIBSCARV_CONF_KECCAKP400_ROUND_EXTERN
 void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound)
 {
     KeccakP400RoundReference(state,indexRound);

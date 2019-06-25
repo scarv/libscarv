@@ -194,7 +194,7 @@ void sparx_key_schedule(uint16_t subkeys[][2*ROUNDS_PER_STEPS], uint16_t * maste
 /* Encryption and decryption */
 /* ========================= */
 
-#ifdef CONF_SPARX_EXTERN
+#ifdef LIBSCARV_CONF_SPARX_EXTERN
 
 void sparx_encrypt(uint16_t * x, uint16_t k[][2*ROUNDS_PER_STEPS]) {
     sparx_encrypt_64_128(x,k);

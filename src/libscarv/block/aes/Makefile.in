@@ -7,18 +7,18 @@
 KERNEL          = block/aes
 
 KERNEL_PATHS    = ${REPO_HOME}/src/libscarv/${KERNEL}/share
-KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${CONF_AES_TYPE}
-KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${CONF_AES_TYPE}/${ARCH}
+KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${LIBSCARV_CONF_AES_TYPE}
+KERNEL_PATHS   += ${REPO_HOME}/src/libscarv/${KERNEL}/${LIBSCARV_CONF_AES_TYPE}/${ARCH}
 
 KERNEL_HEADERS  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.h))
 KERNEL_SOURCES  = $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.c))
 KERNEL_SOURCES += $(foreach PATH,${KERNEL_PATHS},$(wildcard ${PATH}/*.S))
 
-ifeq (${CONF_AES_ENC_ENABLE},0)
+ifeq (${LIBSCARV_CONF_AES_ENC_ENABLE},0)
 KERNEL_SOURCES := $(shell echo ${KERNEL_SOURCES} | tr ' ' '\n' | sed -e '/.*\(aes_enc\).*/d')
 KERNEL_HEADERS := $(shell echo ${KERNEL_HEADERS} | tr ' ' '\n' | sed -e '/.*\(aes_enc\).*/d')
 endif
-ifeq (${CONF_AES_DEC_ENABLE},0)
+ifeq (${LIBSCARV_CONF_AES_DEC_ENABLE},0)
 KERNEL_SOURCES := $(shell echo ${KERNEL_SOURCES} | tr ' ' '\n' | sed -e '/.*\(aes_dec\).*/d')
 KERNEL_HEADERS := $(shell echo ${KERNEL_HEADERS} | tr ' ' '\n' | sed -e '/.*\(aes_dec\).*/d')
 endif

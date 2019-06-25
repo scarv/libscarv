@@ -1,6 +1,6 @@
 #include <scarv/mp/mpn/mpn_sub.h>
 
-#if !( CONF_MP_MPN_SUB_EXTERN ) && ( CONF_MP_MPN_SUB_GUARD  )
+#if !( LIBSCARV_CONF_MP_MPN_SUB_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_SUB_GUARD  )
 limb_t mpn_sub( limb_t* r, const limb_t* x, int l_x, 
                            const limb_t* y, int l_y ) {
 
@@ -19,7 +19,7 @@ limb_t mpn_sub( limb_t* r, const limb_t* x, int l_x,
 }
 #endif
 
-#if !( CONF_MP_MPN_SUB_EXTERN ) && ( CONF_MP_MPN_SUB_UNROLL )
+#if !( LIBSCARV_CONF_MP_MPN_SUB_EXTERN ) && ( LIBSCARV_CONF_MP_MPN_SUB_UNROLL )
 limb_t mpn_sub( limb_t* r, const limb_t* x, int l_x, 
                            const limb_t* y, int l_y ) {
 

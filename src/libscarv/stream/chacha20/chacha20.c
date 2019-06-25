@@ -10,10 +10,10 @@
 
 /*!
 @brief Implements the ChaCha20 block transformation
-@details if CONF_CHACHA20_BLOCK_EXTERN is defined, then an assembly
+@details if LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN is defined, then an assembly
     implementation is looked for in src/chacha20/<ARCH>/
 */
-#ifndef CONF_CHACHA20_BLOCK_EXTERN
+#ifndef LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN
 void chacha20_block(
     uint32_t output[16], //!< Output array
     uint32_t input [16]  //!< Input array

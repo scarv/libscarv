@@ -7,7 +7,7 @@ aes_enc_rnd_fini:
 // a1 =  uint32_t * k
 // a2 =	uint8_t * sbox
 
-#ifdef CONF_AES_ROUND_PACK
+#ifdef LIBSCARV_CONF_AES_ROUND_PACK
 // load
 AES_LDW_XC      c0,c1,c2,c3, a0
 // sub

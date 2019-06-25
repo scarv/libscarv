@@ -54,7 +54,7 @@ round_consts:
     .hword 0x0080
     .hword 0x800a
     .hword 0x000a
-.if CONF_KECCAKP400_INDEX_FUNC == 1
+.if LIBSCARV_CONF_KECCAKP400_INDEX_FUNC == 1
 mod5_lut:
     .hword 0 << 1# 0
     .hword 1 << 1# 1
@@ -85,7 +85,7 @@ mod5_lut:
 .endif
 
 .macro MOD5 A, B, C
-    .if CONF_KECCAKP400_INDEX_FUNC==1
+    .if LIBSCARV_CONF_KECCAKP400_INDEX_FUNC==1
         add     \A, \A, \C
         lbu     \A, 0(\A)
     .else
@@ -129,7 +129,7 @@ KeccakP400Round:
     la      a7, rho_off
     la      a6, temp_a
 
-    .if CONF_KECCAKP400_INDEX_FUNC
+    .if LIBSCARV_CONF_KECCAKP400_INDEX_FUNC
         la      a5, mod5_lut
     .endif
 

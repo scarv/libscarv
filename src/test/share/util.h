@@ -34,11 +34,11 @@
 #define OPT_SHA2_MIN_DATA   (   14 )
 #define OPT_SHA2_MAX_DATA   (   15 )
 
-#if   ( CONF_ARCH == CONF_ARCH_NATIVE        )
+#if   ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_NATIVE        )
   #define TEST_MEASURE(stmt) {                                \
     stmt;                                                     \
   }
-#elif ( CONF_ARCH == CONF_ARCH_RISCV         )
+#elif ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV         )
   #define TEST_MEASURE(stmt) {                                \
     uint32_t   cycle_pre,   cycle_post;                       \
     uint32_t instret_pre, instret_post;                       \
@@ -52,7 +52,7 @@
     printf( "# cycles = %lu\n",   cycle_post -   cycle_pre ); \
     printf( "# instrs = %lu\n", instret_post - instret_pre ); \
   }
-#elif ( CONF_ARCH == CONF_ARCH_RISCV_XCRYPTO )
+#elif ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV_XCRYPTO )
   #define TEST_MEASURE(stmt) {                                \
     uint32_t   cycle_pre,   cycle_post;                       \
     uint32_t instret_pre, instret_post;                       \

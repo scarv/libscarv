@@ -8,7 +8,7 @@ aes_enc_rnd_iter:
 // a2 =	uint8_t * sbox
 // a3 =	uint8_t * mulx
 
-#ifdef CONF_AES_ROUND_PACK
+#ifdef LIBSCARV_CONF_AES_ROUND_PACK
 
 //load
 AES_LDW_XC      c0,c1,c2,c3, a0	

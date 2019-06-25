@@ -9,7 +9,7 @@ aes_dec:
 // a3 =	uint8_t * sbox
 // a4 =	uint8_t * mulx
 
-#ifdef CONF_AES_ROUND_PACK
+#ifdef LIBSCARV_CONF_AES_ROUND_PACK
 
 //load 
 AES_LDW_T_XC	c0,c1,c2,c3, c9,c10, a1

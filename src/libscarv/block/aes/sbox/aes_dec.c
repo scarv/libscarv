@@ -1,6 +1,6 @@
 #include <scarv/block/aes/aes_dec.h>
 
-#if ( CONF_AES_PRECOMP_SBOX )
+#if ( LIBSCARV_CONF_AES_PRECOMP_SBOX )
 uint8_t AES_DEC_SBOX[] = { 
   0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 
   0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB,
@@ -37,15 +37,15 @@ uint8_t AES_DEC_SBOX[] = {
 };
 #endif
 
-#if ( CONF_AES_ROUND_SPLIT )
+#if ( LIBSCARV_CONF_AES_ROUND_SPLIT )
 
-#if !( CONF_AES_DEC_INIT_EXTERN ) 
+#if !( LIBSCARV_CONF_AES_DEC_INIT_EXTERN ) 
 void aes_dec_rnd_init( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_key( s, rk );
 }
 #endif
 
-#if !( CONF_AES_DEC_ITER_EXTERN ) 
+#if !( LIBSCARV_CONF_AES_DEC_ITER_EXTERN ) 
 void aes_dec_rnd_iter( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_sub( s     );
   aes_dec_rnd_row( s     );
@@ -54,7 +54,7 @@ void aes_dec_rnd_iter( uint8_t* s, uint8_t* rk ) {
 }
 #endif
 
-#if !( CONF_AES_DEC_FINI_EXTERN )
+#if !( LIBSCARV_CONF_AES_DEC_FINI_EXTERN )
 void aes_dec_rnd_fini( uint8_t* s, uint8_t* rk ) {
   aes_dec_rnd_sub( s     );
   aes_dec_rnd_row( s     );
@@ -65,7 +65,7 @@ void aes_dec_rnd_fini( uint8_t* s, uint8_t* rk ) {
 #endif
 
 void aes_dec_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc ) {
-  #if !( CONF_AES_ROUND_PACK )
+  #if !( LIBSCARV_CONF_AES_ROUND_PACK )
   r[ 15 ] =                    rk[ 11 ]   ^ rk[ 15 ];
   r[ 14 ] =                    rk[ 10 ]   ^ rk[ 14 ];
   r[ 13 ] =                    rk[  9 ]   ^ rk[ 13 ];
@@ -110,13 +110,13 @@ void aes_dec_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc ) {
   #endif
 }
 
-#if ( CONF_AES_PRECOMP_RK )
+#if ( LIBSCARV_CONF_AES_PRECOMP_RK )
 void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
-  #if   ( CONF_AES_KEY_FWD )
+  #if   ( LIBSCARV_CONF_AES_KEY_FWD )
   uint8_t* rcp =      AES_RC;
   uint8_t*  rp =                   r;
 
-  #if                                      !( CONF_AES_ROUND_PACK )
+  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   r, k );
   #else
   U8_TO_U8_T(   r, k );
@@ -127,7 +127,7 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
   }
 
   //transposition KEY array for doing transpose sub-row-key-mix in iterative loop in the case of xcrypto AES instructions
-  #if (( CONF_AES_DEC_ITER_EXTERN )||( CONF_AES_DEC_EXTERN )) && !( CONF_AES_ROUND_PACK )
+  #if (( LIBSCARV_CONF_AES_DEC_ITER_EXTERN )||( LIBSCARV_CONF_AES_DEC_EXTERN )) && !( LIBSCARV_CONF_AES_ROUND_PACK )
   uint16_t* rph = ( uint16_t * )r; 
   uint16_t t;
   for( int i = 1; i < (Nr); i++ ) {
@@ -136,11 +136,11 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
     t = rph[3]; rph[3] = rph[7]; rph[7] = t;	
   }
   #endif
-#elif ( CONF_AES_KEY_REV )
+#elif ( LIBSCARV_CONF_AES_KEY_REV )
   uint8_t* rcp = Nr + AES_RC;
   uint8_t*  rp = ( 4 * Nb * Nr ) + r;
 
-  #if                                      !( CONF_AES_ROUND_PACK )
+  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   rp, k );
   #else
   U8_TO_U8_T(   rp, k );
@@ -153,15 +153,15 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
 }
 #endif
 
-#if !( CONF_AES_DEC_EXTERN )
+#if !( LIBSCARV_CONF_AES_DEC_EXTERN )
 void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx ) {  
   uint8_t  s[ 4 * Nb ];
 
-  #if   !( CONF_AES_PRECOMP_RK ) &&  ( CONF_AES_KEY_FWD )
+  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK ) &&  ( LIBSCARV_CONF_AES_KEY_FWD )
   uint8_t rk[ 4 * Nb ];
   uint8_t* rcp =      AES_RC;
   uint8_t* rkp =                   rk;
-  #elif !( CONF_AES_PRECOMP_RK ) &&  ( CONF_AES_KEY_REV )
+  #elif !( LIBSCARV_CONF_AES_PRECOMP_RK ) &&  ( LIBSCARV_CONF_AES_KEY_REV )
   uint8_t rk[ 4 * Nb ];
   uint8_t* rcp = Nr + AES_RC;
   uint8_t* rkp =                   rk;
@@ -169,19 +169,19 @@ void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx
   uint8_t* rkp = ( 4 * Nb * Nr ) +  k; 
   #endif
 
-  #if                                      !( CONF_AES_ROUND_PACK )
+  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   s, c );
   #else
   U8_TO_U8_T(   s, c );
   #endif
 
-  #if   !( CONF_AES_PRECOMP_RK ) && !( CONF_AES_ROUND_PACK )
+  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK ) && !( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N( rkp, k );
-  #elif !( CONF_AES_PRECOMP_RK ) &&  ( CONF_AES_ROUND_PACK )
+  #elif !( LIBSCARV_CONF_AES_PRECOMP_RK ) &&  ( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_T( rkp, k );
   #endif
 
-  #if   !( CONF_AES_PRECOMP_RK ) &&  ( CONF_AES_KEY_FWD )
+  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK ) &&  ( LIBSCARV_CONF_AES_KEY_FWD )
   for( int i = 1; i < ( Nr + 1 ); i++ ) {
     aes_enc_exp_step( rkp, rkp, *(++rcp) );
   }
@@ -191,32 +191,32 @@ void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k,  uint8_t* sbox,  uint8_t* mulx
   aes_dec_rnd_init( s, rkp );
   // Nr - 1 interated rounds
   for( int i = 1; i < Nr; i++ ) {
-    #if   !( CONF_AES_PRECOMP_RK )
+    #if   !( LIBSCARV_CONF_AES_PRECOMP_RK )
     aes_dec_exp_step( rkp, rkp, *(rcp--) );
     #else
     rkp -= ( 4 * Nb );
     #endif
 	
-	#if ( CONF_AES_DEC_ITER_EXTERN )
+	#if ( LIBSCARV_CONF_AES_DEC_ITER_EXTERN )
 	aes_dec_rnd_iter( s, rkp,  sbox,  mulx  );
 	#else
     aes_dec_rnd_iter( s, rkp );
 	#endif
   }
   //      1 final     round
-  #if   !( CONF_AES_PRECOMP_RK )
+  #if   !( LIBSCARV_CONF_AES_PRECOMP_RK )
   aes_dec_exp_step( rkp, rkp, *(rcp--) );
   #else
   rkp -= ( 4 * Nb );
   #endif
 
-  #if ( CONF_AES_DEC_FINI_EXTERN )
+  #if ( LIBSCARV_CONF_AES_DEC_FINI_EXTERN )
   aes_dec_rnd_fini( s, rkp,  sbox );
   #else
   aes_dec_rnd_fini( s, rkp );
   #endif
 
-  #if                                      !( CONF_AES_ROUND_PACK )
+  #if                                      !( LIBSCARV_CONF_AES_ROUND_PACK )
   U8_TO_U8_N(   r, s );
   #else
   U8_TO_U8_T(   r, s );

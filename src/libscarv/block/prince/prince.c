@@ -26,7 +26,7 @@ static uint64_t prince_round_consts[] = {
 
 
 //! Prince forward SBOX
-#ifdef CONF_PRINCE_SBOX_EXTERN
+#ifdef LIBSCARV_CONF_PRINCE_SBOX_EXTERN
 extern uint64_t prince_sbox(const uint64_t s_in);
 #else
 static uint64_t prince_sbox(const uint64_t s_in){
@@ -48,7 +48,7 @@ static uint64_t prince_sbox(const uint64_t s_in){
 #endif
 
 //! Inverse prince SBOX
-#ifdef CONF_PRINCE_ISBOX_EXTERN
+#ifdef LIBSCARV_CONF_PRINCE_ISBOX_EXTERN
 extern uint64_t prince_inv_sbox(const uint64_t s_in);
 #else
 static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
@@ -70,7 +70,7 @@ static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
 #endif
 
 //! Galois field matrix multiplication
-#ifdef CONF_PRINCE_GF_MUL_EXTERN
+#ifdef LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN
 extern uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]);
 #else
 static uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]){
@@ -85,7 +85,7 @@ static uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]){
 
 
 //! Matrix multiply step
-#ifdef CONF_PRINCE_MPRIME_EXTERN
+#ifdef LIBSCARV_CONF_PRINCE_MPRIME_EXTERN
 extern uint64_t prince_m_prime_layer(const uint64_t m_prime_in);
 #else
 static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
