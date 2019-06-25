@@ -1,5 +1,5 @@
-#ifndef __SHA2_256_H
-#define __SHA2_256_H
+#ifndef __LIBSCARV_SHA2_256_H
+#define __LIBSCARV_SHA2_256_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

@@ -54,13 +54,6 @@ BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}
 
-test :
-	echo ${ARCH}
-	echo ${KERNELS}
-	echo ${BUILD_TARGETS}
-	echo ${BUILD_SCRIPTS}
-	echo ${BUILD_RESULTS}
-
 clean    :
 	@rm --force --recursive ${BUILD_PATHS}
 

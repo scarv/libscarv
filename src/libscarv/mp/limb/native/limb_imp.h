@@ -1,5 +1,5 @@
-#ifndef __LIMB_IMP_H
-#define __LIMB_IMP_H
+#ifndef __LIBSCARV_LIMB_IMP_H
+#define __LIBSCARV_LIMB_IMP_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

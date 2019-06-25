@@ -1,5 +1,5 @@
-#ifndef __UTIL_H
-#define __UTIL_H
+#ifndef __LIBSCARV_UTIL_H
+#define __LIBSCARV_UTIL_H
 
 #include  <stdarg.h>
 #include <stdbool.h>

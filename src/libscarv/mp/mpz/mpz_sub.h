@@ -1,5 +1,5 @@
-#ifndef __MPZ_SUB_H
-#define __MPZ_SUB_H
+#ifndef __LIBSCARV_MPZ_SUB_H
+#define __LIBSCARV_MPZ_SUB_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

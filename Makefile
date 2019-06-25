@@ -17,9 +17,9 @@ export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefi
 	@docker run --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/xcrypto" --env ARCHS="${ARCHS}" --env KERNELS="${KERNELS}" --volume ${PWD}:/mnt/scarv/xcrypto --rm scarv/xcrypto ${*}
 
 %-libscarv :
-	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/libscarv" ${*})
+	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/libscarv" ${*} ;)
 %-test     :
-	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/test"     ${*})
+	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/test"     ${*} ;)
 
 venv  : ${REPO_HOME}/requirements.txt
 	@${REPO_HOME}/bin/venv.sh

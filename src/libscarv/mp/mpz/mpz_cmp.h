@@ -1,5 +1,5 @@
-#ifndef __MPZ_CMP_H
-#define __MPZ_CMP_H
+#ifndef __LIBSCARV_MPZ_CMP_H
+#define __LIBSCARV_MPZ_CMP_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

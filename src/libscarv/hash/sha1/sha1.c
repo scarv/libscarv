@@ -13,6 +13,7 @@ static uint8_t T[ 64 ];
 static uint64_t n_left; // bytes remaining
 static uint64_t n_done; // bytes processed so far
 
+#if ( !LIBSCARV_CONF_SHA1_COMP_EXTERN )
 void sha1_comp( const uint8_t* x ) {
   uint32_t W[ 80 ];
 
@@ -145,6 +146,7 @@ void sha1_comp( const uint8_t* x ) {
   H_3 += d;
   H_4 += e;
 }
+#endif
 
 void sha1_padd( uint8_t* x ) {
   int n_b = SHA1_SIZEOF_BLOCK;

@@ -1,5 +1,5 @@
-#ifndef __MRZ_EXP_H
-#define __MRZ_EXP_H
+#ifndef __LIBSCARV_MRZ_EXP_H
+#define __LIBSCARV_MRZ_EXP_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

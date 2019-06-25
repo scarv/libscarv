@@ -5,36 +5,25 @@
 #include <scarv/share/util.h>
 
 #include <scarv/block/aes/aes_conf.h>
-#include <scarv/block/aes/aes_rc.h>
-
-#include <scarv/block/aes/aes_dec.h>
-#include <scarv/block/aes/aes_enc_imp.h>
-
-#if ( LIBSCARV_CONF_AES_PRECOMP_SBOX )
-extern uint8_t AES_ENC_SBOX[];
-#else
-#error "no implementation for !LIBSCARV_CONF_AES_PRECOMP_SBOX"
-#endif
+#include <scarv/block/aes/aes_divx.h>
+#include <scarv/block/aes/aes_mulx.h>
+#include <scarv/block/aes/aes_rcon.h>
 
 #if ( LIBSCARV_CONF_AES_ROUND_SPLIT )
-
 extern void aes_enc_rnd_init( uint8_t* s, uint8_t* rk );
-
-#if ( LIBSCARV_CONF_AES_ENC_ITER_EXTERN )
-extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk, uint8_t* sbox, uint8_t* mulx );
-#else
+#endif
+#if ( LIBSCARV_CONF_AES_ROUND_SPLIT ) && ( !LIBSCARV_CONF_AES_ENC_ITER_EXTERN )
 extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk );
-#endif
-
-#if ( LIBSCARV_CONF_AES_ENC_FINI_EXTERN )
-extern void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk, uint8_t* sbox );
 #else
+extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk, uint8_t* sbox, uint8_t* mulx );
+#endif
+#if ( LIBSCARV_CONF_AES_ROUND_SPLIT ) && ( !LIBSCARV_CONF_AES_ENC_FINI_EXTERN )
 extern void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk );
+#else
+extern void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk, uint8_t* sbox );
 #endif
 
-#endif
-
-#if ( LIBSCARV_CONF_AES_PRECOMP_RK )
+#if ( LIBSCARV_CONF_AES_KEY_PRECOMP )
 extern void aes_enc_exp     ( uint8_t* r, const uint8_t*  k             );
 #endif
 extern void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rc );

@@ -1,5 +1,5 @@
-#ifndef __MPN_H
-#define __MPN_H
+#ifndef __LIBSCARV_MPN_H
+#define __LIBSCARV_MPN_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>

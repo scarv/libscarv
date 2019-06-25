@@ -75,13 +75,6 @@ ${BUILD_PATHS} :
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
 	@${TOOL_PREFIX}ar rcs ${@} ${^}
 
-test :
-	@echo ${ARCH}
-	@echo ${KERNELS}
-	@echo ${BUILD_HEADERS}
-	@echo ${BUILD_OBJECTS}
-	@echo ${BUILD_DUMPS}
-
 clean :
 	@rm --force --recursive ${BUILD_PATHS}
 

@@ -1,5 +1,5 @@
-#ifndef __AES_MULX_H
-#define __AES_MULX_H
+#ifndef __LIBSCARV_AES_MULX_H
+#define __LIBSCARV_AES_MULX_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
@@ -13,10 +13,10 @@
              (r) = __t_2 ^  __t_4;      \
 }
 
-#if defined( LIBSCARV_CONF_AES_PRECOMP_MULX )
+#if ( LIBSCARV_CONF_AES_MULX_PRECOMP )
 extern uint8_t AES_MULX[];
 #else
-#error "no implementation for !defined( LIBSCARV_CONF_AES_PRECOMP_MULX )"
+#error "no implementation for !LIBSCARV_CONF_AES_MULX_PRECOMP"
 #endif
 
 #endif

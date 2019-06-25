@@ -1,5 +1,5 @@
-#ifndef __MRZ_H
-#define __MRZ_H
+#ifndef __LIBSCARV_MRZ_H
+#define __LIBSCARV_MRZ_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
@@ -9,7 +9,7 @@
 #include <scarv/mp/mpn/mpn.h>
 #include <scarv/mp/mpz/mpz.h>
 
-typedef limb_t mrz_t[ LIBSCARV_CONF_MP_MRZ_MAX_LIMBS ];
+typedef limb_t mrz_t[ LIBSCARV_CONF_MRZ_MAX_LIMBS ];
 
 typedef struct{
    mrz_t     N; // modulus

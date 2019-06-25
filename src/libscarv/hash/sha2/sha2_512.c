@@ -46,6 +46,7 @@ static uint8_t T[ 128 ];
 static uint64_t n_left; // bytes remaining
 static uint64_t n_done; // bytes processed so far
 
+#if ( !LIBSCARV_CONF_SHA2_512_COMP_EXTERN )
 void sha2_512_comp( const uint8_t* x ) {
   uint64_t W[ 80 ];
 
@@ -100,6 +101,7 @@ void sha2_512_comp( const uint8_t* x ) {
   H_6 += g;
   H_7 += h;
 }
+#endif
 
 void sha2_512_padd( uint8_t* x ) {
   int n_b = SHA2_512_SIZEOF_BLOCK;

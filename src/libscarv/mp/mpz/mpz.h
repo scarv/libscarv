@@ -1,5 +1,5 @@
-#ifndef __MPZ_H
-#define __MPZ_H
+#ifndef __LIBSCARV_MPZ_H
+#define __LIBSCARV_MPZ_H
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
@@ -48,7 +48,7 @@
 }
 
 typedef struct __mpz_t {
-  limb_t d[ LIBSCARV_CONF_MP_MPZ_MAX_LIMBS ];
+  limb_t d[ LIBSCARV_CONF_MPZ_MAX_LIMBS ];
 
   int    l;
   int    s;
