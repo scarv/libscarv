@@ -173,7 +173,7 @@ b) a resource for benchmarking and evaluation.*
 
 ## Notes
 
-#### The `libscarv` library
+#### The library
 
 - The `libscarv` library is a set of individual kernels; 
   the associated             implementation is housed in
@@ -192,56 +192,6 @@ b) a resource for benchmarking and evaluation.*
   ```
  
   i.e., there are sub-directories for *each* target architecture.
-
-#### The `libscarv` test suite
-
-- Forming part of a larger test suite, each kernel has an associated
-  test driver;
-  the associated test driver implementation is housed in
-
-  ```sh
-  ${REPO_HOME}/src/test/${KERNEL}
-  ```
-
-- For a given kernel, the test process is essentially:
-
-  1. build the test driver, producing a test executable
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
-     ```
-
-  2. execute the test executable, an thereby generate a Python-based
-     validation (meta-)program
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
-     ```
-
-  3. execute the validation (meta-)program, producing output into
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
-     ```
-
-     Essentially this means using Python (or appropriate library for
-     it) as a 
-     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
-     if/where need be.
-
-  The test strategy used depends on the kernel: some use randomised 
-  testing, whereas others fixed, hard-coded test vectors.
-
-- Note that for the 
-  `riscv` 
-  and `
-  riscv-xcrypto` 
-  target architectures, execution of the test executable implies
-  *simulation* via a suitable version of Spike, i.e., either
-  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
-  or
-  [`scarv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim),
-  as supported by the proxy kernel.
 
 #### The build system
 
@@ -303,7 +253,8 @@ b) a resource for benchmarking and evaluation.*
 
   - the configuration header file
     [`${REPO_HOME}/src/libscarv/share/conf.h`](./src/libscarv/share/conf.h)
-    is populated using the configuration file; 
+    is populated using the configuration file, plus automatically
+    generated content stemming from `${ARCHS}` and `${KERNELS}`; 
     it includes documentation for each configuration symbol,
 
   - configuration symbols are made available in the source code via
@@ -326,7 +277,57 @@ b) a resource for benchmarking and evaluation.*
 
   - if a kernel cannot support a given configuration symbol, it must
     produce an error: it should be impossible to build the library 
-    using a configuration that would cause it to (silently) fail,
+    using a configuration that would cause it to (silently) fail.
+
+#### The test suite
+
+- Forming part of a larger test suite, each kernel has an associated
+  test driver;
+  the associated test driver implementation is housed in
+
+  ```sh
+  ${REPO_HOME}/src/test/${KERNEL}
+  ```
+
+- For a given kernel, the test process is essentially:
+
+  1. build the test driver, producing a test executable
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
+     ```
+
+  2. execute the test executable, an thereby generate a Python-based
+     validation (meta-)program
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
+     ```
+
+  3. execute the validation (meta-)program, producing output into
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
+     ```
+
+     Essentially this means using Python (or appropriate library for
+     it) as a 
+     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
+     if/where need be.
+
+  The test strategy used depends on the kernel: some use randomised 
+  testing, whereas others fixed, hard-coded test vectors.
+
+- Note that for the 
+  `riscv` 
+  and `
+  riscv-xcrypto` 
+  target architectures, execution of the test executable implies
+  *simulation* via a suitable version of Spike, i.e., either
+  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
+  or
+  [`scarv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim),
+  as supported by the proxy kernel.
 
 <!--- -------------------------------------------------------------------- --->
 

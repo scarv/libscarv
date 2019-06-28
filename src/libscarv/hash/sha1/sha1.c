@@ -1,3 +1,10 @@
+/* Copyright (C) 2019 SCARV project <info@scarv.org>
+ *
+ * Use of this source code is restricted per the MIT license, a copy of which 
+ * can be found at https://opensource.org/licenses/MIT (or should be included 
+ * as LICENSE.txt within the associated archive or repository).
+ */
+
 #include <scarv/hash/sha1/sha1.h>
 
 #define SHA1_R(a,b,c,d,e,w,k) {   \

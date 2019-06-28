@@ -1,3 +1,10 @@
+/* Copyright (C) 2019 SCARV project <info@scarv.org>
+ *
+ * Use of this source code is restricted per the MIT license, a copy of which 
+ * can be found at https://opensource.org/licenses/MIT (or should be included 
+ * as LICENSE.txt within the associated archive or repository).
+ */
+
 #include <scarv/hash/sha2/sha2_512.h>
 
 #define SHA2_512_S0(a) ( U64_RTR( a,  1 ) ^ U64_RTR( a,  8 ) ^ U64_SHR( a,  7 ) )
