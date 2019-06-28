@@ -58,6 +58,8 @@ endef
 
 # =============================================================================
 
+export LIBSCARV_CONF_ARCH = $(shell echo ${ARCHS} | tr [:lower:] [:upper:] | tr '-' '_')
+
 define kernel_enum
   $(shell find ${REPO_HOME}/src/libscarv/ -mindepth 2 -maxdepth 2 -type d -printf '%P\n')
 endef
@@ -66,6 +68,8 @@ define kernel_enable
 endef
 
 $(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(addsuffix _ENABLE,$(notdir $(shell echo ${KERNEL} | tr [:lower:] [:upper:])))) = $(call kernel_enable,${KERNEL})))
+
+# -----------------------------------------------------------------------------
 
 include ${REPO_HOME}/conf/${ARCH}.mk ${REPO_HOME}/conf/${ARCH}.conf 
 include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/Makefile.in ${REPO_HOME}/src/libscarv/share/Makefile.in
