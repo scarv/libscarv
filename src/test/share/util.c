@@ -5,12 +5,12 @@ int   opt_debug           =    1;
 int   opt_trials          = 1000;
 char  opt_prg[ 80 ]       = "/dev/urandom";
 
-int   opt_mp_mpn_min_limb =    4;
-int   opt_mp_mpn_max_limb =   16;
-int   opt_mp_mpz_min_limb =    4;
-int   opt_mp_mpz_max_limb =   16;
-int   opt_mp_mrz_min_limb =    4;
-int   opt_mp_mrz_max_limb =   32;
+int   opt_mpn_min_limb =    4;
+int   opt_mpn_max_limb =   16;
+int   opt_mpz_min_limb =    4;
+int   opt_mpz_max_limb =   16;
+int   opt_mrz_min_limb =    4;
+int   opt_mrz_max_limb =   32;
 
 int   opt_sha1_min_data   =    0;
 int   opt_sha1_max_data   = 1024;
@@ -23,82 +23,82 @@ void opt_parse( int argc, char* argv[] ) {
   int opt;
 
   struct option optspec[] = {
-    { "help",            no_argument,       NULL, OPT_HELP            },
-    { "debug",           required_argument, NULL, OPT_DEBUG           },
+    { "help",          no_argument,       NULL, OPT_HELP          },
+    { "debug",         required_argument, NULL, OPT_DEBUG         },
 
-    { "trials",          required_argument, NULL, OPT_TRIALS          },
-    { "prg",             required_argument, NULL, OPT_PRG             },
+    { "trials",        required_argument, NULL, OPT_TRIALS        },
+    { "prg",           required_argument, NULL, OPT_PRG           },
 
-    { "mp-mpn-min-limb", required_argument, NULL, OPT_MP_MPN_MIN_LIMB },
-    { "mp-mpn-max-limb", required_argument, NULL, OPT_MP_MPN_MAX_LIMB },
-    { "mp-mpz-min-limb", required_argument, NULL, OPT_MP_MPZ_MIN_LIMB },
-    { "mp-mpz-max-limb", required_argument, NULL, OPT_MP_MPZ_MAX_LIMB },
-    { "mp-mrz-min-limb", required_argument, NULL, OPT_MP_MRZ_MIN_LIMB },
-    { "mp-mrz-max-limb", required_argument, NULL, OPT_MP_MRZ_MAX_LIMB },
+    { "mpn-min-limb",  required_argument, NULL, OPT_MPN_MIN_LIMB  },
+    { "mpn-max-limb",  required_argument, NULL, OPT_MPN_MAX_LIMB  },
+    { "mpz-min-limb",  required_argument, NULL, OPT_MPZ_MIN_LIMB  },
+    { "mpz-max-limb",  required_argument, NULL, OPT_MPZ_MAX_LIMB  },
+    { "mrz-min-limb",  required_argument, NULL, OPT_MRZ_MIN_LIMB  },
+    { "mrz-max-limb",  required_argument, NULL, OPT_MRZ_MAX_LIMB  },
 
-    { "sha1-min-data",   required_argument, NULL, OPT_SHA1_MIN_DATA   },
-    { "sha1-max-data",   required_argument, NULL, OPT_SHA1_MAX_DATA   },
-    { "sha2-min-data",   required_argument, NULL, OPT_SHA2_MIN_DATA   },
-    { "sha2-max-data",   required_argument, NULL, OPT_SHA2_MAX_DATA   },
+    { "sha1-min-data", required_argument, NULL, OPT_SHA1_MIN_DATA },
+    { "sha1-max-data", required_argument, NULL, OPT_SHA1_MAX_DATA },
+    { "sha2-min-data", required_argument, NULL, OPT_SHA2_MIN_DATA },
+    { "sha2-max-data", required_argument, NULL, OPT_SHA2_MAX_DATA },
 
-    { NULL,           0,                 NULL, 0                      }
+    { NULL,            0,                 NULL, 0                 }
   };
 
   while( -1 != ( opt = getopt_long( argc, argv, "+", optspec, NULL ) ) ) {
     switch( opt ) {
-      case OPT_HELP            : fprintf( stderr, "usage: %s [options]                                           " "\n", argv[ 0 ] );
-                                 fprintf( stderr, "                                                              " "\n"            );
-                                 fprintf( stderr, "--help                    print usage information             " "\n"            );
-                                 fprintf( stderr, "--debug           <int>   verbosity of debug output           " "\n"            );
-                                 fprintf( stderr, "                                                              " "\n"            );
-                                 fprintf( stderr, "--trials          <int>   number of (randomised) trials       " "\n"            );
-                                 fprintf( stderr, "--prg             <file>  source of randomness                " "\n"            );
-                                 fprintf( stderr, "                                                              " "\n"            );
-                                 fprintf( stderr, "--mp-mpn-min-limb <int>   minimum number of limbs for mpn     " "\n"            );
-                                 fprintf( stderr, "--mp-mpn-max-limb <int>   maximum number of limbs for mpn     " "\n"            );
-                                 fprintf( stderr, "--mp-mpz-min-limb <int>   minimum number of limbs for mpz     " "\n"            );
-                                 fprintf( stderr, "--mp-mpz-max-limb <int>   maximum number of limbs for mpz     " "\n"            );
-                                 fprintf( stderr, "--mp-mrz-min-limb <int>   minimum number of limbs for mrz     " "\n"            );
-                                 fprintf( stderr, "--mp-mrz-max-limb <int>   maximum number of limbs for mrz     " "\n"            );
-                                 fprintf( stderr, "                                                              " "\n"            );
-                                 fprintf( stderr, "--sha1-min-data   <int>   minimum bytes of input data for SHA1" "\n"            );
-                                 fprintf( stderr, "--sha1-max-data   <int>   maximum bytes of input data for SHA1" "\n"            );
-                                 fprintf( stderr, "--sha2-min-data   <int>   minimum bytes of input data for SHA2" "\n"            );
-                                 fprintf( stderr, "--sha2-max-data   <int>   maximum bytes of input data for SHA2" "\n"            );
-                               
-                                 exit( EXIT_SUCCESS ); 
-                                 break;
+      case OPT_HELP          : fprintf( stderr, "usage: %s [options]                                           " "\n", argv[ 0 ] );
+                               fprintf( stderr, "                                                              " "\n"            );
+                               fprintf( stderr, "--help                    print usage information             " "\n"            );
+                               fprintf( stderr, "--debug           <int>   verbosity of debug output           " "\n"            );
+                               fprintf( stderr, "                                                              " "\n"            );
+                               fprintf( stderr, "--trials          <int>   number of (randomised) trials       " "\n"            );
+                               fprintf( stderr, "--prg             <file>  source of randomness                " "\n"            );
+                               fprintf( stderr, "                                                              " "\n"            );
+                               fprintf( stderr, "--mpn-min-limb <int>   minimum number of limbs for mpn        " "\n"            );
+                               fprintf( stderr, "--mpn-max-limb <int>   maximum number of limbs for mpn        " "\n"            );
+                               fprintf( stderr, "--mpz-min-limb <int>   minimum number of limbs for mpz        " "\n"            );
+                               fprintf( stderr, "--mpz-max-limb <int>   maximum number of limbs for mpz        " "\n"            );
+                               fprintf( stderr, "--mrz-min-limb <int>   minimum number of limbs for mrz        " "\n"            );
+                               fprintf( stderr, "--mrz-max-limb <int>   maximum number of limbs for mrz        " "\n"            );
+                               fprintf( stderr, "                                                              " "\n"            );
+                               fprintf( stderr, "--sha1-min-data   <int>   minimum bytes of input data for SHA1" "\n"            );
+                               fprintf( stderr, "--sha1-max-data   <int>   maximum bytes of input data for SHA1" "\n"            );
+                               fprintf( stderr, "--sha2-min-data   <int>   minimum bytes of input data for SHA2" "\n"            );
+                               fprintf( stderr, "--sha2-max-data   <int>   maximum bytes of input data for SHA2" "\n"            );
+                             
+                               exit( EXIT_SUCCESS ); 
+                               break;
 
-      case OPT_DEBUG           : opt_debug           = strtoul( optarg, NULL, 10 );
-                                 break;
+      case OPT_DEBUG         : opt_debug           = strtoul( optarg, NULL, 10 );
+                               break;
 
-      case OPT_TRIALS          : opt_trials          = strtoul( optarg, NULL, 10 );
-                                 break;
+      case OPT_TRIALS        : opt_trials          = strtoul( optarg, NULL, 10 );
+                               break;
 
-      case OPT_MP_MPN_MIN_LIMB : opt_mp_mpn_min_limb = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_MP_MPN_MAX_LIMB : opt_mp_mpn_max_limb = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_MP_MPZ_MIN_LIMB : opt_mp_mpz_min_limb = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_MP_MPZ_MAX_LIMB : opt_mp_mpz_max_limb = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_MP_MRZ_MIN_LIMB : opt_mp_mrz_min_limb = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_MP_MRZ_MAX_LIMB : opt_mp_mrz_max_limb = strtoul( optarg, NULL, 10 );
-                                 break;
+      case OPT_MPN_MIN_LIMB  : opt_mpn_min_limb = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_MPN_MAX_LIMB  : opt_mpn_max_limb = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_MPZ_MIN_LIMB  : opt_mpz_min_limb = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_MPZ_MAX_LIMB  : opt_mpz_max_limb = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_MRZ_MIN_LIMB  : opt_mrz_min_limb = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_MRZ_MAX_LIMB  : opt_mrz_max_limb = strtoul( optarg, NULL, 10 );
+                               break;
 
-      case OPT_SHA1_MIN_DATA   : opt_sha1_min_data   = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_SHA1_MAX_DATA   : opt_sha1_max_data   = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_SHA2_MIN_DATA   : opt_sha2_min_data   = strtoul( optarg, NULL, 10 );
-                                 break;
-      case OPT_SHA2_MAX_DATA   : opt_sha2_max_data   = strtoul( optarg, NULL, 10 );
-                                 break;
+      case OPT_SHA1_MIN_DATA : opt_sha1_min_data   = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_SHA1_MAX_DATA : opt_sha1_max_data   = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_SHA2_MIN_DATA : opt_sha2_min_data   = strtoul( optarg, NULL, 10 );
+                               break;
+      case OPT_SHA2_MAX_DATA : opt_sha2_max_data   = strtoul( optarg, NULL, 10 );
+                               break;
 
-      default                  : exit( EXIT_FAILURE ); 
-                                 break;
+      default                : exit( EXIT_FAILURE ); 
+                               break;
     }
   }
 }

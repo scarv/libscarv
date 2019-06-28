@@ -3,7 +3,4 @@
 
 #include "util.h"
 
-#include <scarv/block/aes/aes_enc.h>
-#include <scarv/block/aes/aes_dec.h>
-
 #endif

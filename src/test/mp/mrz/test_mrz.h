@@ -3,6 +3,4 @@
 
 #include "util.h"
 
-#include <scarv/mp/mrz/mrz.h>
-
 #endif

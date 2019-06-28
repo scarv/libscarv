@@ -75,7 +75,7 @@ void test_mrz_exp( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  test_mrz_exp( opt_trials, opt_mp_mrz_min_limb, opt_mp_mrz_max_limb );
+  test_mrz_exp( opt_trials, opt_mrz_min_limb, opt_mrz_max_limb );
 
   test_fini();
 

@@ -140,9 +140,9 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  test_mpn_add( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
-  test_mpn_sub( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
-  test_mpn_mul( opt_trials, opt_mp_mpn_min_limb, opt_mp_mpn_max_limb );
+  test_mpn_add( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
+  test_mpn_sub( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
+  test_mpn_mul( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
 
   test_fini();
 

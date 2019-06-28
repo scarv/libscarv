@@ -19,7 +19,33 @@
 
 /* ------------------------------------------------------------------------- */
 
-/** Specify AES implementation type (from @p sbox or @p tbox).
+/** Capture whether or not block/aes kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_AES_ENABLE               ${LIBSCARV_CONF_AES_ENABLE}
+
+/** Capture whether or not mp/limb   kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_LIMB_ENABLE              ${LIBSCARV_CONF_LIMB_ENABLE}
+/** Capture whether or not mp/mpn    kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_MPN_ENABLE               ${LIBSCARV_CONF_MPN_ENABLE}
+/** Capture whether or not mp/mpz    kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_MPZ_ENABLE               ${LIBSCARV_CONF_MPZ_ENABLE}
+/** Capture whether or not mp/mrz    kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_MRZ_ENABLE               ${LIBSCARV_CONF_MRZ_ENABLE}
+
+/** Capture whether or not hash/sha1 kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_SHA1_ENABLE              ${LIBSCARV_CONF_SHA1_ENABLE}
+/** Capture whether or not hash/sha2 kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_SHA2_ENABLE              ${LIBSCARV_CONF_SHA2_ENABLE}
+
+/* ------------------------------------------------------------------------- */
+
+/** Specify implementation type (from @p sbox or @p tbox).
   */
 #define LIBSCARV_CONF_AES_TYPE                 ${LIBSCARV_CONF_AES_TYPE}
 

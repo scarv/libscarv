@@ -6,8 +6,8 @@
 
 # =============================================================================
 
-# ${1} = kernel identifier
-# ${2} = kernel paths
+# ${1} = identifier (i.e., sub-directory)
+# ${2} = search path
 # ${3} = source file
 # ${4} = source pattern
 # ${5} = target pattern
@@ -37,8 +37,8 @@ endef
 
 # =============================================================================
 
-# ${1} = kernel identifier
-# ${2} = kernel paths
+# ${1} = identifier (i.e., sub-directory)
+# ${2} = search path
 # ${3} = header files (i.e.,      %.h)
 # ${4} = source files (i.e., %.c, %.S)
 
@@ -58,8 +58,17 @@ endef
 
 # =============================================================================
 
+define kernel_enum
+  $(shell find ${REPO_HOME}/src/libscarv/ -mindepth 2 -maxdepth 2 -type d -printf '%P\n')
+endef
+define kernel_enable
+  $(shell if [ "$(filter ${KERNELS},${1})" = "" ] ; then echo "0" ; else echo "1" ; fi)
+endef
+
+$(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(addsuffix _ENABLE,$(notdir $(shell echo ${KERNEL} | tr [:lower:] [:upper:])))) = $(call kernel_enable,${KERNEL})))
+
 include ${REPO_HOME}/conf/${ARCH}.mk ${REPO_HOME}/conf/${ARCH}.conf 
-include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/share/Makefile.in
+include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/Makefile.in ${REPO_HOME}/src/libscarv/share/Makefile.in
 
 BUILD_FILES   = ${BUILD_HEADERS} 
 BUILD_FILES  += ${BUILD_OBJECTS} 

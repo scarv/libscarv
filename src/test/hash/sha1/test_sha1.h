@@ -3,6 +3,4 @@
 
 #include "util.h"
 
-#include <scarv/hash/sha1/sha1.h>
-
 #endif

@@ -110,9 +110,9 @@ void test_mpz_mul( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  test_mpz_add( opt_trials, opt_mp_mpz_min_limb, opt_mp_mpz_max_limb );
-  test_mpz_sub( opt_trials, opt_mp_mpz_min_limb, opt_mp_mpz_max_limb );
-  test_mpz_mul( opt_trials, opt_mp_mpz_min_limb, opt_mp_mpz_max_limb );
+  test_mpz_add( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
+  test_mpz_sub( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
+  test_mpz_mul( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
 
   test_fini();
 
