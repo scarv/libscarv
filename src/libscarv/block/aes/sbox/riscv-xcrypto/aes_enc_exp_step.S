@@ -1,4 +1,6 @@
-
+#include "scarv/share/conf.h"
+.include "aes_macro.S"
+	
 .section .text
 .global aes_enc_exp_step
 aes_enc_exp_step:
@@ -6,7 +8,7 @@ aes_enc_exp_step:
 	# a1 = uint32_t * rk
 	# a2 = uint8 rc
 	
-#load 
+//load 
 	xc.ld.w c0,  0(a1)
 	xc.ld.w c1,  4(a1)
 	xc.ld.w c2,  8(a1)

@@ -13,22 +13,26 @@ extern void aes_enc_rnd_sub( uint8_t* s                    );
 extern void aes_enc_rnd_row( uint8_t* s                    );
 extern void aes_enc_rnd_mix( uint8_t* s                    );
 
-void aes_enc_rnd_init( uint8_t* s, uint8_t* rk ) {
-  aes_enc_rnd_key( s, rk );
-}
-
-void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
-  aes_enc_rnd_sub( s     );
-  aes_enc_rnd_row( s     );
-  aes_enc_rnd_mix( s     );
-  aes_enc_rnd_key( s, rk );
-}
-
-void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
-  aes_enc_rnd_sub( s     );
-  aes_enc_rnd_row( s     );
-  aes_enc_rnd_key( s, rk );
-}
+       void aes_enc_rnd_init( uint8_t* s, uint8_t* rk ) {
+         aes_enc_rnd_key( s, rk );
+       }
+       
+       void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk ) {
+         aes_enc_rnd_sub( s     );
+         aes_enc_rnd_row( s     );
+         aes_enc_rnd_mix( s     );
+         aes_enc_rnd_key( s, rk );
+       }
+       
+       void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk ) {
+         aes_enc_rnd_sub( s     );
+         aes_enc_rnd_row( s     );
+         aes_enc_rnd_key( s, rk );
+       }
+#else
+extern void aes_enc_rnd_init( uint8_t* s, uint8_t* rk );
+extern void aes_enc_rnd_iter( uint8_t* s, uint8_t* rk );
+extern void aes_enc_rnd_fini( uint8_t* s, uint8_t* rk );
 #endif
 
 void aes_enc_exp_step( uint8_t* r, const uint8_t* rk, uint8_t rcon ) {

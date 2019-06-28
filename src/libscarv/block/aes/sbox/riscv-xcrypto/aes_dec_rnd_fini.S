@@ -1,3 +1,4 @@
+#include "scarv/share/conf.h"
 .include "aes_macro.S"
 
 .section .text
@@ -7,7 +8,7 @@ aes_dec_rnd_fini:
 // a1 =  uint32_t * k
 // a2 =	uint8_t * sbox
 
-#ifdef LIBSCARV_CONF_AES_ROUND_PACK
+#if LIBSCARV_CONF_AES_ROUND_PACK
 //load
 AES_LDW_XC      c0,c1,c2,c3, a0
 //sub

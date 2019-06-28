@@ -1,16 +1,17 @@
-.include "scarv/share/conf.h"
+#include "scarv/share/conf.h"
 .include "aes_macro.S"
 
-#ifdef LIBSCARV_CONF_AES_ROUND_PACK
-
+.extern AES_DEC_SBOX
+.extern AES_MULX
+	
+#if LIBSCARV_CONF_AES_ROUND_PACK
+	
 .section .text
 .global aes_dec
 aes_dec:
 // a0 =  uint32_t * r
 // a1 =  uint32_t * c 
 // a2 =  uint32_t * k
-// a3 =	uint8_t * sbox	
-// a4 =	uint8_t * mulx	
 
 addi    sp,sp,-20
 sw      s1,4(sp)
@@ -18,6 +19,9 @@ sw      s2,8(sp)
 sw      s3,12(sp)
 sw      s4,16(sp)
 
+la a3, AES_DEC_SBOX
+la a4, AES_MULX
+	
 //load
 AES_LDW_T_RV	t0,t1,t2,t3, a1, a0
 // set key pointer from the end of array
