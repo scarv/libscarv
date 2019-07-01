@@ -4,11 +4,13 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+include ${REPO_HOME}/conf/default.mk
+
+# =============================================================================
+
 ifndef RISCV
   $(error "point RISCV environment variable at toolchain installation")
 endif
-
-# =============================================================================
 
 export ARCH_SUBSET        = rv32imac
 export ARCH_ABI           = ilp32

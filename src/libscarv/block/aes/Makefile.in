@@ -14,4 +14,4 @@ HEADERS  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.h))
 SOURCES  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.c))
 SOURCES += $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.S))
 
-$(eval $(call generate,${ID},${PATHS},${HEADERS},${SOURCES}))
+$(eval $(call build,${ID},${PATHS},${HEADERS},${SOURCES}))

@@ -6,6 +6,9 @@
 
 # =============================================================================
 
+# For each built file type, map source path into build path so as to allow
+# totally out-of-tree build.
+
 # ${1} = kernel identifier
 
 define map_target
@@ -20,16 +23,19 @@ endef
 
 # =============================================================================
 
+# Centralised function called by each per-kernel Makefile.in, which serves
+# two main purposes: it 
+#
+# 1) generates Makefile rules for the kernel, then
+# 2) updates BUILD_X for X in each built file type, meaning we can track 
+#    the library content wrt. dependencies.
+
 # ${1} = kernel identifier
 # ${2} = kernel paths
 # ${3} = header files (i.e.,      %.h)
 # ${4} = source files (i.e., %.c, %.S)
 
-define generate
-BUILD_TARGETS += $(call map_target,$(notdir ${1}).elf)
-BUILD_SCRIPTS += $(call map_script,$(notdir ${1}).py )
-BUILD_RESULTS += $(call map_result,$(notdir ${1}).log)
-
+define build
 $(call map_target,$(notdir ${1}).elf) : ${3} ${4} 
 	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -L $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
 
@@ -38,18 +44,36 @@ $(call map_script,$(notdir ${1}).py ) : $(call map_target,$(notdir ${1}).elf)
 
 $(call map_result,$(notdir ${1}).log) : $(call map_script,$(notdir ${1}).py )
 	@python3 -O $${<} > $${@}
+
+BUILD_TARGETS += $(call map_target,$(notdir ${1}).elf)
+BUILD_SCRIPTS += $(call map_script,$(notdir ${1}).py )
+BUILD_RESULTS += $(call map_result,$(notdir ${1}).log)
 endef
 
 # =============================================================================
 
+# Initialise BUILD_X for each built file type, then include 
+#
+# 1) the per target architecture build configuration, plus
+# 2) each per kernel build configuration.
+
+BUILD_TARGETS  =
+BUILD_SCRIPTS  =
+BUILD_RESULTS  =
+
 include ${REPO_HOME}/conf/${ARCH}.mk
 include $(patsubst %,${REPO_HOME}/src/test/%/Makefile.in,${KERNELS})
 
-BUILD_FILES   = ${BUILD_TARGETS} 
-BUILD_FILES  += ${BUILD_SCRIPTS} 
-BUILD_FILES  += ${BUILD_RESULTS}
+# Construct a definitive list of built files, plus their associated paths 
+# to allow pre-creation of an appropriate directory structure.
 
-BUILD_PATHS   = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
+BUILD_FILES    = ${BUILD_TARGETS} 
+BUILD_FILES   += ${BUILD_SCRIPTS} 
+BUILD_FILES   += ${BUILD_RESULTS}
+
+BUILD_PATHS    = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
+
+# Makefile targets to drive everything.
 
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}
