@@ -58,21 +58,32 @@ b) a resource for benchmarking and evaluation.*
      tool-chain,
      e.g.,
 
-     - [`riscv/riscv-tools`](https://github.com/riscv/riscv-tools)
-       for the 
+     - for the 
        `riscv`
        target architecture,
-       or
-     - [`scarv/riscv-tools`](https://github.com/scarv/riscv-tools)
-       for the 
+
+       - build and install
+         [`riscv/riscv-tools`](https://github.com/riscv/riscv-tools),
+         then
+       - export the
+         `RISCV`
+         environment variable st.
+         `${RISCV}/bin` 
+         houses the associated executables,
+
+     - for the 
        `riscv-xcrypto`
        target architecture,
 
-     exporting the
-     `RISCV`
-     environment variable st.
-     `${RISCV}/bin` 
-     houses the associated executables,
+       - build and install
+         [`scarv/riscv-tools`](https://github.com/scarv/riscv-tools),
+         then
+       - export the
+         `RISCV_XCRYPTO`
+         environment variable st.
+         `${RISCV_XCRYPTO}/bin` 
+         houses the associated executables,
+
    - a
      [Python 3](https://www.python.org)
      distribution,
@@ -122,7 +133,7 @@ b) a resource for benchmarking and evaluation.*
       e.g., via
 
       ```sh
-      export ARCHS="riscv"
+      export ARCHS="riscv riscv-xcrypto"
       export KERNELS="block/aes hash/sha* mp/*"
       ```
 

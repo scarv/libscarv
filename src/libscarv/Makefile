@@ -27,7 +27,7 @@ endef
 
 # =============================================================================
 
-# for each built file type, generate suitable Makefile rule.
+# For each built file type, generate suitable Makefile rule.
 
 # ${1} = identifier (i.e., sub-directory)
 # ${2} = search path
@@ -80,7 +80,7 @@ endef
 
 # Automagically derive configuration symbol for target architecture.
 
-export LIBSCARV_CONF_ARCH = $(shell echo ${ARCHS} | tr [:lower:] [:upper:] | tr '-' '_')
+export LIBSCARV_CONF_ARCH = $(shell echo ${ARCH} | tr [:lower:] [:upper:] | tr '-' '_')
 
 # Automagically derive configuration symbols to enable each kernel.
 
