@@ -6,6 +6,9 @@ install:
 - sudo apt-get --quiet install python3 python3-pip python3-venv
 script:
 - source ./bin/conf.sh 
+- which python3
+- python3 --version
 - make venv
+- find ${REPO_HOME}/build
 - source ${REPO_HOME}/build/venv/bin/activate
 - ARCHS="native" KERNELS="block/aes hash/sha* mp/*" make clean build-libscarv build-test generate-test validate-test
