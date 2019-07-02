@@ -15,8 +15,8 @@ RISC-V generally, *and* the SCARV-related cryptographic ISE
 [XCrypto](https://github.com/scarv/xcrypto)
 specifically; the implementations are written in a mixture of C and/or
 assembly language.
-Note that `libscarv` definitely isn't a library you'd expect (or want)
-to see in production code: it's really only intended for internal use, 
+**Note that `libscarv` definitely isn't a library you'd expect (or want)
+to see in production code**: it's really only intended for internal use, 
 e.g., as
 a) a guide for (e.g., ISE) design and implementation work, 
    plus

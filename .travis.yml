@@ -1,0 +1,7 @@
+sudo: required
+dist: cosmic
+before_install:
+- sudo apt-get -qq update 
+script:
+- source ./bin/conf.sh 
+- ARCHS="native" KERNELS="block/aes hash/sha* mp/*" make clean build-libscarv build-test generate-test validate-test
