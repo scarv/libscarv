@@ -1,9 +1,11 @@
 sudo: required
 dist: cosmic
 before_install:
-- sudo apt-get -qq update 
-- sudo apt-get -qq install python3 python3-pip python3-venv
+- sudo apt-get --quiet update 
+install:
+- sudo apt-get --quiet install python3 python3-pip python3-venv
 script:
 - source ./bin/conf.sh 
-- make venv && source ./build/venv/bin/activate
+- make venv
+- source ${REPO_HOME}/build/venv/bin/activate
 - ARCHS="native" KERNELS="block/aes hash/sha* mp/*" make clean build-libscarv build-test generate-test validate-test
