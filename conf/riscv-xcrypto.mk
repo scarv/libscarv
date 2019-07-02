@@ -8,8 +8,8 @@ include ${REPO_HOME}/conf/default.mk
 
 # =============================================================================
 
-ifndef RISCV
-  $(error "point RISCV environment variable at toolchain installation")
+ifndef RISCV_XCRYPTO
+  $(error "point RISCV_XCRYPTO environment variable at toolchain installation")
 endif
 
 export ARCH_SUBSET        = rv32imaxc
@@ -21,7 +21,7 @@ export TOOL_PREFIX_ABI    = elf-
 
 export TOOL_PREFIX        = ${RISCV_XCRYPTO}/bin/${TOOL_PREFIX_TARGET}${TOOL_PREFIX_VENDOR}${TOOL_PREFIX_ABI}
 
-export TEST_PREFIX        = ${RISCV_XCRYPTO}/bin/spike --isa=${ARCH_SUBSET} ${RISCV}/riscv32-unknown-elf/bin/pk
+export TEST_PREFIX        = ${RISCV_XCRYPTO}/bin/spike --isa=${ARCH_SUBSET} ${RISCV_XCRYPTO}/riscv32-unknown-elf/bin/pk
 export TEST_SUFFIX        = | tail -n+2
 
 export CC_PATHS           =

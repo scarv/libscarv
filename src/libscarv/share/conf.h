@@ -71,28 +71,9 @@
 /** Use an external, architecture-specific implementation of @p aes_enc.
   */
 #define LIBSCARV_CONF_AES_ENC_EXTERN           ${LIBSCARV_CONF_AES_ENC_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_enc_init (i.e., first  round).
-  */
-#define LIBSCARV_CONF_AES_ENC_INIT_EXTERN      ${LIBSCARV_CONF_AES_ENC_INIT_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_enc_iter (i.e., middle rounds).
-  */
-#define LIBSCARV_CONF_AES_ENC_ITER_EXTERN      ${LIBSCARV_CONF_AES_ENC_ITER_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_enc_fini (i.e., last   round).
-  */
-#define LIBSCARV_CONF_AES_ENC_FINI_EXTERN      ${LIBSCARV_CONF_AES_ENC_FINI_EXTERN}
-
 /** Use an external, architecture-specific implementation of @p aes_dec.
   */
 #define LIBSCARV_CONF_AES_DEC_EXTERN           ${LIBSCARV_CONF_AES_DEC_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_dec_init (i.e., first  round).
-  */
-#define LIBSCARV_CONF_AES_DEC_INIT_EXTERN      ${LIBSCARV_CONF_AES_DEC_INIT_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_dec_iter (i.e., middle rounds).
-  */
-#define LIBSCARV_CONF_AES_DEC_ITER_EXTERN      ${LIBSCARV_CONF_AES_DEC_ITER_EXTERN}
-/** Use an external, architecture-specific implementation of @p aes_dec_fini (i.e., last   round).
-  */
-#define LIBSCARV_CONF_AES_DEC_FINI_EXTERN      ${LIBSCARV_CONF_AES_DEC_FINI_EXTERN}
 
 /** Pre-compute a table for field division       by the indeterminate (i.e., a / x).
   */
