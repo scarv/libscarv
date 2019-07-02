@@ -92,9 +92,56 @@ uint32_t AES_ENC_TBOX_4[] = AES_ENC_TBOX_X;
 #undef TUPLE
 #endif
 
-#include <scarv/block/aes/aes_enc_imp.h>
+#define AES_ENC_RND_INIT() {                                                 \
+  t_0 = rkp[ 0 ] ^ t_0;                                                      \
+  t_1 = rkp[ 1 ] ^ t_1;                                                      \
+  t_2 = rkp[ 2 ] ^ t_2;                                                      \
+  t_3 = rkp[ 3 ] ^ t_3;                                                      \
+                                                                             \
+  rkp += AES_128_NB;                                                         \
+}
+#define AES_ENC_RND_ITER() {                                                 \
+  t_4 = rkp[ 0 ] ^ ( AES_ENC_TBOX_0[ ( t_0 >>  0 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_1[ ( t_1 >>  8 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_2[ ( t_2 >> 16 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_3[ ( t_3 >> 24 ) & 0xFF ]              ) ; \
+  t_5 = rkp[ 1 ] ^ ( AES_ENC_TBOX_0[ ( t_1 >>  0 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_1[ ( t_2 >>  8 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_2[ ( t_3 >> 16 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_3[ ( t_0 >> 24 ) & 0xFF ]              ) ; \
+  t_6 = rkp[ 2 ] ^ ( AES_ENC_TBOX_0[ ( t_2 >>  0 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_1[ ( t_3 >>  8 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_2[ ( t_0 >> 16 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_3[ ( t_1 >> 24 ) & 0xFF ]              ) ; \
+  t_7 = rkp[ 3 ] ^ ( AES_ENC_TBOX_0[ ( t_3 >>  0 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_1[ ( t_0 >>  8 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_2[ ( t_1 >> 16 ) & 0xFF ]              ) ^ \
+                   ( AES_ENC_TBOX_3[ ( t_2 >> 24 ) & 0xFF ]              ) ; \
+                                                                             \
+  rkp += AES_128_NB; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;             \
+}
+#define AES_ENC_RND_FINI() {                                                 \
+  t_4 = rkp[ 0 ] ^ ( AES_ENC_TBOX_4[ ( t_0 >>  0 ) & 0xFF ] & 0x000000FF ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_1 >>  8 ) & 0xFF ] & 0x0000FF00 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_2 >> 16 ) & 0xFF ] & 0x00FF0000 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_3 >> 24 ) & 0xFF ] & 0xFF000000 ) ; \
+  t_5 = rkp[ 1 ] ^ ( AES_ENC_TBOX_4[ ( t_1 >>  0 ) & 0xFF ] & 0x000000FF ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_2 >>  8 ) & 0xFF ] & 0x0000FF00 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_3 >> 16 ) & 0xFF ] & 0x00FF0000 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_0 >> 24 ) & 0xFF ] & 0xFF000000 ) ; \
+  t_6 = rkp[ 2 ] ^ ( AES_ENC_TBOX_4[ ( t_2 >>  0 ) & 0xFF ] & 0x000000FF ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_3 >>  8 ) & 0xFF ] & 0x0000FF00 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_0 >> 16 ) & 0xFF ] & 0x00FF0000 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_1 >> 24 ) & 0xFF ] & 0xFF000000 ) ; \
+  t_7 = rkp[ 3 ] ^ ( AES_ENC_TBOX_4[ ( t_3 >>  0 ) & 0xFF ] & 0x000000FF ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_0 >>  8 ) & 0xFF ] & 0x0000FF00 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_1 >> 16 ) & 0xFF ] & 0x00FF0000 ) ^ \
+                   ( AES_ENC_TBOX_4[ ( t_2 >> 24 ) & 0xFF ] & 0xFF000000 ) ; \
+                                                                             \
+  rkp += AES_128_NB; t_0 = t_4; t_1 = t_5; t_2 = t_6; t_3 = t_7;             \
+}
 
-#if defined( LIBSCARV_CONF_AES_KEY_PRECOMP )
+#if ( LIBSCARV_CONF_AES_KEY_PRECOMP )
 void aes_enc_exp( uint8_t* r, const uint8_t* k ) {
   uint32_t* rp = ( uint32_t* )( r );
   
@@ -118,6 +165,7 @@ void aes_enc_exp( uint8_t* r, const uint8_t* k ) {
 }
 #endif
 
+#if ( !LIBSCARV_CONF_AES_ENC_EXTERN ) 
 void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
   uint32_t *rkp =               ( uint32_t* )( k ), t_0, t_1, t_2, t_3, t_4, t_5, t_6, t_7;
 
@@ -127,12 +175,19 @@ void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k ) {
   //      1 initial   round
     AES_ENC_RND_INIT();
   // Nr - 1 interated rounds
+  #if ( LIBSCARV_CONF_AES_RND_UNROLL )
+    AES_ENC_RND_ITER(); AES_ENC_RND_ITER(); AES_ENC_RND_ITER();
+    AES_ENC_RND_ITER(); AES_ENC_RND_ITER(); AES_ENC_RND_ITER();
+    AES_ENC_RND_ITER(); AES_ENC_RND_ITER(); AES_ENC_RND_ITER();
+  #else
   for( int i = 1; i < AES_128_NR; i++ ) {
     AES_ENC_RND_ITER();
   }
+  #endif
   //      1 final     round
     AES_ENC_RND_FINI(); 
 
   U32_TO_U8_LE( r, t_0,  0 ); U32_TO_U8_LE( r, t_1,  4 );
   U32_TO_U8_LE( r, t_2,  8 ); U32_TO_U8_LE( r, t_3, 12 );
 }
+#endif

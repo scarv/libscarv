@@ -52,7 +52,19 @@
 
 /* ------------------------------------------------------------------------- */
 
-/** Specify implementation type (from @p sbox or @p tbox).
+/** Specify the implementation type (or strategy): options are
+  * 
+  * - @p sbox:   see [Section 4.1, 1]; use  8-bit datapath                                  
+  * - @p packed: see [Section 4.2, 1]; use 32-bit datapath, with row-wise packing           
+  * - @p ttable: see              [2]; use 32-bit datapath, with aggressive pre-computation 
+  *
+  * 1. J. Daemen and V. Rijmen. 
+  *    The Design of Rijndael. 
+  *    Springer, 2002.
+  *
+  * 2. G. Bertoni, L. Breveglieri, P. Fragneto, M. Macchetti, and S. Marchesin. 
+  *    Efficient Software Implementation of AES on 32-Bit Platforms. 
+  *    Cryptographic Hardware and Embedded Systems (CHES), Springer-Verlag LNCS 2523, 159--171, 2002.
   */
 #define LIBSCARV_CONF_AES_TYPE                 ${LIBSCARV_CONF_AES_TYPE}
 
@@ -108,15 +120,12 @@
   */
 #define LIBSCARV_CONF_AES_KEY_PRECOMP          ${LIBSCARV_CONF_AES_KEY_PRECOMP}
 
-/** Use split (i.e., separate) vs. merged round functions.
+/** If/where possible, apply inter- or intra-round unrolling.
   */
-#define LIBSCARV_CONF_AES_ROUND_SPLIT          ${LIBSCARV_CONF_AES_ROUND_SPLIT}
-/** Use a packed representation of the state and round key matrices.
+#define LIBSCARV_CONF_AES_RND_INLINE           ${LIBSCARV_CONF_AES_RND_INLINE}
+/** If/where possible, apply inter- or intra-round  inlining.
   */
-#define LIBSCARV_CONF_AES_ROUND_PACK           ${LIBSCARV_CONF_AES_ROUND_PACK}
-/** Use unrolled loops wherever possible.
-  */
-#define LIBSCARV_CONF_AES_ROUND_UNROLL         ${LIBSCARV_CONF_AES_ROUND_UNROLL}
+#define LIBSCARV_CONF_AES_RND_UNROLL           ${LIBSCARV_CONF_AES_RND_UNROLL}
 
 /* ------------------------------------------------------------------------- */
 
