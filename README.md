@@ -30,8 +30,8 @@ b) a resource for benchmarking and evaluation.*
 ├── bin                       - scripts (e.g., environment configuration)
 ├── build                     - working directory for build
 ├── conf                      - architecture-specific configuration
-├── docker                    - Docker-based, containerised host platforms
 └── src                       
+    ├── docker                - source code for containerised host environments
     ├── libscarv              - source code for library
     │   ├─ block                - block ciphers
     │   ├─ hash                 - hash functions
@@ -124,7 +124,7 @@ b) a resource for benchmarking and evaluation.*
 
    2. Optionally,
       select the
-      host platform
+      host environment
       by setting the environment variable
       `HOST`
       appropriately,
@@ -188,7 +188,7 @@ b) a resource for benchmarking and evaluation.*
    - execute
 
      ```sh
-     make        clean
+     make clean
      ```
 
      to clean-up
@@ -221,23 +221,23 @@ b) a resource for benchmarking and evaluation.*
 #### The build system
 
 - The 
-  `ENVIRONMENT`
+  `HOST`
   environment variable specifies the
-  environment
+  host environment
   within which the build process is executed:
 
   | Host              | Description                                                                             |
   | :---------------- | :-------------------------------------------------------------------------------------- |
-  | `native`          | The default, native environment                                                         |
-  | `docker`          | A containerised environment, offered by an architecture-specific Docker image           |
+  | `native`          | The default, native host environment                                                    |
+  | `docker`          | A containerised host environment, offered by an architecture-specific Docker image      |
 
-  Note that each architecture-specific Docker image is built using a
-  set of scripts housed in
-  [${REPO_HOME}/src/docker](./src/docker)
-  However, **there is no need to do this manually**: pre-built 
-  image(s) can (and will) be pulled from
+  Note that each architecture-specific Docker image is built using 
+  the content housed in
+  [`${REPO_HOME}/src/docker`](./src/docker).
+  However, **there is no need to do this manually**: a pre-built 
+  image can (and will) be pulled from
   [Docker Hub](https://cloud.docker.com/u/scarv)
-  by the build system as needed.
+  by the build process as needed.
 
 - The 
   `ARCHS`
@@ -285,7 +285,7 @@ b) a resource for benchmarking and evaluation.*
 - Two classes of configuration file are required:
 
   1. `${REPO_HOME}/conf/${ARCH}.mk`,
-     which specifies configuration wrt. the built itself
+     which specifies configuration wrt. the build process
      (e.g., options that control the toolchain),
   2. `${REPO_HOME}/conf/${ARCH}.conf`,
      which specifies configuration wrt. the library

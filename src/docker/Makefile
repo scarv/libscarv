@@ -6,7 +6,7 @@
 
 # =============================================================================
 
-DOCKER_IMAGE = scarv/libscarv/${ARCH}
+DOCKER_IMAGE = scarv/libscarv.${ARCH}
 DOCKER_TAGS  = latest 0.1.0
 
 ${REPO_HOME}/build/${ARCH}/docker/Dockerfile : ${REPO_HOME}/src/docker/Dockerfile ${REPO_HOME}/src/docker/entrypoint.sh ${REPO_HOME}/src/docker/${ARCH}/Dockerfile.in
@@ -30,9 +30,9 @@ clean : ${CLEAN_PATHS}
 	@docker images | grep ${DOCKER_IMAGE} | tr --squeeze-repeats ' ' | cut --delimiter=' ' --fields=3 | uniq | xargs --no-run-if-empty docker rmi --force && rm --force --recursive ${BUILD_PATHS}
 
 push  :
-	@docker push ${DOCKER_IMAGE}
+	@$(foreach TAG,${DOCKER_TAGS},docker push ${DOCKER_IMAGE}:${TAG} ;)
 
 pull  :
-	@docker pull ${DOCKER_IMAGE}
+	@$(foreach TAG,${DOCKER_TAGS},docker pull ${DOCKER_IMAGE}:${TAG} ;)
 
 # =============================================================================

@@ -21,4 +21,7 @@ export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3
 export CC_LIBS            =
 
+export DOCKER_IMAGE       = scarv/libscarv.native
+export DOCKER_FLAGS       = 
+
 # =============================================================================
