@@ -104,13 +104,13 @@ endif
 
 ifeq "${HOST}" "docker"
 build    :
-	@$(call docker,${@}-test)
+	$(call docker,${@}-test)
 clean    :
-	@$(call docker,${@}-test)
+	$(call docker,${@}-test)
 generate :
-	@$(call docker,${@}-test)
+	$(call docker,${@}-test)
 validate :
-	@$(call docker,${@}-test)
+	$(call docker,${@}-test)
 endif
 
 # =============================================================================

@@ -146,9 +146,9 @@ endif
 
 ifeq "${HOST}" "docker"
 build :
-	@$(call docker,${@}-libscarv)
+	$(call docker,${@}-libscarv)
 clean :
-	@$(call docker,${@}-libscarv)
+	$(call docker,${@}-libscarv)
 endif
 
 # =============================================================================
