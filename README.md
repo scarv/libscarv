@@ -29,7 +29,7 @@ b) a resource for benchmarking and evaluation.*
 ```
 ├── bin                       - scripts (e.g., environment configuration)
 ├── build                     - working directory for build
-├── conf                      - architecture-specific configuration
+├── conf                      - global, architecture-specific configuration
 └── src                       
     ├── docker                - source code for containerised host environments
     ├── libscarv              - source code for library
@@ -88,6 +88,9 @@ b) a resource for benchmarking and evaluation.*
    - a
      [Python 3](https://www.python.org)
      distribution,
+   - the 
+     [Docker](https://www.docker.com)
+     container platform,
    - the
      [Doxygen](http://www.doxygen.nl)
      documentation generation system.
@@ -110,7 +113,9 @@ b) a resource for benchmarking and evaluation.*
 
    1. Create and populate a suitable Python
       [virtual environment](https://docs.python.org/library/venv.html)
-      based on `${REPO_HOME}/requirements.txt` by executing
+      based on 
+      [`${REPO_HOME}/requirements.txt`](./requirements.txt) 
+      by executing
    
       ```sh
       make venv
@@ -133,6 +138,8 @@ b) a resource for benchmarking and evaluation.*
       ```sh
       export HOST="native"
       ```
+  
+      or just accept the default (per [`${REPO_HOME}/Makefile`](./Makefile)).
 
    3. Optionally, 
       select the
@@ -150,6 +157,8 @@ b) a resource for benchmarking and evaluation.*
       export ARCHS="riscv"
       export KERNELS="block/aes hash/sha*"
       ```
+
+      or just accept the default (per [`${REPO_HOME}/Makefile`](./Makefile)).
 
 4. Use targets in the top-level `Makefile` to drive a set of
    common tasks, e.g.,
@@ -198,7 +207,7 @@ b) a resource for benchmarking and evaluation.*
 
 ## Notes
 
-#### The library
+#### The `libscarv` library
 
 - The `libscarv` library is a set of individual kernels; 
   the associated             implementation is housed in
@@ -206,6 +215,14 @@ b) a resource for benchmarking and evaluation.*
   ```sh
   ${REPO_HOME}/src/libscarv/${KERNEL}
   ```
+
+  and built by providing
+
+  ```sh
+  ${REPO_HOME}/src/libscarv/${KERNEL}/Makefile.in
+  ```
+  
+  for the build system to include.
 
 - The directory housing a kernel implementation is structured per
 
@@ -218,7 +235,65 @@ b) a resource for benchmarking and evaluation.*
  
   i.e., there are sub-directories for *each* target architecture.
 
-#### The build system
+#### The `libscarv` test suite
+
+- Forming part of a larger test suite, each kernel has an associated
+  test driver;
+  the associated test driver implementation is housed in
+
+  ```sh
+  ${REPO_HOME}/src/test/${KERNEL}
+  ```
+
+  and built by providing
+
+  ```sh
+  ${REPO_HOME}/src/test/${KERNEL}/Makefile.in
+  ```
+  
+  for the build system to include.
+
+- For a given kernel, the test process is essentially:
+
+  1. build the test driver, producing a test executable
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
+     ```
+
+  2. execute the test executable, an thereby generate a Python-based
+     validation (meta-)program
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
+     ```
+
+  3. execute the validation (meta-)program, producing output into
+
+     ```sh
+     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
+     ```
+
+     Essentially this means using Python (or appropriate library for
+     it) as a 
+     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
+     if/where need be.
+
+  The test strategy used depends on the kernel: some use randomised 
+  testing, whereas others fixed, hard-coded test vectors.
+
+- Note that for the 
+  `riscv` 
+  and `
+  riscv-xcrypto` 
+  target architectures, execution of the test executable implies
+  *simulation* via a suitable version of Spike, i.e., either
+  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
+  or
+  [`scarv/riscv-isa-sim`](https://github.com/scarv/riscv-isa-sim),
+  as supported by the proxy kernel.
+
+#### The `libscarv` build system
 
 - The 
   `HOST`
@@ -231,13 +306,26 @@ b) a resource for benchmarking and evaluation.*
   | `native`          | The default, native host environment                                                    |
   | `docker`          | A containerised host environment, offered by an architecture-specific Docker image      |
 
-  Note that each architecture-specific Docker image is built using 
-  the content housed in
-  [`${REPO_HOME}/src/docker`](./src/docker).
-  However, **there is no need to do this manually**: a pre-built 
-  image can (and will) be pulled from
-  [Docker Hub](https://cloud.docker.com/u/scarv)
-  by the build process as needed.
+  Note that:
+
+  - Each architecture-specific Docker image is built using 
+    the content housed in
+    [`${REPO_HOME}/src/docker`](./src/docker).
+    However, **there is no need to do this manually**: a pre-built 
+    image can (and will) be pulled from
+    [Docker Hub](https://cloud.docker.com/u/scarv)
+    by the build process as needed.
+
+  - It is somewhat reasonable to view this aspect of the build system 
+    as over-engineered.  In a sense it is, but, equally, there *is* a
+    clear motivation.  Use of
+    [Travis CI](https://travis-ci.com)
+    as a
+    [https://en.wikipedia.org/wiki/Continuous_integration](continuous integration)
+    provided places a time-limit on the build process; this limit is
+    too small to also build bespoke tool-chains (e.g., for XCrypto),
+    a problem which is addressed by using a pre-built, containerised 
+    tool-chain.
 
 - The 
   `ARCHS`
@@ -299,7 +387,7 @@ b) a resource for benchmarking and evaluation.*
     [`${REPO_HOME}/src/libscarv/share/conf.h`](./src/libscarv/share/conf.h)
     is populated using the configuration file, plus automatically
     generated content stemming from `${ARCHS}` and `${KERNELS}`; 
-    it includes documentation for each configuration symbol,
+    it houses some documentation for each configuration symbol,
 
   - configuration symbols are made available in the source code via
     application of the
@@ -322,56 +410,6 @@ b) a resource for benchmarking and evaluation.*
   - if a kernel cannot support a given configuration symbol, it must
     produce an error: it should be impossible to build the library 
     using a configuration that would cause it to (silently) fail.
-
-#### The test suite
-
-- Forming part of a larger test suite, each kernel has an associated
-  test driver;
-  the associated test driver implementation is housed in
-
-  ```sh
-  ${REPO_HOME}/src/test/${KERNEL}
-  ```
-
-- For a given kernel, the test process is essentially:
-
-  1. build the test driver, producing a test executable
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
-     ```
-
-  2. execute the test executable, an thereby generate a Python-based
-     validation (meta-)program
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
-     ```
-
-  3. execute the validation (meta-)program, producing output into
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
-     ```
-
-     Essentially this means using Python (or appropriate library for
-     it) as a 
-     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
-     if/where need be.
-
-  The test strategy used depends on the kernel: some use randomised 
-  testing, whereas others fixed, hard-coded test vectors.
-
-- Note that for the 
-  `riscv` 
-  and `
-  riscv-xcrypto` 
-  target architectures, execution of the test executable implies
-  *simulation* via a suitable version of Spike, i.e., either
-  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
-  or
-  [`scarv/riscv-isa-sim`](https://github.com/scarv/riscv-isa-sim),
-  as supported by the proxy kernel.
 
 <!--- -------------------------------------------------------------------- --->
 
