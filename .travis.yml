@@ -3,9 +3,7 @@ dist: cosmic
 before_install:
 - sudo apt-get --quiet update 
 install:
-- sudo apt-get --quiet install python3 python3-pip python3-venv
-- python3 -m pip install --upgrade pip
-- python3 -m pip install -r ./requirements.txt
+- sudo apt-get --quiet install docker.io
 script:
 - source ./bin/conf.sh 
-- ARCHS="native" KERNELS="block/aes hash/sha* mp/*" make clean build-libscarv build-test generate-test validate-test
+- HOST="docker" ARCHS="native riscv-xcrypto" KERNELS="mp/*" make clean build-libscarv build-test generate-test validate-test
