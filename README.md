@@ -30,6 +30,7 @@ b) a resource for benchmarking and evaluation.*
 ├── bin                       - scripts (e.g., environment configuration)
 ├── build                     - working directory for build
 ├── conf                      - architecture-specific configuration
+├── docker                    - Docker-based, containerised host platforms
 └── src                       
     ├── libscarv              - source code for library
     │   ├─ block                - block ciphers
@@ -121,7 +122,20 @@ b) a resource for benchmarking and evaluation.*
       source ${REPO_HOME}/build/venv/bin/activate
       ```
 
-   2. Select the
+   2. Optionally,
+      select the
+      host platform
+      by setting the environment variable
+      `HOST`
+      appropriately,
+      e.g., via
+
+      ```sh
+      export HOST="native"
+      ```
+
+   3. Optionally, 
+      select the
       target architecture
       and
       library content (i.e., the set of kernels included)
@@ -133,8 +147,8 @@ b) a resource for benchmarking and evaluation.*
       e.g., via
 
       ```sh
-      export ARCHS="riscv riscv-xcrypto"
-      export KERNELS="block/aes hash/sha* mp/*"
+      export ARCHS="riscv"
+      export KERNELS="block/aes hash/sha*"
       ```
 
 4. Use targets in the top-level `Makefile` to drive a set of
@@ -207,6 +221,25 @@ b) a resource for benchmarking and evaluation.*
 #### The build system
 
 - The 
+  `ENVIRONMENT`
+  environment variable specifies the
+  environment
+  within which the build process is executed:
+
+  | Host              | Description                                                                             |
+  | :---------------- | :-------------------------------------------------------------------------------------- |
+  | `native`          | The default, native environment                                                         |
+  | `docker`          | A containerised environment, offered by an architecture-specific Docker image           |
+
+  Note that each architecture-specific Docker image is built using a
+  set of scripts housed in
+  [${REPO_HOME}/src/docker](./src/docker)
+  However, **there is no need to do this manually**: pre-built 
+  image(s) can (and will) be pulled from
+  [Docker Hub](https://cloud.docker.com/u/scarv)
+  by the build system as needed.
+
+- The 
   `ARCHS`
   environment variable specifies a list of 
   target architectures
@@ -214,7 +247,7 @@ b) a resource for benchmarking and evaluation.*
   
   | Architecture      | Description                                                                             |
   | :---------------- | :-------------------------------------------------------------------------------------- |
-  | `native`          | Architecture-agnostic: whatever the default GCC targets                                 |
+  | `native`          | Architecture-agnostic: whatever the default, native GCC targets                         |
   | `riscv`           | Architecture-specific: RISC-V RV32IMAC                                                  |
   | `riscv-xcrypto`   | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
  
@@ -238,7 +271,7 @@ b) a resource for benchmarking and evaluation.*
   | `mp/mrz`          |                                                                                         |
   | `stream/chacha20` |                                                                                         |
 
-  Note that a limited form of wildcard is supported: for example,
+  Note that *limited* forms of wildcard are supported: for example,
 
   - rather than 
     `hash/sha1 hash/sha2`,
@@ -284,7 +317,7 @@ b) a resource for benchmarking and evaluation.*
     |  `ENABLE` |  enables (i.e., includes) functionality (assuming default is to disable it)                                                        |
     | `DISABLE` | disables (i.e., excludes) functionality (assuming default is to  enable it)                                                        |
     | `PRECOMP` | support functionality via pre-computation                                                                                          |
-    |  `EXTERN` | uses a architecture-specific (typically assembly language) vs. architecture-specific (typically C) implementation of functionality |
+    |  `EXTERN` | uses a architecture-specific (typically assembly language) vs. architecture-agnostic (typically C) implementation of functionality |
 
   - if a kernel cannot support a given configuration symbol, it must
     produce an error: it should be impossible to build the library 
@@ -337,7 +370,7 @@ b) a resource for benchmarking and evaluation.*
   *simulation* via a suitable version of Spike, i.e., either
   [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
   or
-  [`scarv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim),
+  [`scarv/riscv-isa-sim`](https://github.com/scarv/riscv-isa-sim),
   as supported by the proxy kernel.
 
 <!--- -------------------------------------------------------------------- --->

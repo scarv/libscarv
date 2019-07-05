@@ -45,7 +45,7 @@ $(call map_object,${1},${2},${3},${4},${5}) : ${3}
 endef
 define rule_dump
 $(call map_dump,  ${1},${2},${3},${4},${5}) : ${5} : %.o
-	@$${TOOL_PREFIX}objdump --disassemble-all $${<} > $${@} 
+	@$${TOOL_PREFIX}objdump --all-headers --syms --reloc --disassemble-all --source --wide $${<} > $${@} 
 endef
 
 # =============================================================================
@@ -101,17 +101,18 @@ $(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(
 # 2) each per kernel build configuration (plus global and shared pseudo
 #    kernels).
 
+BUILD_TARGETS  = ${REPO_HOME}/build/${ARCH}/lib/libscarv.a
+
 BUILD_HEADERS  = 
 BUILD_OBJECTS  = 
 BUILD_DUMPS    = 
-
-BUILD_TARGETS  = ${REPO_HOME}/build/${ARCH}/lib/libscarv.a
 
 include ${REPO_HOME}/conf/${ARCH}.mk ${REPO_HOME}/conf/${ARCH}.conf 
 include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/Makefile.in ${REPO_HOME}/src/libscarv/share/Makefile.in
 
 # Construct a definitive list of built files, plus their associated paths 
-# to allow pre-creation of an appropriate directory structure.
+# to allow pre-creation of an appropriate directory structure (note that
+# use of sort is required to remove duplicates).
 
 BUILD_FILES    = ${BUILD_HEADERS} 
 BUILD_FILES   += ${BUILD_OBJECTS} 
@@ -119,17 +120,35 @@ BUILD_FILES   += ${BUILD_DUMPS}
 
 BUILD_PATHS    = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-# Makefile targets to drive everything.
-
-${BUILD_PATHS} :
-	@mkdir --parents ${@}
+# Define targets for built files not otherwise catered for, e.g., via the
+# invocation of build function by the kernel build configurations.
 
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
 	@${TOOL_PREFIX}ar rcs ${@} ${^}
 
-clean :
-	@rm --force --recursive ${BUILD_PATHS}
+${BUILD_PATHS} :
+	@mkdir --parents ${@}
 
-build :                         ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
+${CLEAN_PATHS} :
+	@rm --force --recursive ${@}
+
+# -----------------------------------------------------------------------------
+
+# Define targets to drive build process, dividing into cases dependant on
+# the host platform: for a Docker-based host platform, defer to it (i.e., 
+# execute an analogous build process inside the container).
+
+ifeq "${HOST}" "native"
+build : ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
+
+clean : ${CLEAN_PATHS}
+endif
+
+ifeq "${HOST}" "docker"
+build :
+	@$(call docker,${@}-libscarv)
+clean :
+	@$(call docker,${@}-libscarv)
+endif
 
 # =============================================================================

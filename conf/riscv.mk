@@ -4,7 +4,7 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/default.mk
+include ${REPO_HOME}/conf/share.mk
 
 # =============================================================================
 

@@ -4,7 +4,7 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/default.mk
+include ${REPO_HOME}/conf/share.mk
 
 # =============================================================================
 
@@ -27,5 +27,8 @@ export TEST_SUFFIX        = | tail -n+2
 export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 
 export CC_LIBS            =
+
+export DOCKER_IMAGE       = scarv/libscarv/riscv-xcrypto
+export DOCKER_FLAGS       = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
 
 # =============================================================================

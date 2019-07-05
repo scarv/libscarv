@@ -8,8 +8,9 @@ ifndef REPO_HOME
   $(error "execute 'source ./bin/conf.sh' to configure environment")
 endif
 
-# Provide default values for ARCHS and KERNELS.
+# Provide default values for HOST, ARCHS, and KERNELS.
 
+export HOST    ?= native
 export ARCHS   ?= native
 export KERNELS ?= block/* hash/* mp/* stream/*
 
@@ -17,9 +18,8 @@ export KERNELS ?= block/* hash/* mp/* stream/*
 
 export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefix ${REPO_HOME}/src/libscarv/,${KERNELS})))
 
-#%-docker   :
-#	@docker run --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/xcrypto" --env ARCHS="${ARCHS}" --env KERNELS="${KERNELS}" --volume ${PWD}:/mnt/scarv/xcrypto --rm scarv/xcrypto ${*}
-
+%-docker   :
+	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/docker"   ${*} ;)
 %-libscarv :
 	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/libscarv" ${*} ;)
 %-test     :

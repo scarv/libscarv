@@ -46,6 +46,7 @@ $(call map_result,$(notdir ${1}).log) : $(call map_script,$(notdir ${1}).py )
 	@python3 -O $${<} > $${@}
 
 BUILD_TARGETS += $(call map_target,$(notdir ${1}).elf)
+
 BUILD_SCRIPTS += $(call map_script,$(notdir ${1}).py )
 BUILD_RESULTS += $(call map_result,$(notdir ${1}).log)
 endef
@@ -58,6 +59,7 @@ endef
 # 2) each per kernel build configuration.
 
 BUILD_TARGETS  =
+
 BUILD_SCRIPTS  =
 BUILD_RESULTS  =
 
@@ -65,7 +67,8 @@ include ${REPO_HOME}/conf/${ARCH}.mk
 include $(patsubst %,${REPO_HOME}/src/test/%/Makefile.in,${KERNELS})
 
 # Construct a definitive list of built files, plus their associated paths 
-# to allow pre-creation of an appropriate directory structure.
+# to allow pre-creation of an appropriate directory structure (note that
+# use of sort is required to remove duplicates).
 
 BUILD_FILES    = ${BUILD_TARGETS} 
 BUILD_FILES   += ${BUILD_SCRIPTS} 
@@ -73,19 +76,41 @@ BUILD_FILES   += ${BUILD_RESULTS}
 
 BUILD_PATHS    = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-# Makefile targets to drive everything.
+# Define targets for built files not otherwise catered for, e.g., via the
+# invocation of build function by the kernel build configurations.
 
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}
 
-clean    :
-	@rm --force --recursive ${BUILD_PATHS}
+${CLEAN_PATHS} :
+	@rm --force --recursive ${@}
 
-build    :                      ${BUILD_PATHS} ${BUILD_TARGETS}
+# -----------------------------------------------------------------------------
 
-generate : build                               ${BUILD_SCRIPTS}
+# Define targets to drive build process, dividing into cases dependant on
+# the host platform: for a Docker-based host platform, defer to it (i.e., 
+# execute an analogous build process inside the container).
 
-validate : build generate                      ${BUILD_RESULTS}
+ifeq "${HOST}" "native"
+build    : ${BUILD_PATHS} ${BUILD_TARGETS}
+
+clean    : ${CLEAN_PATHS}
+
+generate : build          ${BUILD_SCRIPTS}
+
+validate : build generate ${BUILD_RESULTS}
 	@( cat ${REPO_HOME}/build/${ARCH}/test/*.log | grep 'fail' ) || true
+endif
+
+ifeq "${HOST}" "docker"
+build    :
+	@$(call docker,${@}-test)
+clean    :
+	@$(call docker,${@}-test)
+generate :
+	@$(call docker,${@}-test)
+validate :
+	@$(call docker,${@}-test)
+endif
 
 # =============================================================================
