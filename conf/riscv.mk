@@ -12,6 +12,8 @@ ifndef RISCV
   $(error "point RISCV environment variable at toolchain installation")
 endif
 
+# -----------------------------------------------------------------------------
+
 export ARCH_SUBSET        = rv32imac
 export ARCH_ABI           = ilp32
 

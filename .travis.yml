@@ -6,4 +6,4 @@ install:
 - sudo apt-get --quiet install docker.io
 script:
 - source ./bin/conf.sh 
-- HOST="docker" ARCHS="native riscv-xcrypto" KERNELS="mp/*" make clean build-libscarv build-test generate-test validate-test
+- HOST="docker" ARCHS="native riscv riscv-xcrypto" KERNELS="mp/*" make clean build-libscarv build-test generate-test validate-test
