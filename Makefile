@@ -8,6 +8,8 @@ ifndef REPO_HOME
   $(error "execute 'source ./bin/conf.sh' to configure environment")
 endif
 
+# =============================================================================
+
 # Provide default values for HOST, ARCHS, and KERNELS.
 
 export HOST    ?= native
@@ -17,6 +19,8 @@ export KERNELS ?= block/* hash/* mp/* stream/*
 # Perform a (limited) expansion of wildcards in KERNELS.
 
 export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefix ${REPO_HOME}/src/libscarv/,${KERNELS})))
+
+# =============================================================================
 
 %-docker   :
 	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/docker"   ${*} ;)
@@ -33,3 +37,5 @@ doc   : ${REPO_HOME}/Doxyfile
 
 clean :
 	@rm --force --recursive ${REPO_HOME}/build/*
+
+# =============================================================================

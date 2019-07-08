@@ -25,7 +25,7 @@ define map_dump
   $(patsubst ${4},$(strip ${REPO_HOME})/build/$(strip ${ARCH})/lib/$(strip ${1})/$(strip ${5}),          $(notdir ${3}))
 endef
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 # For each built file type, generate suitable Makefile rule.
 
@@ -48,7 +48,7 @@ $(call map_dump,  ${1},${2},${3},${4},${5}) : ${5} : %.o
 	@$${TOOL_PREFIX}objdump --all-headers --syms --reloc --disassemble-all --source --wide $${<} > $${@} 
 endef
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 # Centralised function called by each per-kernel Makefile.in, which serves
 # two main purposes: it 
@@ -76,7 +76,7 @@ BUILD_DUMPS   += $(foreach FILE,$(filter %.c,${4}),$(call map_dump,  ${1},${2},$
 BUILD_DUMPS   += $(foreach FILE,$(filter %.S,${4}),$(call map_dump,  ${1},${2},${FILE},%.S,%.objdump))
 endef
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 # Automagically derive configuration symbol for target architecture.
 
@@ -93,7 +93,9 @@ endef
 
 $(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(addsuffix _ENABLE,$(notdir $(shell echo ${KERNEL} | tr [:lower:] [:upper:])))) = $(call kernel_enable,${KERNEL})))
 
-# -----------------------------------------------------------------------------
+# =============================================================================
+
+ifeq "${HOST}" "native"
 
 # Initialise BUILD_X for each built file type, then include 
 #
@@ -132,23 +134,29 @@ ${BUILD_PATHS} :
 ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
-# -----------------------------------------------------------------------------
+# Define targets to drive build process.
 
-# Define targets to drive build process, dividing into cases dependant on
-# the host platform: for a Docker-based host platform, defer to it (i.e., 
-# execute an analogous build process inside the container).
-
-ifeq "${HOST}" "native"
 build : ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
 
 clean : ${CLEAN_PATHS}
+
 endif
 
+# =============================================================================
+
 ifeq "${HOST}" "docker"
+
+# Include per target architecture Docker configuration.
+
+include ${REPO_HOME}/conf/${ARCH}.docker
+
+# Define targets to drive build process.
+
 build :
-	$(call docker,${@}-libscarv)
+	@$(call docker,${@}-libscarv)
 clean :
-	$(call docker,${@}-libscarv)
+	@$(call docker,${@}-libscarv)
+
 endif
 
 # =============================================================================

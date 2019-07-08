@@ -28,7 +28,4 @@ export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 
 export CC_LIBS            =
 
-export DOCKER_IMAGE       = scarv/libscarv.riscv-xcrypto
-export DOCKER_FLAGS       = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
-
 # =============================================================================

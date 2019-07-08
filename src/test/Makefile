@@ -21,7 +21,7 @@ define map_result
   $(strip ${REPO_HOME})/build/$(strip ${ARCH})/test/test_$(strip ${1})
 endef
 
-# =============================================================================
+# -----------------------------------------------------------------------------
 
 # Centralised function called by each per-kernel Makefile.in, which serves
 # two main purposes: it 
@@ -52,6 +52,8 @@ BUILD_RESULTS += $(call map_result,$(notdir ${1}).log)
 endef
 
 # =============================================================================
+
+ifeq "${HOST}" "native"
 
 # Initialise BUILD_X for each built file type, then include 
 #
@@ -85,13 +87,10 @@ ${BUILD_PATHS} :
 ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
-# -----------------------------------------------------------------------------
-
 # Define targets to drive build process, dividing into cases dependant on
 # the host platform: for a Docker-based host platform, defer to it (i.e., 
 # execute an analogous build process inside the container).
 
-ifeq "${HOST}" "native"
 build    : ${BUILD_PATHS} ${BUILD_TARGETS}
 
 clean    : ${CLEAN_PATHS}
@@ -100,17 +99,28 @@ generate : build          ${BUILD_SCRIPTS}
 
 validate : build generate ${BUILD_RESULTS}
 	@( cat ${REPO_HOME}/build/${ARCH}/test/*.log | grep 'fail' ) || true
+
 endif
 
+# =============================================================================
+
 ifeq "${HOST}" "docker"
+
+# Include per target architecture Docker configuration.
+
+include ${REPO_HOME}/conf/${ARCH}.docker
+
+# Define targets to drive build process.
+
 build    :
-	$(call docker,${@}-test)
+	@$(call docker,${@}-test)
 clean    :
-	$(call docker,${@}-test)
+	@$(call docker,${@}-test)
 generate :
-	$(call docker,${@}-test)
+	@$(call docker,${@}-test)
 validate :
-	$(call docker,${@}-test)
+	@$(call docker,${@}-test)
+
 endif
 
 # =============================================================================
