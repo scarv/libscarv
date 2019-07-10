@@ -4,6 +4,8 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+include ${REPO_HOME}/conf/${ARCH}.mk
+
 # =============================================================================
 
 # For each built file type, map source path into build path so as to allow
@@ -78,6 +80,10 @@ endef
 
 # -----------------------------------------------------------------------------
 
+# Include the per target architecture library configuration.
+
+include ${REPO_HOME}/conf/${ARCH}.conf 
+
 # Automagically derive configuration symbol for target architecture.
 
 export LIBSCARV_CONF_ARCH = $(shell echo ${ARCH} | tr [:lower:] [:upper:] | tr '-' '_')
@@ -97,11 +103,8 @@ $(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(
 
 ifeq "${HOST}" "native"
 
-# Initialise BUILD_X for each built file type, then include 
-#
-# 1) the per target architecture build and library configurations, plus
-# 2) each per kernel build configuration (plus global and shared pseudo
-#    kernels).
+# Initialise BUILD_X for each built file type, then include the per kernel 
+# build configurations to populate them.
 
 BUILD_TARGETS  = ${REPO_HOME}/build/${ARCH}/lib/libscarv.a
 
@@ -109,7 +112,6 @@ BUILD_HEADERS  =
 BUILD_OBJECTS  = 
 BUILD_DUMPS    = 
 
-include ${REPO_HOME}/conf/${ARCH}.mk ${REPO_HOME}/conf/${ARCH}.conf 
 include $(patsubst %,${REPO_HOME}/src/libscarv/%/Makefile.in,${KERNELS}) ${REPO_HOME}/src/libscarv/Makefile.in ${REPO_HOME}/src/libscarv/share/Makefile.in
 
 # Construct a definitive list of built files, plus their associated paths 
@@ -134,7 +136,8 @@ ${BUILD_PATHS} :
 ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
-# Define targets to drive build process.
+# Define targets to drive build process: for the native host environment,
+# this basically means building all the built files identified.
 
 build : ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
 
@@ -146,11 +149,9 @@ endif
 
 ifeq "${HOST}" "docker"
 
-# Include per target architecture Docker configuration.
-
-include ${REPO_HOME}/conf/${ARCH}.docker
-
-# Define targets to drive build process.
+# Define targets to drive build process: for the Docker host environment,
+# this basically means deferring, i.e., using make, wrt. the same target,
+# within said environment.
 
 build :
 	@$(call docker,${@}-libscarv)

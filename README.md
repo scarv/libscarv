@@ -1,4 +1,4 @@
-# `libscarv`: reference implementations
+# `libscarv`: cryptographic software kernels for RISC-V
 
 <!--- -------------------------------------------------------------------- --->
 
@@ -370,16 +370,14 @@ b) a resource for benchmarking and evaluation.*
     one could use
     `hash/*`.
 
-- Each target architecture demands *three* configuration files:
+- Each target architecture demands two configuration files:
 
   1. `${REPO_HOME}/conf/${ARCH}.mk`,
      which specifies configuration wrt. the build process
      (e.g., options that control the toolchain),
   2. `${REPO_HOME}/conf/${ARCH}.conf`,
      which specifies configuration wrt. the library
-     (i.e., options that control features in the source code),
-  3. `${REPO_HOME}/conf/${ARCH}.docker`,
-     which specifies configuration wrt. the associated Docker image.
+     (i.e., options that control features in the source code).
 
 - A given kernel implementation *may* be configurable via the second 
   class of configuration file, st. a *family* of implementations can 

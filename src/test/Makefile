@@ -4,6 +4,8 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+include ${REPO_HOME}/conf/${ARCH}.mk
+
 # =============================================================================
 
 # For each built file type, map source path into build path so as to allow
@@ -55,17 +57,14 @@ endef
 
 ifeq "${HOST}" "native"
 
-# Initialise BUILD_X for each built file type, then include 
-#
-# 1) the per target architecture build configuration, plus
-# 2) each per kernel build configuration.
+# Initialise BUILD_X for each built file type, then include the per kernel 
+# build configurations to populate them.
 
 BUILD_TARGETS  =
 
 BUILD_SCRIPTS  =
 BUILD_RESULTS  =
 
-include ${REPO_HOME}/conf/${ARCH}.mk
 include $(patsubst %,${REPO_HOME}/src/test/%/Makefile.in,${KERNELS})
 
 # Construct a definitive list of built files, plus their associated paths 
@@ -87,9 +86,9 @@ ${BUILD_PATHS} :
 ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
-# Define targets to drive build process, dividing into cases dependant on
-# the host platform: for a Docker-based host platform, defer to it (i.e., 
-# execute an analogous build process inside the container).
+
+# Define targets to drive build process: for the native host environment,
+# this basically means building all the built files identified.
 
 build    : ${BUILD_PATHS} ${BUILD_TARGETS}
 
@@ -106,11 +105,9 @@ endif
 
 ifeq "${HOST}" "docker"
 
-# Include per target architecture Docker configuration.
-
-include ${REPO_HOME}/conf/${ARCH}.docker
-
-# Define targets to drive build process.
+# Define targets to drive build process: for the Docker host environment,
+# this basically means deferring, i.e., using make, wrt. the same target,
+# within said environment.
 
 build    :
 	@$(call docker,${@}-test)

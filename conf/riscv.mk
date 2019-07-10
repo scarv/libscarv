@@ -8,11 +8,11 @@ include ${REPO_HOME}/conf/share.mk
 
 # =============================================================================
 
+ifeq "${HOST}" "native"
+
 ifndef RISCV
   $(error "point RISCV environment variable at toolchain installation")
 endif
-
-# -----------------------------------------------------------------------------
 
 export ARCH_SUBSET        = rv32imac
 export ARCH_ABI           = ilp32
@@ -29,5 +29,16 @@ export TEST_SUFFIX        = | tail -n+2
 export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 
 export CC_LIBS            =
+
+endif
+
+# =============================================================================
+
+ifeq "${HOST}" "docker"
+
+export DOCKER_IMAGE       = scarv/libscarv.riscv
+export DOCKER_FLAGS       = --env RISCV="/opt/riscv"
+
+endif
 
 # =============================================================================

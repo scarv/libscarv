@@ -8,6 +8,8 @@ include ${REPO_HOME}/conf/share.mk
 
 # =============================================================================
 
+ifeq "${HOST}" "native"
+
 export TOOL_PREFIX_TARGET =
 export TOOL_PREFIX_VENDOR =
 export TOOL_PREFIX_ABI    =
@@ -20,5 +22,16 @@ export TEST_SUFFIX        =
 export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3
 export CC_LIBS            =
+
+endif
+
+# =============================================================================
+
+ifeq "${HOST}" "docker"
+
+export DOCKER_IMAGE       = scarv/libscarv.native
+export DOCKER_FLAGS       = 
+
+endif
 
 # =============================================================================
