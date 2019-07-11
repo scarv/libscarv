@@ -18,10 +18,12 @@ Please refer to SnP-documentation.h for more details.
 #ifndef _KeccakP_1600_SnP_h_
 #define _KeccakP_1600_SnP_h_
 
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
 #define KeccakP1600_implementation      "64-bit reference implementation"
 #define KeccakP1600_stateSizeInBytes    200
 #define KeccakP1600_stateAlignment      8
-
 
 typedef unsigned char UINT8;
 typedef unsigned long long UINT64;

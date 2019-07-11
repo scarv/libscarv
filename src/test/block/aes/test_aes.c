@@ -9,39 +9,35 @@
 
 // ============================================================================
 
-void test_aes_dump( char* id, uint8_t* x ) {
-  printf( "%s = binascii.a2b_hex( '", id ); test_dump_lsb( x, 16 ); printf( "' )\n" );
-}
-
-int test_aes_rand( uint8_t* r ) {
-  return test_rand_seq( r, 16, 16, sizeof( uint8_t ) );
+void test_aes_dump( char* id, uint8_t* x, int l_x ) {
+  printf( "%s = binascii.a2b_hex( '", id ); test_dump_seq( x, l_x, DUMP_LSB ); printf( "' )\n" );
 }
 
 // ============================================================================
 
-void test_aes_enc( int n ) {
+void test_aes_enc( int trials ) {
   uint8_t c[ 16 ], m[ 16 ], k[ 16 ];
 
   #if ( LIBSCARV_CONF_AES_KEY_PRECOMP )  
   uint8_t rk[ ( AES_128_NR + 1 ) * ( 4 * AES_128_NB ) ];
   #endif
 
-  for( int i = 1; i <= n; i++ ) {    
-    test_id( "test_aes", "enc", i, n );
+  for( int i = 1; i <= trials; i++ ) {    
+    test_id( "test_aes", "enc", i, trials );
 
-    test_aes_rand(      m );
-    test_aes_rand(      k );
+    test_rand_seq( m, 16, 16, sizeof( uint8_t ) );
+    test_rand_seq( k, 16, 16, sizeof( uint8_t ) );
 
-    test_aes_dump( "m", m );
-    test_aes_dump( "k", k );
+    test_aes_dump( "m", m, 16 );
+    test_aes_dump( "k", k, 16 );
 
     #if ( LIBSCARV_CONF_AES_KEY_PRECOMP )  
-    aes_enc_exp( rk, k ); TEST_MEASURE( aes_enc( c, m, rk ) );
+    aes_enc_exp( rk, k ); MEASURE( aes_enc( c, m, rk ) );
     #else  
-                          TEST_MEASURE( aes_enc( c, m,  k ) );
+                          MEASURE( aes_enc( c, m,  k ) );
     #endif  
 
-    test_aes_dump( "c", c );
+    test_aes_dump( "c", c, 16 );
   
     printf( "t = AES.new( k ).encrypt( m )                     " "\n"   );
   
@@ -56,29 +52,29 @@ void test_aes_enc( int n ) {
   }
 }
 
-void test_aes_dec( int n ) {
+void test_aes_dec( int trials ) {
   uint8_t m[ 16 ], c[ 16 ], k[ 16 ];
 
   #if ( LIBSCARV_CONF_AES_KEY_PRECOMP )  
   uint8_t rk[ ( AES_128_NR + 1 ) * ( 4 * AES_128_NB ) ];
   #endif
 
-  for( int i = 1; i <= n; i++ ) {    
-    test_id( "test_aes", "dec", i, n );
+  for( int i = 1; i <= trials; i++ ) {    
+    test_id( "test_aes", "dec", i, trials );
 
-    test_aes_rand(      c );
-    test_aes_rand(      k );
+    test_rand_seq( c, 16, 16, sizeof( uint8_t ) );
+    test_rand_seq( k, 16, 16, sizeof( uint8_t ) );
 
-    test_aes_dump( "c", c );
-    test_aes_dump( "k", k );
+    test_aes_dump( "c", c, 16 );
+    test_aes_dump( "k", k, 16 );
 
     #if ( LIBSCARV_CONF_AES_KEY_PRECOMP )  
-    aes_dec_exp( rk, k ); TEST_MEASURE( aes_dec( m, c, rk ) );
+    aes_dec_exp( rk, k ); MEASURE( aes_dec( m, c, rk ) );
     #else  
-                          TEST_MEASURE( aes_dec( m, c,  k ) );
+                          MEASURE( aes_dec( m, c,  k ) );
     #endif  
 
-    test_aes_dump( "m", m );
+    test_aes_dump( "m", m, 16 );
   
     printf( "t = AES.new( k ).decrypt( c )                     " "\n"   );
   

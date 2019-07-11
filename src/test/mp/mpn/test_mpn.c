@@ -10,31 +10,27 @@
 // ============================================================================
 
 void test_mpn_dump( char* id, limb_t* x, int l_x ) {
-  printf( "%s = int( '", id ); test_dump_msb( ( uint8_t* )( x ), l_x * sizeof( limb_t ) ); printf( "', 16 )\n" );
-}
-
-int test_mpn_rand( limb_t* r, int l_r_min, int l_r_max ) {
-  return test_rand_seq( ( uint8_t* )( r ), l_r_min, l_r_max, sizeof( limb_t ) );
+  printf( "%s = int( '", id ); test_dump_seq( ( uint8_t* )( x ), l_x * sizeof( limb_t ), DUMP_MSB ); printf( "', 16 )\n" );
 }
 
 // ============================================================================
 
-void test_mpn_add( int n, int l_min, int l_max ) {
+void test_mpn_add( int trials, int l_min, int l_max ) {
   limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
   limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
   limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpn", "add", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpn", "add", i, trials );
 
-    l_x = test_mpn_rand( x, l_min, l_max );
-    l_y = test_mpn_rand( y, l_min, l_max );
+    l_x = test_rand_seq( ( uint8_t* )( x ), l_min, l_max, sizeof( limb_t ) );
+    l_y = test_rand_seq( ( uint8_t* )( y ), l_min, l_max, sizeof( limb_t ) );
 
     test_mpn_dump( "x", x, l_x );
     test_mpn_dump( "y", y, l_y );
 
     l_r = MAX( l_x, l_y ) + 1; 
-    TEST_MEASURE( r[ l_r - 1 ] = mpn_add( r, x, l_x, y, l_y ) );
+    MEASURE( r[ l_r - 1 ] = mpn_add( r, x, l_x, y, l_y ) );
     l_r = mpn_lop( r, l_r );
 
     test_mpn_dump( "r", r, l_r );
@@ -56,28 +52,28 @@ void test_mpn_add( int n, int l_min, int l_max ) {
   free( r );
 }
 
-void test_mpn_sub( int n, int l_min, int l_max ) {
+void test_mpn_sub( int trials, int l_min, int l_max ) {
   limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
   limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
   limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpn", "sub", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpn", "sub", i, trials );
 
-    l_x = test_mpn_rand( x, l_min, l_max );
-    l_y = test_mpn_rand( y, l_min, l_max );
+    l_x = test_rand_seq( ( uint8_t* )( x ), l_min, l_max, sizeof( limb_t ) );
+    l_y = test_rand_seq( ( uint8_t* )( y ), l_min, l_max, sizeof( limb_t ) );
 
     test_mpn_dump( "x", x, l_x );
     test_mpn_dump( "y", y, l_y );
   
     if( mpn_cmp( x, l_x, y, l_y ) >= 0 ) {
       l_r = MAX( l_x, l_y ) + 1; 
-      TEST_MEASURE( r[ l_r - 1 ] = mpn_sub( r, x, l_x, y, l_y ) );
+      MEASURE( r[ l_r - 1 ] = mpn_sub( r, x, l_x, y, l_y ) );
       l_r = mpn_lop( r, l_r );
     } 
     else {
       l_r = MAX( l_y, l_x ) + 1; 
-      TEST_MEASURE( r[ l_r - 1 ] = mpn_sub( r, y, l_y, x, l_x ) );
+      MEASURE( r[ l_r - 1 ] = mpn_sub( r, y, l_y, x, l_x ) );
       l_r = mpn_lop( r, l_r );
     }
 
@@ -105,22 +101,22 @@ void test_mpn_sub( int n, int l_min, int l_max ) {
   free( r );
 }
 
-void test_mpn_mul( int n, int l_min, int l_max ) {
+void test_mpn_mul( int trials, int l_min, int l_max ) {
   limb_t* x = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_x;
   limb_t* y = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_y;
   limb_t* r = ( limb_t* )( malloc( ( 2 * l_max + 2 ) * sizeof( limb_t ) ) ); int l_r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpn", "mul", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpn", "mul", i, trials );
 
-    l_x = test_mpn_rand( x, l_min, l_max );
-    l_y = test_mpn_rand( y, l_min, l_max );
+    l_x = test_rand_seq( ( uint8_t* )( x ), l_min, l_max, sizeof( limb_t ) );
+    l_y = test_rand_seq( ( uint8_t* )( y ), l_min, l_max, sizeof( limb_t ) );
 
     test_mpn_dump( "x", x, l_x );
     test_mpn_dump( "y", y, l_y );
 
     l_r = l_x + l_y;
-    TEST_MEASURE( mpn_mul( r, x, l_x, y, l_y ) );
+    MEASURE( mpn_mul( r, x, l_x, y, l_y ) );
     l_r = mpn_lop( r, l_r );
 
     test_mpn_dump( "r", r, l_r );
@@ -147,9 +143,9 @@ void test_mpn_mul( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  test_mpn_add( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
-  test_mpn_sub( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
-  test_mpn_mul( opt_trials, opt_mpn_min_limb, opt_mpn_max_limb );
+  test_mpn_add( opt_trials, opt_limb_min, opt_limb_max );
+  test_mpn_sub( opt_trials, opt_limb_min, opt_limb_max );
+  test_mpn_mul( opt_trials, opt_limb_min, opt_limb_max );
 
   test_fini();
 

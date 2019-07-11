@@ -1,63 +1,101 @@
+/* Copyright (C) 2019 SCARV project <info@scarv.org>
+ *
+ * Use of this source code is restricted per the MIT license, a copy of which 
+ * can be found at https://opensource.org/licenses/MIT (or should be included 
+ * as LICENSE.txt within the associated archive or repository).
+ */
+
 #include "test_chacha20.h"
 
 // ============================================================================
 
-//! Load r with random data.
-void test_chacha20_rand( uint32_t* r, int l_r ) {
-  FILE* fd = fopen( "/dev/urandom", "rb" );
-  fread( r, sizeof( uint32_t ), l_r, fd );
-  fclose( fd );
+void test_chacha20_dump( char* id, uint8_t* x, int l_x ) {
+  printf( "%s = binascii.a2b_hex( '", id ); test_dump_seq( x, l_x, DUMP_LSB ); printf( "' )\n" );
 }
 
-//! Print out python code to represent an input/output array.
-void test_chacha20_dump( char* id, uint32_t* x, int l_x ) {
-  printf( "%s = binascii.a2b_hex( '", id );
+// ============================================================================
 
-  for( int i = 0; i < l_x; i++ ) {
-    printf( "%08X", x[ i ] );
-  }
+void test_chacha20_enc( int trials, int l_min, int l_max ) {
+  chacha20_ctx_t ctx;
 
-  printf( "' )\n" );  
-}
+  uint8_t* m = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) );
+  uint8_t* c = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) );
 
-//! Run N interations of the chacha20 test function.
-void test_chacha20(int n) {
+  uint8_t k[ CHACHA20_SIZEOF_KEY ], nonce[ CHACHA20_SIZEOF_NONCE ]; uint32_t counter = 0;
 
-    uint32_t input [16];
-    uint32_t output[16];
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_chacha20", "enc", i, trials );
+
+    int l = test_rand_seq(     m, l_min,                 l_max,                 sizeof( uint8_t ) );
+            test_rand_seq(     k, CHACHA20_SIZEOF_KEY,   CHACHA20_SIZEOF_KEY,   sizeof( uint8_t ) );
+            test_rand_seq( nonce, CHACHA20_SIZEOF_NONCE, CHACHA20_SIZEOF_NONCE, sizeof( uint8_t ) );
+        
+    test_chacha20_dump(     "m",     m, l                     );
+    test_chacha20_dump(     "k",     k, CHACHA20_SIZEOF_KEY   );
+    test_chacha20_dump( "nonce", nonce, CHACHA20_SIZEOF_NONCE );
+        
+    MEASURE( chacha20_init( &ctx, k, ( uint8_t* )( &counter ), nonce ); chacha20_enc( &ctx, c, m, l ) );
+        
+    test_chacha20_dump(     "c",     c, l                     );
   
-    printf( "import sys, binascii\n" );
+    printf( "t = ChaCha20.new( key = k, nonce = nonce ).encrypt( m )    " "\n"   );
+  
+    printf( "if ( c != t ) :                                            " "\n"   );
+    printf( "  print( 'fail %%s' %% ( id                            ) ) " "\n"   );
+    printf( "  print( 'm     == %%s' %% ( binascii.b2a_hex( m     ) ) ) " "\n"   );
+    printf( "  print( 'k     == %%s' %% ( binascii.b2a_hex( k     ) ) ) " "\n"   );
+    printf( "  print( 'nonce == %%s' %% ( binascii.b2a_hex( nonce ) ) ) " "\n"   );
+    printf( "  print( 'c     == %%s' %% ( binascii.b2a_hex( c     ) ) ) " "\n"   );
+    printf( "  print( '      != %%s' %% ( binascii.b2a_hex( t     ) ) ) " "\n"   );
 
-    for(int i = 0; i < n; i ++) {
+    printf( "  sys.exit( 1 )                                            " "\n\n" );
+  }
+}
 
-        printf("#ChaCha20 %d/%d\n",i,n);
+void test_chacha20_dec( int trials, int l_min, int l_max ) {
+  chacha20_ctx_t ctx;
+
+  uint8_t* c = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) );
+  uint8_t* m = ( uint8_t* )( malloc( l_max * sizeof( uint8_t ) ) );
+
+  uint8_t k[ CHACHA20_SIZEOF_KEY ], nonce[ CHACHA20_SIZEOF_NONCE ]; uint32_t counter = 0;
+
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_chacha20", "dec", i, trials );
+
+    int l = test_rand_seq(     c, l_min,                 l_max,                 sizeof( uint8_t ) );
+            test_rand_seq(     k, CHACHA20_SIZEOF_KEY,   CHACHA20_SIZEOF_KEY,   sizeof( uint8_t ) );
+            test_rand_seq( nonce, CHACHA20_SIZEOF_NONCE, CHACHA20_SIZEOF_NONCE, sizeof( uint8_t ) );
+
+    test_chacha20_dump(     "c",     c, l                     );
+    test_chacha20_dump(     "k",     k, CHACHA20_SIZEOF_KEY   );
+    test_chacha20_dump( "nonce", nonce, CHACHA20_SIZEOF_NONCE );
         
-        test_chacha20_rand(input , 16);
-        test_chacha20_rand(output, 16);
-
-        test_chacha20_dump("input  ", input, 16);
-
-        uint32_t count_c = test_util_rdcycle();
-        uint32_t count_i = test_util_rdinstret();
-
-        chacha20_block(output, input);
-
-        count_c = test_util_rdcycle()  - count_c;
-        count_i = test_util_rdinstret()- count_i;
+    MEASURE( chacha20_init( &ctx, k, ( uint8_t* )( &counter ), nonce ); chacha20_dec( &ctx, m, c, l ) );
         
-        test_chacha20_dump("output ", output, 16);
+    test_chacha20_dump(     "m",     m, l                     );
+  
+    printf( "t = ChaCha20.new( key = k, nonce = nonce ).decrypt( c )    " "\n"   );
+  
+    printf( "if ( m != t ) :                                            " "\n"   );
+    printf( "  print( 'fail %%s' %% ( id                            ) ) " "\n"   );
+    printf( "  print( 'c     == %%s' %% ( binascii.b2a_hex( c     ) ) ) " "\n"   );
+    printf( "  print( 'k     == %%s' %% ( binascii.b2a_hex( k     ) ) ) " "\n"   );
+    printf( "  print( 'nonce == %%s' %% ( binascii.b2a_hex( nonce ) ) ) " "\n"   );
+    printf( "  print( 'm     == %%s' %% ( binascii.b2a_hex( m     ) ) ) " "\n"   );
+    printf( "  print( '      != %%s' %% ( binascii.b2a_hex( t     ) ) ) " "\n"   );
 
-        printf("# cycles = %lu\n", count_c);
-        printf("# instrs = %lu\n", count_i);
-
-    }
-    
+    printf( "  sys.exit( 1 )                                            " "\n\n" );
+  }    
 }
 
 // ============================================================================
 
 int main( int argc, char* argv[] ) {
-  test_init( argc, argv, "sys, binascii, Crypto.Cipher.AES as AES" );
+  test_init( argc, argv, "sys, binascii, Cryptodome.Cipher.ChaCha20 as ChaCha20" );
+
+  test_chacha20_enc( opt_trials, opt_data_min, opt_data_max );
+  test_chacha20_dec( opt_trials, opt_data_min, opt_data_max );
 
   test_fini();
 

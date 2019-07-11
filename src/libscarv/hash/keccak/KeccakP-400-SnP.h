@@ -18,6 +18,9 @@ Please refer to SnP-documentation.h for more details.
 #ifndef _KeccakP_400_SnP_h_
 #define _KeccakP_400_SnP_h_
 
+#include <scarv/share/conf.h>
+#include <scarv/share/util.h>
+
 #define KeccakP400_implementation      "16-bit reference implementation"
 #define KeccakP400_stateSizeInBytes    50
 #define KeccakP400_stateAlignment      2

@@ -10,22 +10,29 @@
 // ============================================================================
 
 void test_mpz_dump( char* id, mpz_t* x ) {
-  printf( "%s = %cint( '", id, ( x->s == MPZ_SIGN_POS ) ? ( '+' ) : ( '-' ) ); test_dump_msb( ( uint8_t* )( x->d ), x->l * sizeof( limb_t ) ); printf( "', 16 )\n" );
+  printf( "%s = %cint( '", id, ( x->s == MPZ_SIGN_POS ) ? ( '+' ) : ( '-' ) ); test_dump_seq( ( uint8_t* )( x->d ), x->l * sizeof( limb_t ), DUMP_MSB ); printf( "', 16 )\n" );
 }
 
 void test_mpz_rand( mpz_t* r, int l_r_min, int l_r_max ) {
-  r->l = test_rand_seq( ( uint8_t* )( r->d ), l_r_min, l_r_max, sizeof( limb_t ) ); r->s = ( test_rand_int() & 1 ) ? ( MPZ_SIGN_POS ) : ( MPZ_SIGN_NEG );
+  r->l = test_rand_seq( ( uint8_t* )( r->d ), l_r_min, l_r_max, sizeof( limb_t ) ); 
+
+  if( test_rand_int() & 1 ) {
+    r->s = MPZ_SIGN_POS;
+  } 
+  else {
+    r->s = MPZ_SIGN_NEG;
+  }
 }
 
 // ============================================================================
 
-void test_mpz_add( int n, int l_min, int l_max ) {
+void test_mpz_add( int trials, int l_min, int l_max ) {
   mpz_t x;
   mpz_t y;
   mpz_t r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpz", "add", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpz", "add", i, trials );
 
     test_mpz_rand( &x, l_min, l_max );
     test_mpz_rand( &y, l_min, l_max );
@@ -33,7 +40,7 @@ void test_mpz_add( int n, int l_min, int l_max ) {
     test_mpz_dump( "x", &x );
     test_mpz_dump( "y", &y );
 
-    TEST_MEASURE( mpz_add( &r, &x, &y ) );
+    MEASURE( mpz_add( &r, &x, &y ) );
 
     test_mpz_dump( "r", &r );
 
@@ -50,13 +57,13 @@ void test_mpz_add( int n, int l_min, int l_max ) {
   }
 }
 
-void test_mpz_sub( int n, int l_min, int l_max ) {
+void test_mpz_sub( int trials, int l_min, int l_max ) {
   mpz_t x;
   mpz_t y;
   mpz_t r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpz", "sub", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpz", "sub", i, trials );
 
     test_mpz_rand( &x, l_min, l_max );
     test_mpz_rand( &y, l_min, l_max );
@@ -64,7 +71,7 @@ void test_mpz_sub( int n, int l_min, int l_max ) {
     test_mpz_dump( "x", &x );
     test_mpz_dump( "y", &y );
 
-    TEST_MEASURE( mpz_sub( &r, &x, &y ) );
+    MEASURE( mpz_sub( &r, &x, &y ) );
 
     test_mpz_dump( "r", &r );
 
@@ -81,13 +88,13 @@ void test_mpz_sub( int n, int l_min, int l_max ) {
   }
 }
 
-void test_mpz_mul( int n, int l_min, int l_max ) {
+void test_mpz_mul( int trials, int l_min, int l_max ) {
   mpz_t x;
   mpz_t y;
   mpz_t r;
 
-  for( int i = 1; i <= n; i++ ) {
-    test_id( "test_mpz", "mul", i, n );
+  for( int i = 1; i <= trials; i++ ) {
+    test_id( "test_mpz", "mul", i, trials );
 
     test_mpz_rand( &x, l_min, l_max );
     test_mpz_rand( &y, l_min, l_max );
@@ -95,7 +102,7 @@ void test_mpz_mul( int n, int l_min, int l_max ) {
     test_mpz_dump( "x", &x );
     test_mpz_dump( "y", &y );
 
-    TEST_MEASURE( mpz_mul( &r, &x, &y ) );
+    MEASURE( mpz_mul( &r, &x, &y ) );
 
     test_mpz_dump( "r", &r );
 
@@ -117,9 +124,9 @@ void test_mpz_mul( int n, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys" );
 
-  test_mpz_add( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
-  test_mpz_sub( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
-  test_mpz_mul( opt_trials, opt_mpz_min_limb, opt_mpz_max_limb );
+  test_mpz_add( opt_trials, opt_limb_min, opt_limb_max );
+  test_mpz_sub( opt_trials, opt_limb_min, opt_limb_max );
+  test_mpz_mul( opt_trials, opt_limb_min, opt_limb_max );
 
   test_fini();
 

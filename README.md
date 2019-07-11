@@ -20,7 +20,11 @@ to see in production code**: it's really only intended for internal use,
 e.g., as
 a) a guide for (e.g., ISE) design and implementation work, 
    plus
-b) a resource for benchmarking and evaluation.*
+b) a resource for benchmarking and evaluation.
+One could therefore view it as a cryptography-specific analogue of more
+general-purpose alternatives, e.g., the
+[Embench](https://github.com/embench/embench)
+benchmark.*
 
 <!--- -------------------------------------------------------------------- --->
 

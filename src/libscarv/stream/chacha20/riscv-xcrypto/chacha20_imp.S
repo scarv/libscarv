@@ -47,7 +47,7 @@ chacha20_block:
     xc.ld.w c15,60(a1)      // c15 = tmp[15]
 
     li t0, 0
-    li t1, 20
+    li t1, 10
 
     .L0:
 

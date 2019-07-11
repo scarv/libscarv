@@ -19,7 +19,7 @@ This implementation comes with KeccakP-400-SnP.h in the same folder.
 Please refer to LowLevel.build for the exact list of other files it must be combined with.
 */
 
-#include "KeccakP-400-SnP.h"
+#include <scarv/hash/keccak/KeccakP-400-SnP.h>
 
 #ifndef assert
     #define assert(EXPR)
@@ -216,7 +216,7 @@ void KeccakP400RoundReference(tKeccak400Lane *A, unsigned int indexRound)
     A[index(0, 0)] ^= KeccakP400RoundConstants[indexRound];
 }
 
-#ifndef LIBSCARV_CONF_KECCAKP400_ROUND_EXTERN
+#if ( LIBSCARV_CONF_KECCAK_P400_ROUND_EXTERN )
 void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound)
 {
     KeccakP400RoundReference(state,indexRound);

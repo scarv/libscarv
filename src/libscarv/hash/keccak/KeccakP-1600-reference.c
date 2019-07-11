@@ -19,7 +19,7 @@ This implementation comes with KeccakP-1600-SnP.h in the same folder.
 Please refer to LowLevel.build for the exact list of other files it must be combined with.
 */
 
-#include "KeccakP-1600-SnP.h"
+#include <scarv/hash/keccak/KeccakP-1600-SnP.h>
 
 #ifndef assert
     #define assert(EXPR)
@@ -234,7 +234,7 @@ void KeccakP1600RoundReference(tKeccak1600Lane *A, unsigned int indexRound)
     A[index(0, 0)] ^= KeccakP1600RoundConstants[indexRound];
 }
 
-#ifndef LIBSCARV_CONF_KECCAKP1600_ROUND_EXTERN
+#if ( LIBSCARV_CONF_KECCAK_P1600_ROUND_EXTERN )
 void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound)
 {
     KeccakP1600RoundReference(state,indexRound);

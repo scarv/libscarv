@@ -10,6 +10,18 @@
 #include <scarv/block/aes/aes_dec.h>
 #endif
 
+#if ( LIBSCARV_CONF_SHA1_ENABLE )
+#include <scarv/hash/sha1/sha1.h>
+#endif
+#if ( LIBSCARV_CONF_SHA2_ENABLE )
+#include <scarv/hash/sha2/sha2_256.h>
+#include <scarv/hash/sha2/sha2_512.h>
+#endif
+#if ( LIBSCARV_CONF_KECCAK_ENABLE )
+#include <scarv/hash/keccak/KeccakP-400-SnP.h>
+#include <scarv/hash/keccak/KeccakP-1600-SnP.h>
+#endif
+
 #if ( LIBSCARV_CONF_LIMB_ENABLE )
 #include <scarv/mp/limb/limb.h>
 #endif
@@ -23,12 +35,8 @@
 #include <scarv/mp/mrz/mrz.h>
 #endif
 
-#if ( LIBSCARV_CONF_SHA1_ENABLE )
-#include <scarv/hash/sha1/sha1.h>
-#endif
-#if ( LIBSCARV_CONF_SHA2_ENABLE )
-#include <scarv/hash/sha2/sha2_256.h>
-#include <scarv/hash/sha2/sha2_512.h>
+#if ( LIBSCARV_CONF_CHACHA20_ENABLE )
+#include <scarv/stream/chacha20/chacha20.h>
 #endif
 
 #endif

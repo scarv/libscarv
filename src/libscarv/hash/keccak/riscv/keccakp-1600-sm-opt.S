@@ -60,7 +60,7 @@ round_consts:
     .dword 0x0000000080000001
     .dword 0x8000000080008008
 
-.if LIBSCARV_CONF_KECCAKP1600_INDEX_FUNC==1
+.if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
 mod5_lut:
     .dword 0 << 3# 0
     .dword 1 << 3# 1
@@ -91,7 +91,7 @@ mod5_lut:
 .endif
 
 .macro MOD5 A, B, C
-    .if LIBSCARV_CONF_KECCAKP1600_INDEX_FUNC==1
+    .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
         add     \A, \A, \C
         lbu     \A, 0(\A)
     .else
@@ -119,7 +119,7 @@ KeccakP1600Round:
     sw      s6,20(sp)
     sw      s7,24(sp)
     sw      s2,28(sp)
-    .if LIBSCARV_CONF_KECCAKP1600_INDEX_FUNC==1
+    .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
          sw s0,32(sp)
     .endif
 
@@ -161,7 +161,7 @@ KeccakP1600Round:
 
     la      a7, rho_off
     la      a6, temp_a
-    .if LIBSCARV_CONF_KECCAKP1600_INDEX_FUNC==1
+    .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
         la      s0, mod5_lut
     .endif
     li      t0, 0                           # t0 = x = 0
@@ -369,7 +369,7 @@ KeccakP1600Round:
     lw      s6,20(sp)
     lw      s7,24(sp)
     lw      s2,28(sp)
-    .if LIBSCARV_CONF_KECCAKP1600_INDEX_FUNC==1
+    .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
          lw s0,32(sp)
     .endif
     addi    sp, sp, 44

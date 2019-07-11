@@ -5,8 +5,8 @@
  * as LICENSE.txt within the associated archive or repository).
  */
 
-#ifndef __TEST_CHACHA20_H
-#define __TEST_CHACHA20_H
+#ifndef __TEST_KECCAK_H
+#define __TEST_KECCAK_H
 
 #include "util.h"
 
