@@ -7,30 +7,34 @@
 
 #include <scarv/stream/chacha20/chacha20.h>
 
-#if ( !LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN )
-#define QR(a,b,c,d) {                     \
-    a += b; d ^= a; d = U32_RTL( d, 16 ); \
-    c += d; b ^= c; b = U32_RTL( b, 12 ); \
-    a += b; d ^= a; d = U32_RTL( d,  8 ); \
-    c += d; b ^= c; b = U32_RTL( b,  7 ); \
-}
-
-void chacha20_block( uint32_t* r, uint32_t* x ) {
+#if ( LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN )
+extern void chacha20_block( uint32_t* r, uint32_t* x );
+#else 
+       void chacha20_block( uint32_t* r, uint32_t* x ) {
   uint32_t t[ 16 ];
 
   for( int i = 0; i < 16; i++ ) {
     t[ i ] = x[ i ];
   }
 
+  #undef  CHACHA20_QR
+  #define CHACHA20_QR(a,b,c,d) {            \
+      a += b; d ^= a; d = U32_RTL( d, 16 ); \
+      c += d; b ^= c; b = U32_RTL( b, 12 ); \
+      a += b; d ^= a; d = U32_RTL( d,  8 ); \
+      c += d; b ^= c; b = U32_RTL( b,  7 ); \
+  }
+
   for( int i = 0; i < 10; i++ ) {
-    QR( t[  0 ], t[  4 ], t[  8 ], t[ 12 ] );
-    QR( t[  1 ], t[  5 ], t[  9 ], t[ 13 ] );
-    QR( t[  2 ], t[  6 ], t[ 10 ], t[ 14 ] );
-    QR( t[  3 ], t[  7 ], t[ 11 ], t[ 15 ] );
-    QR( t[  0 ], t[  5 ], t[ 10 ], t[ 15 ] );
-    QR( t[  1 ], t[  6 ], t[ 11 ], t[ 12 ] );
-    QR( t[  2 ], t[  7 ], t[  8 ], t[ 13 ] );
-    QR( t[  3 ], t[  4 ], t[  9 ], t[ 14 ] );
+    CHACHA20_QR( t[  0 ], t[  4 ], t[  8 ], t[ 12 ] );
+    CHACHA20_QR( t[  1 ], t[  5 ], t[  9 ], t[ 13 ] );
+    CHACHA20_QR( t[  2 ], t[  6 ], t[ 10 ], t[ 14 ] );
+    CHACHA20_QR( t[  3 ], t[  7 ], t[ 11 ], t[ 15 ] );
+
+    CHACHA20_QR( t[  0 ], t[  5 ], t[ 10 ], t[ 15 ] );
+    CHACHA20_QR( t[  1 ], t[  6 ], t[ 11 ], t[ 12 ] );
+    CHACHA20_QR( t[  2 ], t[  7 ], t[  8 ], t[ 13 ] );
+    CHACHA20_QR( t[  3 ], t[  4 ], t[  9 ], t[ 14 ] );
   }
 
   for( int i = 0; i < 16; i++ ) {

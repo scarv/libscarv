@@ -23,7 +23,7 @@
   h  = t_1 + t_0;                                                       \
 }
 
-static uint64_t K[] = { 
+uint64_t SHA2_512_K[] = { 
   0x428A2F98D728AE22, 0x7137449123EF65CD, 0xB5C0FBCFEC4D3B2F, 0xE9B5DBA58189DBBC,
   0x3956C25BF348B538, 0x59F111F1B605D019, 0x923F82A4AF194F9B, 0xAB1C5ED5DA6D8118,
   0xD807AA98A3030242, 0x12835B0145706FBE, 0x243185BE4EE4B28C, 0x550C7DC3D5FFB4E2,
@@ -46,172 +46,166 @@ static uint64_t K[] = {
   0x4CC5D4BECB3E42B6, 0x597F299CFC657E2A, 0x5FCB6FAB3AD6FAEC, 0x6C44198C4A475817 
 };
 
-static uint64_t H_0, H_1, H_2, H_3, H_4, H_5, H_6, H_7;
+#if ( LIBSCARV_CONF_SHA2_512_COMP_EXTERN )
+extern void sha2_512_comp( sha2_512_ctx_t* ctx, const uint8_t* x );
+#else
+       void sha2_512_comp( sha2_512_ctx_t* ctx, const uint8_t* x ) {
 
-static uint8_t T[ 128 ];
+  uint64_t a = ctx->H[ 0 ];
+  uint64_t b = ctx->H[ 1 ];
+  uint64_t c = ctx->H[ 2 ];
+  uint64_t d = ctx->H[ 3 ];
+  uint64_t e = ctx->H[ 4 ];
+  uint64_t f = ctx->H[ 5 ];
+  uint64_t g = ctx->H[ 6 ];
+  uint64_t h = ctx->H[ 7 ];
 
-static uint64_t n_left; // bytes remaining
-static uint64_t n_done; // bytes processed so far
-
-#if ( !LIBSCARV_CONF_SHA2_512_COMP_EXTERN )
-void sha2_512_comp( const uint8_t* x ) {
-  uint64_t W[ 80 ];
-
-  uint64_t a = H_0;
-  uint64_t b = H_1;
-  uint64_t c = H_2;
-  uint64_t d = H_3;
-  uint64_t e = H_4;
-  uint64_t f = H_5;
-  uint64_t g = H_6;
-  uint64_t h = H_7;
-
-  U8_TO_U64_BE( W[  0 ], x,   0 );
-  U8_TO_U64_BE( W[  1 ], x,   8 );
-  U8_TO_U64_BE( W[  2 ], x,  16 );
-  U8_TO_U64_BE( W[  3 ], x,  24 );
-  U8_TO_U64_BE( W[  4 ], x,  32 );
-  U8_TO_U64_BE( W[  5 ], x,  40 );
-  U8_TO_U64_BE( W[  6 ], x,  48 );
-  U8_TO_U64_BE( W[  7 ], x,  56 );
-  U8_TO_U64_BE( W[  8 ], x,  64 );
-  U8_TO_U64_BE( W[  9 ], x,  72 );
-  U8_TO_U64_BE( W[ 10 ], x,  80 );
-  U8_TO_U64_BE( W[ 11 ], x,  88 );
-  U8_TO_U64_BE( W[ 12 ], x,  96 );
-  U8_TO_U64_BE( W[ 13 ], x, 104 );
-  U8_TO_U64_BE( W[ 14 ], x, 112 );
-  U8_TO_U64_BE( W[ 15 ], x, 120 );
+  U8_TO_U64_BE( ctx->W[  0 ], x,   0 );
+  U8_TO_U64_BE( ctx->W[  1 ], x,   8 );
+  U8_TO_U64_BE( ctx->W[  2 ], x,  16 );
+  U8_TO_U64_BE( ctx->W[  3 ], x,  24 );
+  U8_TO_U64_BE( ctx->W[  4 ], x,  32 );
+  U8_TO_U64_BE( ctx->W[  5 ], x,  40 );
+  U8_TO_U64_BE( ctx->W[  6 ], x,  48 );
+  U8_TO_U64_BE( ctx->W[  7 ], x,  56 );
+  U8_TO_U64_BE( ctx->W[  8 ], x,  64 );
+  U8_TO_U64_BE( ctx->W[  9 ], x,  72 );
+  U8_TO_U64_BE( ctx->W[ 10 ], x,  80 );
+  U8_TO_U64_BE( ctx->W[ 11 ], x,  88 );
+  U8_TO_U64_BE( ctx->W[ 12 ], x,  96 );
+  U8_TO_U64_BE( ctx->W[ 13 ], x, 104 );
+  U8_TO_U64_BE( ctx->W[ 14 ], x, 112 );
+  U8_TO_U64_BE( ctx->W[ 15 ], x, 120 );
 
   for( int i = 16; i < 80; i += 1 ) {
-    W[ i ] = SHA2_512_S1( W[ i -  2 ] ) + ( W[ i -  7 ] ) +
-             SHA2_512_S0( W[ i - 15 ] ) + ( W[ i - 16 ] ) ;
+    ctx->W[ i ] = SHA2_512_S1( ctx->W[ i -  2 ] ) + ( ctx->W[ i -  7 ] ) +
+                  SHA2_512_S0( ctx->W[ i - 15 ] ) + ( ctx->W[ i - 16 ] ) ;
   }
 
   for( int i =  0; i < 80; i += 8 ) {
-    SHA2_512_R( a, b, c, d, e, f, g, h, W[ i + 0 ], K[ i + 0 ] );
-    SHA2_512_R( h, a, b, c, d, e, f, g, W[ i + 1 ], K[ i + 1 ] );
-    SHA2_512_R( g, h, a, b, c, d, e, f, W[ i + 2 ], K[ i + 2 ] );
-    SHA2_512_R( f, g, h, a, b, c, d, e, W[ i + 3 ], K[ i + 3 ] );
-    SHA2_512_R( e, f, g, h, a, b, c, d, W[ i + 4 ], K[ i + 4 ] );
-    SHA2_512_R( d, e, f, g, h, a, b, c, W[ i + 5 ], K[ i + 5 ] );
-    SHA2_512_R( c, d, e, f, g, h, a, b, W[ i + 6 ], K[ i + 6 ] );
-    SHA2_512_R( b, c, d, e, f, g, h, a, W[ i + 7 ], K[ i + 7 ] );
+    SHA2_512_R( a, b, c, d, e, f, g, h, ctx->W[ i + 0 ], SHA2_512_K[ i + 0 ] );
+    SHA2_512_R( h, a, b, c, d, e, f, g, ctx->W[ i + 1 ], SHA2_512_K[ i + 1 ] );
+    SHA2_512_R( g, h, a, b, c, d, e, f, ctx->W[ i + 2 ], SHA2_512_K[ i + 2 ] );
+    SHA2_512_R( f, g, h, a, b, c, d, e, ctx->W[ i + 3 ], SHA2_512_K[ i + 3 ] );
+    SHA2_512_R( e, f, g, h, a, b, c, d, ctx->W[ i + 4 ], SHA2_512_K[ i + 4 ] );
+    SHA2_512_R( d, e, f, g, h, a, b, c, ctx->W[ i + 5 ], SHA2_512_K[ i + 5 ] );
+    SHA2_512_R( c, d, e, f, g, h, a, b, ctx->W[ i + 6 ], SHA2_512_K[ i + 6 ] );
+    SHA2_512_R( b, c, d, e, f, g, h, a, ctx->W[ i + 7 ], SHA2_512_K[ i + 7 ] );
   }
 
-  H_0 += a;
-  H_1 += b;
-  H_2 += c;
-  H_3 += d;
-  H_4 += e;
-  H_5 += f;
-  H_6 += g;
-  H_7 += h;
+  ctx->H[ 0 ] += a;
+  ctx->H[ 1 ] += b;
+  ctx->H[ 2 ] += c;
+  ctx->H[ 3 ] += d;
+  ctx->H[ 4 ] += e;
+  ctx->H[ 5 ] += f;
+  ctx->H[ 6 ] += g;
+  ctx->H[ 7 ] += h;
 }
 #endif
 
-void sha2_512_padd( uint8_t* x ) {
+void sha2_512_pad( sha2_512_ctx_t* ctx, uint8_t* x ) {
   int n_b = SHA2_512_SIZEOF_BLOCK;
 
-  n_done = ( n_done + n_left ) * 8;
+  ctx->n_done = ( ctx->n_done + ctx->n_left ) * 8;
 
-  x[ n_left++ ] = 0x80;
+  x[ ctx->n_left++ ] = 0x80;
 
-  if   ( n_left > ( n_b - ( 2 * SIZEOF( uint64_t ) ) ) ) {
-    while( n_left < n_b ) {
-      x[ n_left++ ] = 0x00;
+  if   ( ctx->n_left > ( n_b - ( 2 * SIZEOF( uint64_t ) ) ) ) {
+    while( ctx->n_left < n_b ) {
+      x[ ctx->n_left++ ] = 0x00;
     }
 
-    sha2_512_comp( x );
+    sha2_512_comp( ctx, x );
 
-    n_left = 0;
+    ctx->n_left = 0;
   }
 
-  while( n_left < ( n_b - ( 1 * SIZEOF( uint64_t ) ) ) ) {
-    x[ n_left++ ] = 0x00;
+  while( ctx->n_left < ( n_b - ( 1 * SIZEOF( uint64_t ) ) ) ) {
+    x[ ctx->n_left++ ] = 0x00;
   }
 
-  U64_TO_U8_BE( x, n_done, n_left );
+  U64_TO_U8_BE( x, ctx->n_done, ctx->n_left );
 
-  sha2_512_comp( x );
+  sha2_512_comp( ctx, x );
 }
 
-void sha2_512_init() {
-  H_0 = 0x6A09E667F3BCC908;
-  H_1 = 0xBB67AE8584CAA73B;
-  H_2 = 0x3C6EF372FE94F82B;
-  H_3 = 0xA54FF53A5F1D36F1;
-  H_4 = 0x510E527FADE682D1;
-  H_5 = 0x9B05688C2B3E6C1F;
-  H_6 = 0x1F83D9ABFB41BD6B;
-  H_7 = 0x5BE0CD19137E2179;
+void sha2_512_init( sha2_512_ctx_t* ctx ) {
+  ctx->H[ 0 ] = 0x6A09E667F3BCC908;
+  ctx->H[ 1 ] = 0xBB67AE8584CAA73B;
+  ctx->H[ 2 ] = 0x3C6EF372FE94F82B;
+  ctx->H[ 3 ] = 0xA54FF53A5F1D36F1;
+  ctx->H[ 4 ] = 0x510E527FADE682D1;
+  ctx->H[ 5 ] = 0x9B05688C2B3E6C1F;
+  ctx->H[ 6 ] = 0x1F83D9ABFB41BD6B;
+  ctx->H[ 7 ] = 0x5BE0CD19137E2179;
 
-  n_left = 0;
-  n_done = 0;
+  ctx->n_left = 0;
+  ctx->n_done = 0;
 }
 
-void sha2_512_hash( const uint8_t* m, int n_m ) {
+void sha2_512_hash( sha2_512_ctx_t* ctx, const uint8_t* m, int n_m ) {
   int n_b = SHA2_512_SIZEOF_BLOCK;
 
-  if( n_left != 0 ) {
-    int n_t = n_b - n_left;
+  if( ctx->n_left != 0 ) {
+    int n_t = n_b - ctx->n_left;
  
     if( n_t > n_m ) {
-      memcpy( T + n_left, m, n_m );
+      memcpy( ctx->B + ctx->n_left, m, n_m );
 
-      n_left += n_m;
-      n_m     =   0;
+      ctx->n_left += n_m;
+           n_m     =   0;
     }
     else {
-      memcpy( T + n_left, m, n_t );
+      memcpy( ctx->B + ctx->n_left, m, n_t );
 
-      n_done += n_b;
-      n_left  =   0;
-      n_m    -= n_t;
+      ctx->n_done += n_b;
+      ctx->n_left  =   0;
+           n_m    -= n_t;
 
-      sha2_512_comp( T );
+      sha2_512_comp( ctx, ctx->B );
     }
   }
 
   while( n_m >= n_b ) {
-    sha2_512_comp( m );
+    sha2_512_comp( ctx, m );
 
-    n_done += n_b;
-    m      += n_b;
-    n_m    -= n_b;
+    ctx->n_done += n_b;
+         m      += n_b;
+         n_m    -= n_b;
   }
 
   if( n_m > 0 ) {
-    memcpy( T, m, n_left = n_m );
+    memcpy( ctx->B, m, ctx->n_left = n_m );
   }
 }
 
-void sha2_512_fini( uint8_t* d ) {
-  sha2_512_padd( T );
+void sha2_512_fini( sha2_512_ctx_t* ctx, uint8_t* d ) {
+  sha2_512_pad( ctx, ctx->B );
 
-  U64_TO_U8_BE( d, H_0,  0 );
-  U64_TO_U8_BE( d, H_1,  8 );
-  U64_TO_U8_BE( d, H_2, 16 );
-  U64_TO_U8_BE( d, H_3, 24 );
-  U64_TO_U8_BE( d, H_4, 32 );
-  U64_TO_U8_BE( d, H_5, 40 );
-  U64_TO_U8_BE( d, H_6, 48 );
-  U64_TO_U8_BE( d, H_7, 56 );
+  U64_TO_U8_BE( d, ctx->H[ 0 ],  0 );
+  U64_TO_U8_BE( d, ctx->H[ 1 ],  8 );
+  U64_TO_U8_BE( d, ctx->H[ 2 ], 16 );
+  U64_TO_U8_BE( d, ctx->H[ 3 ], 24 );
+  U64_TO_U8_BE( d, ctx->H[ 4 ], 32 );
+  U64_TO_U8_BE( d, ctx->H[ 5 ], 40 );
+  U64_TO_U8_BE( d, ctx->H[ 6 ], 48 );
+  U64_TO_U8_BE( d, ctx->H[ 7 ], 56 );
 }
 
 void sha2_512( uint8_t* d, int l, ... ) {
-  va_list a;
+  va_list a; sha2_512_ctx_t ctx;
 
-  sha2_512_init();
+  sha2_512_init( &ctx );
   va_start( a, l );
 
   for( int i = 0; i < l; i++ ) {
     uint8_t* m   = va_arg( a, uint8_t* );
     int      n_m = va_arg( a,  int     );
 
-    sha2_512_hash( m, n_m );
+    sha2_512_hash( &ctx, m, n_m );
   }
 
   va_end( a );
-  sha2_512_fini( d );
+  sha2_512_fini( &ctx, d );
 }

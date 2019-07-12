@@ -14,10 +14,18 @@
 #define SHA1_SIZEOF_BLOCK  ( 64 )
 #define SHA1_SIZEOF_DIGEST ( 20 )
 
-extern void sha1_init();
+typedef struct {
+  uint32_t W[  80 ]; // working array
+  uint32_t H[   5 ]; // current hash digest
+  uint8_t  B[  64 ]; // current hash block
 
-extern void sha1_hash( const uint8_t* m, int n_m );
-extern void sha1_fini(       uint8_t* d          );
+  uint64_t n_left;   // bytes remaining
+  uint64_t n_done;   // bytes processed so far
+} sha1_ctx_t;
+
+extern void sha1_init( sha1_ctx_t* ctx                            );
+extern void sha1_hash( sha1_ctx_t* ctx, const uint8_t* m, int n_m );
+extern void sha1_fini( sha1_ctx_t* ctx,       uint8_t* d          );
 
 extern void sha1( uint8_t* d, int l, ... );
 

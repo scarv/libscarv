@@ -11,7 +11,8 @@
 
 .section .text
 
-.global aes_dec
+.func    aes_dec
+.global  aes_dec
 
 // void aes_dec( uint8_t* r, uint8_t* c, uint8_t* k );
 //
@@ -29,7 +30,7 @@ aes_dec: AES_LDM         c0, c1, c2, c3, a1
 
          li t0, 9
 
-l0:      xc.aessub.dec   c4, c0, c3
+.l0:     xc.aessub.dec   c4, c0, c3
          xc.aessub.dec   c5, c1, c0
          xc.aessub.dec   c6, c2, c1
          xc.aessub.dec   c7, c3, c2
@@ -44,7 +45,7 @@ l0:      xc.aessub.dec   c4, c0, c3
          xc.aesmix.dec   c3, c7, c5
 
          addi t0, t0, -1
-         bgtz t0, l0
+         bgtz t0, .l0
 
          xc.aessub.dec   c4, c2, c1
          xc.aessub.dec   c5, c3, c2
@@ -66,4 +67,6 @@ l0:      xc.aessub.dec   c4, c0, c3
          
          ret
 
+.endfunc
+	
 // ============================================================================	

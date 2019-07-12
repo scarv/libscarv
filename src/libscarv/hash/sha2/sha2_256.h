@@ -11,13 +11,21 @@
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
 
-#define SHA2_256_SIZEOF_BLOCK  ( 64 )
-#define SHA2_256_SIZEOF_DIGEST ( 32 )
+#define SHA2_256_SIZEOF_BLOCK  (  64 )
+#define SHA2_256_SIZEOF_DIGEST (  32 )
 
-extern void sha2_256_init();
+typedef struct {
+  uint32_t W[  64 ]; // working array
+  uint32_t H[   8 ]; // current hash digest
+  uint8_t  B[  64 ]; // current hash block
 
-extern void sha2_256_hash( const uint8_t* m, int n_m );
-extern void sha2_256_fini(       uint8_t* d          );
+  uint64_t n_left;   // bytes remaining
+  uint64_t n_done;   // bytes processed so far
+} sha2_256_ctx_t;
+
+extern void sha2_256_init( sha2_256_ctx_t* ctx                            );
+extern void sha2_256_hash( sha2_256_ctx_t* ctx, const uint8_t* m, int n_m );
+extern void sha2_256_fini( sha2_256_ctx_t* ctx,       uint8_t* d          );
 
 extern void sha2_256( uint8_t* d, int l, ... );
 

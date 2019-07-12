@@ -238,6 +238,25 @@ benchmark.*
   ```
  
   i.e., there are sub-directories for *each* target architecture.
+  Note that:
+
+  - The strategy is st. that the
+    top-level directory for kernel
+    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}`)
+    has 
+    an architecture-agnostic implementation; 
+    portions of this (e.g., a particular function) can be replaced 
+    by 
+    an architecture-specific implementation
+    housed in the target architecture (sub-)directory
+    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}/${ARCH}`).
+
+  - Within the target architecture (sub-)directory, we follow the
+    naming scheme
+
+    - `X_imp.S` to denote the architecture-specific implementation
+      of some functionality `X`,
+    - `macro.S` to denote support macros for said implementation(s).
 
 #### The `libscarv` test suite
 
@@ -349,30 +368,38 @@ benchmark.*
   kernels
   to consider, identifiers for which are one of the following:
   
-  | Kernel            | Description                                                                             |
-  | :---------------- | :-------------------------------------------------------------------------------------- |
-  | `block/aes`       |                                                                                         |
-  | `block/prince`    |                                                                                         |
-  | `block/sparx`     |                                                                                         |
-  | `hash/keccak`     |                                                                                         |
-  | `hash/sha1`       |                                                                                         |
-  | `hash/sha2`       |                                                                                         |
-  | `mp/limb`         |                                                                                         |
-  | `mp/mpn`          |                                                                                         |
-  | `mp/mpz`          |                                                                                         |
-  | `mp/mrz`          |                                                                                         |
-  | `stream/chacha20` |                                                                                         |
+  | Kernel            | Description                                                                             | native  | riscv | riscv-xcrypto |
+  | :---------------- | :-------------------------------------------------------------------------------------- | :------ | :---- | :------------ |
+  | `block/aes`       |                                                                                         | o       | x     | x             |
+  | `block/prince`    |                                                                                         | o       | x     | x             |
+  | `block/sparx`     |                                                                                         | o       | x     | x             |
+  | `hash/keccak`     |                                                                                         | o       | x     | x             |
+  | `hash/sha1`       |                                                                                         | o       | x     | x             |
+  | `hash/sha2`       |                                                                                         | o       | x     | x             |
+  | `mp/limb`         |                                                                                         | o       | x     | x             |
+  | `mp/mpn`          |                                                                                         | o       | x     | x             |
+  | `mp/mpz`          |                                                                                         | o       | x     | x             |
+  | `mp/mrz`          |                                                                                         | o       | x     | x             |
+  | `stream/chacha20` |                                                                                         | o       | x     | o             |
 
-  Note that *limited* forms of wildcard are supported: for example,
+  Note that:
 
-  - rather than 
-    `hash/sha1 hash/sha2`,
-    one could use
-    `hash/sha*`,
-  - rather than 
-    `hash/keccak hash/sha1 hash/sha2`,
-    one could use
-    `hash/*`.
+  - Columns on the right-hand side of the table highlight where there
+    is *specific* support for a given target architecture:
+    `o` means an architecture-specific (typically assembly language) implementation is available,
+    whereas
+    `x` means an architecture-agnostic (typically C)                 implementation is available.
+
+  - A *limited* form of wildcard are supported: for example,
+
+    - rather than 
+      `hash/sha1 hash/sha2`,
+      one could use
+      `hash/sha*`,
+    - rather than 
+      `hash/keccak hash/sha1 hash/sha2`,
+      one could use
+      `hash/*`.
 
 - Each target architecture demands two configuration files:
 

@@ -11,7 +11,8 @@
 
 .section .text
 
-.global aes_enc
+.func    aes_enc
+.global  aes_enc
 
 // void aes_enc( uint8_t* r, uint8_t* m, uint8_t* k );
 //
@@ -29,7 +30,7 @@ aes_enc: AES_LDM         c0, c1, c2, c3, a1
 
          li t0, 9
 
-l0:      xc.aessub.enc   c4, c0, c1
+.l0:     xc.aessub.enc   c4, c0, c1
          xc.aessub.enc   c5, c2, c3
          xc.aessub.enc   c6, c1, c2
          xc.aessub.enc   c7, c3, c0
@@ -44,7 +45,7 @@ l0:      xc.aessub.enc   c4, c0, c1
          AES_ENC_RND_KEY c0, c1, c2, c3, c4, c5, c6, c7
 
          addi t0, t0, -1
-         bgtz t0, l0
+         bgtz t0, .l0
 
          xc.aessub.enc   c4, c2, c3
          xc.aessub.enc   c5, c3, c0
@@ -66,4 +67,6 @@ l0:      xc.aessub.enc   c4, c0, c1
     
          ret
 
+.endfunc
+	
 // ============================================================================	

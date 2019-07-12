@@ -14,10 +14,18 @@
 #define SHA2_512_SIZEOF_BLOCK  ( 128 )
 #define SHA2_512_SIZEOF_DIGEST (  64 )
 
-extern void sha2_512_init();
+typedef struct {
+  uint64_t W[  80 ]; // working array
+  uint64_t H[   8 ]; // current hash digest
+  uint8_t  B[ 128 ]; // current hash block
 
-extern void sha2_512_hash( const uint8_t* m, int n_m );
-extern void sha2_512_fini(       uint8_t* d          );
+  uint64_t n_left;   // bytes remaining
+  uint64_t n_done;   // bytes processed so far
+} sha2_512_ctx_t;
+
+extern void sha2_512_init( sha2_512_ctx_t* ctx                            );
+extern void sha2_512_hash( sha2_512_ctx_t* ctx, const uint8_t* m, int n_m );
+extern void sha2_512_fini( sha2_512_ctx_t* ctx,       uint8_t* d          );
 
 extern void sha2_512( uint8_t* d, int l, ... );
 
