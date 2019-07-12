@@ -10,7 +10,7 @@ ARG DATE
 
 LABEL maintainer="SCARV project <info@scarv.org>" date="${DATE}" url="https://github.com/scarv/libscarv"
 
-COPY ./requirements.txt /tmp
+COPY ./requirements.txt /tmp/requirements.txt
 
 RUN apt-get --assume-yes --quiet update \
  && apt-get --assume-yes --quiet install apt-utils gettext-base gosu sudo python3 python3-pip python3-venv \
