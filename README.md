@@ -394,14 +394,14 @@ benchmark.*
 
   Note that:
 
-  - The `variant` column 
+  - The variant column 
     toward the  left-hand side of the table
     highlights where a major variant of a given kernel 
     is available:
     the variant is selected via configuration symbols for said kernel,
     vs. being classed a separate kernel.
 
-  - The           columns
+  - The         columns
     toward the right-hand side of the table 
     highlight  where specific support for a given target architecture
     is available:
