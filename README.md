@@ -240,23 +240,31 @@ benchmark.*
   i.e., there are sub-directories for *each* target architecture.
   Note that:
 
-  - The strategy is st. that the
-    top-level directory for kernel
+  - The top-level directory for a given kernel
     (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}`)
-    has 
-    an architecture-agnostic implementation; 
-    portions of this (e.g., a particular function) can be replaced 
-    by 
-    an architecture-specific implementation
-    housed in the target architecture (sub-)directory
-    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}/${ARCH}`).
+    houses
+    an architecture-agnostic implementation.  
+    This implementation may be either 
 
-  - Within the target architecture (sub-)directory, we follow the
-    naming scheme
+    - incomplete,
+      meaning it *must* be combined with supporting,
+      architecture-specific functionality
+      (i.e., cannot be used as a stand-alone kernel),
+    -   complete, 
+      meaning it *may*  be combined with supporting,
+      architecture-specific functionality
+      (i.e., can    be used as a stand-alone kernel).
 
-    - `X_imp.S` to denote the architecture-specific implementation
+  - *If* supporting, architecture-specific functionality is used,
+    the target architecture (sub-)directory
+    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}/${ARCH}`)
+    houses it.
+
+  - Within a given target architecture (sub-)directory,
+
+    - `X_imp.S` captures the architecture-specific implementation
       of some functionality `X`,
-    - `macro.S` to denote support macros for said implementation(s).
+    - `macro.S` captures macros that support said implementation(s).
 
 #### The `libscarv` test suite
 
