@@ -376,24 +376,35 @@ benchmark.*
   kernels
   to consider, identifiers for which are one of the following:
   
-  | Kernel            | Description                                                                             | native  | riscv | riscv-xcrypto |
-  | :---------------- | :-------------------------------------------------------------------------------------- | :------ | :---- | :------------ |
-  | `block/aes`       |                                                                                         | o       | x     | x             |
-  | `block/prince`    |                                                                                         | o       | x     | x             |
-  | `block/sparx`     |                                                                                         | o       | x     | x             |
-  | `hash/keccak`     |                                                                                         | o       | x     | x             |
-  | `hash/sha1`       |                                                                                         | o       | x     | x             |
-  | `hash/sha2`       |                                                                                         | o       | x     | x             |
-  | `mp/limb`         |                                                                                         | o       | x     | x             |
-  | `mp/mpn`          |                                                                                         | o       | x     | x             |
-  | `mp/mpz`          |                                                                                         | o       | x     | x             |
-  | `mp/mrz`          |                                                                                         | o       | x     | x             |
-  | `stream/chacha20` |                                                                                         | o       | x     | o             |
+  | Kernel            | Variant  | Description                                                                             | native  | riscv | riscv-xcrypto |
+  | :---------------- | :------- | :-------------------------------------------------------------------------------------- | :------ | :---- | :------------ |
+  | `block/aes`       | `sbox`   |                                                                                         | o       | x     | x             |
+  | `block/aes`       | `packed` |                                                                                         | o       | x     | x             |
+  | `block/aes`       | `ttable` |                                                                                         | o       | x     | x             |
+  | `block/prince`    |          |                                                                                         | o       | x     | x             |
+  | `block/sparx`     |          |                                                                                         | o       | x     | x             |
+  | `hash/keccak`     |          |                                                                                         | o       | x     | x             |
+  | `hash/sha1`       |          |                                                                                         | o       | x     | x             |
+  | `hash/sha2`       |          |                                                                                         | o       | x     | x             |
+  | `mp/limb`         |          |                                                                                         | o       | x     | x             |
+  | `mp/mpn`          |          |                                                                                         | o       | x     | x             |
+  | `mp/mpz`          |          |                                                                                         | o       | x     | x             |
+  | `mp/mrz`          |          |                                                                                         | o       | x     | x             |
+  | `stream/chacha20` |          |                                                                                         | o       | x     | o             |
 
   Note that:
 
-  - Columns on the right-hand side of the table highlight where there
-    is *specific* support for a given target architecture:
+  - The `variant` column 
+    toward the  left-hand side of the table
+    highlights where a major variant of a given kernel 
+    is available:
+    the variant is selected via configuration symbols for said kernel,
+    vs. being classed a separate kernel.
+
+  - The           columns
+    toward the right-hand side of the table 
+    highlight  where specific support for a given target architecture
+    is available:
     `o` means an architecture-specific (typically assembly language) implementation is available,
     whereas
     `x` means an architecture-agnostic (typically C)                 implementation is available.
