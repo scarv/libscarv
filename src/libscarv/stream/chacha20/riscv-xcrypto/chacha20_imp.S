@@ -4,7 +4,8 @@
 // can be found at https://opensource.org/licenses/MIT (or should be included 
 // as LICENSE.txt within the associated archive or repository).
 
-#include "scarv/share/conf.h"
+#include "scarv/stream/chacha20/chacha20_imp.h"
+
 #include "macro.S"
 
 // ============================================================================	

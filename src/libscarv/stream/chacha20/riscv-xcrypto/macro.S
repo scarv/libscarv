@@ -23,11 +23,11 @@
 .endm
 
 .macro CHACHA20_LD a,  x,  o
-    xc.ld.w     \a , \o(\x)               // t[ i ] = x[ i ]
+  xc.ld.w     \a , \o(\x)                 // t[ i ] = x[ i ]
 .endm
 	
 .macro CHACHA20_ST a,b,x,r,o
-    xc.ld.w     \a , \o(\x)
-    xc.padd  w, \b , \b, \a
-    xc.st.w     \b , \o(\r)               // r[ i ] = x[ i ] + t[ i ]
+  xc.ld.w     \a , \o(\x)
+  xc.padd  w, \b , \b, \a
+  xc.st.w     \b , \o(\r)                 // r[ i ] = x[ i ] + t[ i ]
 .endm

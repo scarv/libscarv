@@ -52,6 +52,17 @@ void aes_dec_exp( uint8_t* r, const uint8_t* k ) {
     aes_dec_exp_step( rp - ( 4 * AES_128_NB ), rp, *(--rcp) ); rp -= ( 4 * AES_128_NB );
   }
   #endif
+
+  #if ( LIBSCARV_CONF_AES_DEC_EQUIV )
+  for( int i = 1; i < AES_128_NR; i++ ) {
+    uint8_t* s = r + ( ( 4 * AES_128_NB ) * i );
+
+    AES_DEC_RND_MIX_STEP(  0,  1,  2,  3 );
+    AES_DEC_RND_MIX_STEP(  4,  5,  6,  7 );
+    AES_DEC_RND_MIX_STEP(  8,  9, 10, 11 );
+    AES_DEC_RND_MIX_STEP( 12, 13, 14, 15 );
+  }
+  #endif
 }
 #endif
 

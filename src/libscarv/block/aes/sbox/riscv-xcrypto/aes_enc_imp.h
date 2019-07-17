@@ -8,6 +8,18 @@
 #ifndef __LIBSCARV_AES_ENC_IMP_H
 #define __LIBSCARV_AES_ENC_IMP_H
 
+#include "scarv/share/conf.h"
+
+#if ( !LIBSCARV_CONF_XCRYPTO_CLASS_1   )
+#error "no implementation for !LIBSCARV_CONF_XCRYPTO_1"
+#endif
+#if ( !LIBSCARV_CONF_XCRYPTO_CLASS_2_3 )
+#error "no implementation for !LIBSCARV_CONF_XCRYPTO_2_3"
+#endif
+#if ( !LIBSCARV_CONF_XCRYPTO_CLASS_3_1 )
+#error "no implementation for !LIBSCARV_CONF_XCRYPTO_3_1"
+#endif
+
 #if ( !LIBSCARV_CONF_AES_KEY_PRECOMP )
 #error "no implementation for !LIBSCARV_CONF_AES_KEY_PRECOMP"
 #endif

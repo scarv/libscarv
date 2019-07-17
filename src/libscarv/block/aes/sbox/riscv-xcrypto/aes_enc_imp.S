@@ -4,9 +4,10 @@
 // can be found at https://opensource.org/licenses/MIT (or should be included 
 // as LICENSE.txt within the associated archive or repository).
 
-#include "scarv/share/conf.h"
-#include "macro.S"
+#include "scarv/block/aes/aes_enc_imp.h"
 
+#include "macro.S"
+	
 // ============================================================================	
 
 .section .text

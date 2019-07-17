@@ -61,9 +61,9 @@
 
 /** Specify the implementation type (or strategy): options are
   * 
-  * - @p sbox:   see [Section 4.1, 1]; use  8-bit datapath                                  
-  * - @p packed: see [Section 4.2, 1]; use 32-bit datapath, with row-wise packing           
-  * - @p ttable: see              [2]; use 32-bit datapath, with aggressive pre-computation 
+  * - @p sbox:   see [Sec. 4.1, 1]; use  8-bit datapath                                  
+  * - @p packed: see [Sec. 4.2, 1]; use 32-bit datapath, with row-wise packing           
+  * - @p ttable: see           [2]; use 32-bit datapath, with aggressive pre-computation 
   *
   * 1. J. Daemen and V. Rijmen. 
   *    The Design of Rijndael. 
@@ -81,6 +81,15 @@
 /** Use an external, architecture-specific implementation of @p aes_dec.
   */
 #define LIBSCARV_CONF_AES_DEC_EXTERN             ${LIBSCARV_CONF_AES_DEC_EXTERN}
+
+/** Decryption is structured per the "equivalent inverse cipher" algorithm [Fig. 15, 1], e.g., implying a need to fix-up the round keys appropriately [Sec. 5.3.5, 1].
+  *
+  * 1. Advanced Encryption Standard (AES).
+  *    National Institute of Standards and Technology (NIST),
+  *    Federal Information Processing Standards (FIPS) 197,
+  *    2001.
+  */
+#define LIBSCARV_CONF_AES_DEC_EQUIV              ${LIBSCARV_CONF_AES_DEC_EQUIV}
 
 /** Pre-compute a table for field division       by the indeterminate (i.e., a / x).
   */
@@ -215,6 +224,33 @@
 /** Use an external, architecture-specific implementation of @p chacha20_block.
   */
 #define LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN      ${LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN}
+
+/* ========================================================================= */
+
+/** Capture whether or not XCrypto implementation supports class 1   instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_1            ${LIBSCARV_CONF_XCRYPTO_CLASS_1}
+/** Capture whether or not XCrypto implementation supports class 2.1 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_2_1          ${LIBSCARV_CONF_XCRYPTO_CLASS_2_1}
+/** Capture whether or not XCrypto implementation supports class 2.2 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_2_2          ${LIBSCARV_CONF_XCRYPTO_CLASS_2_2}
+/** Capture whether or not XCrypto implementation supports class 2.3 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_2_3          ${LIBSCARV_CONF_XCRYPTO_CLASS_2_3}
+/** Capture whether or not XCrypto implementation supports class 2.4 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_2_4          ${LIBSCARV_CONF_XCRYPTO_CLASS_2_4}
+/** Capture whether or not XCrypto implementation supports class 2.5 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_2_5          ${LIBSCARV_CONF_XCRYPTO_CLASS_2_5}
+/** Capture whether or not XCrypto implementation supports class 3.1 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_3_1          ${LIBSCARV_CONF_XCRYPTO_CLASS_3_1}
+/** Capture whether or not XCrypto implementation supports class 3.2 instructions.
+  */
+#define LIBSCARV_CONF_XCRYPTO_CLASS_3_2          ${LIBSCARV_CONF_XCRYPTO_CLASS_3_2}
 
 /* ========================================================================= */
 

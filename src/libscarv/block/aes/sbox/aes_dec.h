@@ -15,6 +15,7 @@
 #include <scarv/block/aes/aes_divx.h>
 #include <scarv/block/aes/aes_mulx.h>
 #include <scarv/block/aes/aes_rcon.h>
+#include <scarv/block/aes/aes_rnd.h>
 #include <scarv/block/aes/aes_sbox.h>
 
 #include <scarv/block/aes/aes_enc.h>

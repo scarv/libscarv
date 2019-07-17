@@ -378,7 +378,7 @@ benchmark.*
   
   | Kernel            | Variant  | Description                                                                             | native  | riscv | riscv-xcrypto |
   | :---------------- | :------- | :-------------------------------------------------------------------------------------- | :------ | :---- | :------------ |
-  | `block/aes`       | `sbox`   |                                                                                         | o       | x     | x             |
+  | `block/aes`       | `sbox`   |                                                                                         | o       | x     | o             |
   | `block/aes`       | `packed` |                                                                                         | o       | x     | x             |
   | `block/aes`       | `ttable` |                                                                                         | o       | x     | x             |
   | `block/prince`    |          |                                                                                         | o       | x     | x             |
