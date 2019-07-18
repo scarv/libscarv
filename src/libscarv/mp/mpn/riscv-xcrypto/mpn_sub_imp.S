@@ -1,68 +1,101 @@
+// Copyright (C) 2019 SCARV project <info@scarv.org>
+//
+// Use of this source code is restricted per the MIT license, a copy of which 
+// can be found at https://opensource.org/licenses/MIT (or should be included 
+// as LICENSE.txt within the associated archive or repository).
 
+#include "scarv/mp/mpn/mpn_sub_imp.h"
+
+// ============================================================================	
+
+#if ( LIBSCARV_CONF_MPN_SUB_EXTERN )
 .section .text
-.global mpn_sub
-mpn_sub:
-    # a0 = limb_t * r
-    # a1 = limb_t * x
-    # a2 = int      l_x
-    # a3 = limb_t * y
-    # a4 = int      l_y
 
-    slli   t1, a2, 2
-    bltu a2, a4, .l_y_min
-    slli   t1, a4, 2
+.func    mpn_sub
+.global  mpn_sub
 
-    .l_y_min:                   // t1 = MIN(l_x, l_y)
-        
-       xc.gpr2xcr c1, zero
+// limb_t mpn_sub( limb_t* r, const limb_t* x, int l_x, const limb_t* y, int l_y );
+//
+// a0 = limb_t *   r
+// a1 = limb_t *   x
+// a2 = int      l_x
+// a3 = limb_t *   y
+// a4 = int      l_y
+//
+// t0 =          l_r
+// t1 =            i
+//
+// c0 =            r[ i ]  = s
+// c1 =                      c
+// c2 =            x[ i ] ~= d_0
+// c3 =            y[ i ] ~= d_1
+	
+#if ( LIBSCARV_CONF_MPN_SUB_GUARD  )
+mpn_sub: slli       t0, a2, 2              // l_r = l_x scaled into number of bytes
+         bltu       a4, a2, .l0            // if l_y <  l_x, goto .l0
+         slli       t0, a4, 2              // l_r = l_y scaled into number of bytes
 
-       slli   a2, a2, 2
-       slli   a4, a4, 2
+.l0:     slli       a2, a2, 2              // l_x = l_x scaled into number of bytes
+         slli       a4, a4, 2              // l_y = l_y scaled into number of bytes
 
-       li   t0, 0               // i = 0
-       bgeu t0, t1, .mpn_sub_done
+	 xc.gpr2xcr c1, zero               // c = 0
 
-    .loop_1:
+         li         t1, 0                  // i = 0
+         bgeu       t1, t0, .l5            // if i   >= l_r, goto .l5
 
-       xc.ldr.w c2, t0, a1        // c0 = x[i]
-       xc.ldr.w c3, t0, a3        // c1 = y[i]
+.l1:     xc.gpr2xcr c2, zero               // d_0 = 0
+         bgeu       t1, a2, .l2            // if i   >= l_x, goto .l2
+         xc.ldr.w   c2, t1, a1             // d_0 = x[ i ]         
+.l2:     xc.gpr2xcr c3, zero               // d_1 = 0
+         bgeu       t1, a4, .l3            // if i   >= l_y, goto .l3
+         xc.ldr.w   c3, t1, a3             // d_1 = y[ i ]
+.l3:     xc.msub.3  ( c0, c1 ), c2, c3, c1 // ( s, c ) = d_0 - d_1 - c
+         xc.str.w   c0, t1, a0             // r[ i ] = s
 
-       xc.msub.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
+         addi       t1, t1, 4              // i = i + 1
+         bltu       t1, t0, .l1            // if i   <  l_r, goto .l1
 
-       xc.str.w c0, t0, a0        // r[i] = c1
+.l5:     xc.xcr2gpr a0, c1                 // return c
+         ret
+#endif
 
-       addi t0, t0, 4           // i++
-       bltu t0, t1, .loop_1
+#if ( LIBSCARV_CONF_MPN_SUB_UNROLL )
+mpn_sub: slli       t0, a2, 2              // l_r = l_x scaled into number of bytes
+         bltu       a2, a4, .l0            // if l_x <  l_y, goto .l0
+         slli       t0, a4, 2              // l_r = l_y scaled into number of bytes
 
-    xc.gpr2xcr c3, zero
+.l0:     slli       a2, a2, 2              // l_x = l_x scaled into number of bytes
+         slli       a4, a4, 2              // l_y = l_y scaled into number of bytes
 
-    bgeu t0, a2, .pre_loop_3        // if(i >= l_x) goto .loop_3
-    .loop_2:
+	 xc.gpr2xcr c1, zero               // c = 0
 
-       xc.ldr.w c2, t0,a1        // c2 = x[i]
+         li         t1, 0                  // i = 0
+         bgeu       t1, t0, .l5            // if i   >= l_r, goto .l5
 
-       xc.msub.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
+.l1:     xc.ldr.w   c2, t1, a1             // d_0 = x[ i ]
+         xc.ldr.w   c3, t1, a3             // d_1 = y[ i ]
+         xc.msub.3  ( c0, c1 ), c2, c3, c1 // ( s, c ) = d_0 + d_1 + c
+         xc.str.w   c0, t1, a0             // r[ i ] = s
 
-       xc.str.w c0, t0, a0        // r[i] = c0
+         addi       t1, t1, 4              // i = i + 1
+         bltu       t1, t0, .l1            // if i   <  l_r, goto .l1
 
-       addi t0, t0, 4
-       bltu t0, a2, .loop_2
-    
-    .pre_loop_3:
-        bgeu t0, a4, .mpn_sub_done  // if(i >= l_y) goto mpn_sub_done
+         xc.gpr2xcr c3, zero               // d_1 = 0
 
-    .loop_3:
+         bgeu       t1, a2, .l5            // if i   >= l_x, goto .l5
 
-       xc.ldr.w c2, t0, a3       // c2 = y[i]
+.l2:     xc.ldr.w   c2, t1, a1             // d_0 = x[ i ]
+         xc.msub.3  ( c0, c1 ), c2, c3, c1 // ( s, c ) = d_0 + d_1 + c
+         xc.str.w   c0, t1, a0             // r[ i ] = s
 
-       xc.msub.3 (c0,c1), c2,c3,c1 // (c1,c0) = c2+c3+(c1 & 0x1)
+         addi       t1, t1, 4              // i = i + 1
+         bltu       t1, a2, .l2            // if i   <  l_x, goto .l2
 
-       xc.str.w c0, t0, a0        // r[i] = c0
+.l5:     xc.xcr2gpr a0, c1                 // return c
+         ret
+#endif
 
-       addi t0, t0, 4
-       bltu t0, a4, .loop_3
-
-.mpn_sub_done:
-    xc.xcr2gpr  a0, c1          # Move a0 <= c1
-    ret
-
+.endfunc
+#endif
+	
+// ============================================================================	

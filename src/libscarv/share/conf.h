@@ -164,18 +164,12 @@
   */
 #define LIBSCARV_CONF_MRZ_MAX_LIMBS              ${LIBSCARV_CONF_MRZ_MAX_LIMBS}
   
-/** Use an external, architecture-specific implementation of @p mpn_cmp.
-  */
-#define LIBSCARV_CONF_MPN_CMP_EXTERN             ${LIBSCARV_CONF_MPN_CMP_EXTERN}
 /** Use an external, architecture-specific implementation of @p mpn_add.
   */
 #define LIBSCARV_CONF_MPN_ADD_EXTERN             ${LIBSCARV_CONF_MPN_ADD_EXTERN}
 /** Use an external, architecture-specific implementation of @p mpn_sub.
   */
 #define LIBSCARV_CONF_MPN_SUB_EXTERN             ${LIBSCARV_CONF_MPN_SUB_EXTERN}
-/** Use an external, architecture-specific implementation of @p mpn_sqr.
-  */
-#define LIBSCARV_CONF_MPN_SQR_EXTERN             ${LIBSCARV_CONF_MPN_SQR_EXTERN}
 /** Use an external, architecture-specific implementation of @p mpn_mul.
   */
 #define LIBSCARV_CONF_MPN_MUL_EXTERN             ${LIBSCARV_CONF_MPN_MUL_EXTERN}
@@ -199,12 +193,6 @@
 /** Use an unrolled         integer subtraction                                                          implementation.
   */
 #define LIBSCARV_CONF_MPN_SUB_UNROLL             ${LIBSCARV_CONF_MPN_SUB_UNROLL}
-/** Use an operand scanning integer squaring                                                             implementation.
-  */
-#define LIBSCARV_CONF_MPN_SQR_OPERAND_SCANNING   ${LIBSCARV_CONF_MPN_SQR_OPERAND_SCANNING}
-/** Use a  product scanning integer squaring                                                             implementation.
-  */
-#define LIBSCARV_CONF_MPN_SQR_PRODUCT_SCANNING   ${LIBSCARV_CONF_MPN_SQR_PRODUCT_SCANNING}
 /** Use an operand scanning integer multiplication                                                       implementation.
   */
 #define LIBSCARV_CONF_MPN_MUL_OPERAND_SCANNING   ${LIBSCARV_CONF_MPN_MUL_OPERAND_SCANNING}

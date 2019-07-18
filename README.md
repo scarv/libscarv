@@ -387,7 +387,7 @@ benchmark.*
   | `hash/sha1`       |          |                                                                                         | o       | x     | x             |
   | `hash/sha2`       |          |                                                                                         | o       | x     | x             |
   | `mp/limb`         |          |                                                                                         | o       | x     | x             |
-  | `mp/mpn`          |          |                                                                                         | o       | x     | x             |
+  | `mp/mpn`          |          |                                                                                         | o       | o     | o             |
   | `mp/mpz`          |          |                                                                                         | o       | x     | x             |
   | `mp/mrz`          |          |                                                                                         | o       | x     | x             |
   | `stream/chacha20` |          |                                                                                         | o       | x     | o             |

@@ -19,7 +19,6 @@ extern int mpn_lop( const limb_t* x, int l_x );
 
 #include <scarv/mp/mpn/mpn_add.h>
 #include <scarv/mp/mpn/mpn_sub.h>
-#include <scarv/mp/mpn/mpn_sqr.h>
 #include <scarv/mp/mpn/mpn_mul.h>
 
 #endif

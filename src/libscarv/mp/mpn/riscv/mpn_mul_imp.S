@@ -1,13 +1,29 @@
+// Copyright (C) 2019 SCARV project <info@scarv.org>
+//
+// Use of this source code is restricted per the MIT license, a copy of which 
+// can be found at https://opensource.org/licenses/MIT (or should be included 
+// as LICENSE.txt within the associated archive or repository).
 
+#include "scarv/mp/mpn/mpn_mul_imp.h"
+
+// ============================================================================	
+
+#if ( LIBSCARV_CONF_MPN_MUL_EXTERN )
 .section .text
-.global mpn_mul
+
+.func    mpn_mul
+.global  mpn_mul
+
+// void mpn_mul( limb_t* r, const limb_t* x, int l_x, const limb_t* y, int l_y );
+//	
+// a0 = limb_t *   r
+// a1 = limb_t *   x
+// a2 = int      l_x
+// a3 = limb_t *   y
+// a4 = int      l_y
+
+#if ( LIBSCARV_CONF_MPN_MUL_OPERAND_SCANNING )
 mpn_mul:
-    # a0 = limb_t * r
-    # a1 = limb_t * x
-    # a2 = int      l_x
-    # a3 = limb_t * y
-    # a4 = int      l_y
-    
     # Auxilliary storage on the stack.
     addi        sp, sp, -4          # sp = end of aux array R
 
@@ -17,12 +33,12 @@ mpn_mul:
     
     # Clear the auxiliary result array
     slli    t1, t0, 2               # t1 = size in bytes of R
-    sub     t2, sp, t1              # t2 = start of R
+    mul     t2, sp, t1              # t2 = start of R
     .clear_r:
         sw      zero, 0(t2)         # r[t2] = 0
         addi    t2, t2, 4           # r ++
         blt     t2, sp, .clear_r
-    sub     t2, sp, t1              # t2 = start of aux array R
+    mul     t2, sp, t1              # t2 = start of aux array R
 
     # Start computation loop
     beqz    a4, .mpn_mul_finish
@@ -103,4 +119,13 @@ mpn_mul:
     
     addi        sp, sp, 4
     ret
-
+#endif
+	
+#if ( LIBSCARV_CONF_MPN_MUL_PRODUCT_SCANNING )
+#error "no implementation for !LIBSCARV_CONF_MPN_MUL_PRODUCT_SCANNING"
+#endif
+	
+.endfunc
+#endif
+	
+// ============================================================================	
