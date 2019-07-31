@@ -29,5 +29,7 @@ extern void sha2_256_fini( sha2_256_ctx_t* ctx,       uint8_t* d          );
 
 extern void sha2_256( uint8_t* d, int l, ... );
 
+extern uint32_t SHA2_256_K[64];
+
 #endif
 

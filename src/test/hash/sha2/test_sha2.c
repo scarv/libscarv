@@ -29,11 +29,14 @@ void test_sha2_256( int trials, int l_min, int l_max ) {
 
     test_sha2_dump( "r", r, l_r );
 
+    printf("l_x = %d\n", l_x);
+    printf("l_r = %d\n", l_r);
+
     printf( "t = SHA2_256.new( x ).digest()                    " "\n"   );
   
     printf( "if ( r != t ) :                                   " "\n"   );
     printf( "  print( 'fail %%s' %% ( id                    ) )" "\n"   );
-    printf( "  print( 'x == %%s' %% ( binascii.b2a_hex( c ) ) )" "\n"   );
+    printf( "  print( 'x == %%s' %% ( binascii.b2a_hex( x ) ) )" "\n"   );
     printf( "  print( 'r == %%s' %% ( binascii.b2a_hex( r ) ) )" "\n"   );
     printf( "  print( '  != %%s' %% ( binascii.b2a_hex( t ) ) )" "\n"   );
 
@@ -61,7 +64,7 @@ void test_sha2_512( int trials, int l_min, int l_max ) {
   
     printf( "if ( r != t ) :                                   " "\n"   );
     printf( "  print( 'fail %%s' %% ( id                    ) )" "\n"   );
-    printf( "  print( 'x == %%s' %% ( binascii.b2a_hex( c ) ) )" "\n"   );
+    printf( "  print( 'x == %%s' %% ( binascii.b2a_hex( x ) ) )" "\n"   );
     printf( "  print( 'r == %%s' %% ( binascii.b2a_hex( r ) ) )" "\n"   );
     printf( "  print( '  != %%s' %% ( binascii.b2a_hex( t ) ) )" "\n"   );
 
