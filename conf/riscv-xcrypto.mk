@@ -14,7 +14,7 @@ ifndef RISCV_XCRYPTO
   $(error "point RISCV_XCRYPTO environment variable at toolchain installation")
 endif
 
-export ARCH_SUBSET        = rv32imaxc
+export ARCH_SUBSET        = rv32imac
 export ARCH_ABI           = ilp32
 
 export TOOL_PREFIX_TARGET = riscv32-
