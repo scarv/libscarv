@@ -29,7 +29,7 @@ endif
 
 ifeq "${HOST}" "docker"
 
-export DOCKER_IMAGE       = scarv/libscarv.native
+export DOCKER_IMAGE       = scarv/libscarv.native:0.1.0
 export DOCKER_FLAGS       = 
 
 endif
