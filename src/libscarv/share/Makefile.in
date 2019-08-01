@@ -7,6 +7,7 @@
 ID       = share
 
 PATHS    = ${REPO_HOME}/src/libscarv/${ID}
+PATHS   += ${REPO_HOME}/src/libscarv/${ID}/${ARCH}
 
 HEADERS  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.h))
 SOURCES  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.c))
