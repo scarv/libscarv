@@ -94,8 +94,8 @@ void test_chacha20_dec( int trials, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys, binascii, Cryptodome.Cipher.ChaCha20 as ChaCha20" );
 
-  test_chacha20_enc( opt_trials, opt_data_min, opt_data_max );
-  test_chacha20_dec( opt_trials, opt_data_min, opt_data_max );
+  test_chacha20_enc( 1, opt_data_max, opt_data_max );
+  test_chacha20_dec( 1, opt_data_max, opt_data_max );
 
   test_fini();
 

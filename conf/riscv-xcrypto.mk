@@ -23,7 +23,7 @@ export TOOL_PREFIX_ABI    = elf-
 
 export TOOL_PREFIX        = ${RISCV_XCRYPTO}/bin/${TOOL_PREFIX_TARGET}${TOOL_PREFIX_VENDOR}${TOOL_PREFIX_ABI}
 
-export TEST_PREFIX        = ${RISCV_XCRYPTO}/bin/spike --isa=${ARCH_SUBSET} ${RISCV_XCRYPTO}/riscv32-unknown-elf/bin/pk
+export TEST_PREFIX        = ${RISCV_XCRYPTO}/bin/spike --isa=${ARCH_SUBSET}b ${RISCV_XCRYPTO}/riscv32-unknown-elf/bin/pk
 export TEST_SUFFIX        = | tail -n+2
 
 export CC_PATHS           =
