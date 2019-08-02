@@ -19,7 +19,7 @@ This implementation comes with KeccakP-400-SnP.h in the same folder.
 Please refer to LowLevel.build for the exact list of other files it must be combined with.
 */
 
-#include <scarv/hash/keccak/KeccakP-400-SnP.h>
+#include <scarv/hash/keccakp400/KeccakP-400-SnP.h>
 
 #ifndef assert
     #define assert(EXPR)
@@ -35,7 +35,7 @@ Please refer to LowLevel.build for the exact list of other files it must be comb
 
 void KeccakP400_Initialize(void *state)
 {
-    memset(state, 0, nrLanes * sizeof(tKeccak400Lane));
+    memset(state, 0, nrLanes400 * sizeof(tKeccak400Lane));
 }
 
 /* ---------------------------------------------------------------- */
@@ -82,24 +82,15 @@ static void fromWordsToBytes(unsigned char *state, const tKeccak400Lane *stateAs
 void KeccakP400OnWords(tKeccak400Lane *state, unsigned int nrRounds);
 void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound);
 
-//
-// External round function definitions.
-//  Definitions found in <arch>/keccakp-400-sm.c
-//
-extern void KeccakP400_theta(tKeccak400Lane *A);
-extern void KeccakP400_rho(tKeccak400Lane *A);
-extern void KeccakP400_pi(tKeccak400Lane *A);
-extern void KeccakP400_chi(tKeccak400Lane *A);
-extern void KeccakP400_iota(tKeccak400Lane *A, unsigned int indexRound);
 
 void KeccakP400_Permute_Nrounds(void *state, unsigned int nrounds)
 {
 #if (PLATFORM_BYTE_ORDER != IS_LITTLE_ENDIAN)
-    tKeccak400Lane stateAsWords[nrLanes];
+    tKeccak400Lane stateAsWords[nrLanes400];
 #endif
 
 #ifdef KeccakReference
-    displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state, nrLanes * sizeof(tKeccak400Lane) * 8);
+    displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state, nrLanes400 * sizeof(tKeccak400Lane) * 8);
 #endif
 #if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     KeccakP400OnWords((tKeccak400Lane*)state, nrounds);
@@ -109,18 +100,18 @@ void KeccakP400_Permute_Nrounds(void *state, unsigned int nrounds)
     fromWordsToBytes((unsigned char *)state, stateAsWords);
 #endif
 #ifdef KeccakReference
-    displayStateAsBytes(1, "State after permutation", (const unsigned char *)state, nrLanes * sizeof(tKeccak400Lane) * 8);
+    displayStateAsBytes(1, "State after permutation", (const unsigned char *)state, nrLanes400 * sizeof(tKeccak400Lane) * 8);
 #endif
 }
 
 void KeccakP400_Permute_20rounds(void *state)
 {
 #if (PLATFORM_BYTE_ORDER != IS_LITTLE_ENDIAN)
-    tKeccak400Lane stateAsWords[nrLanes];
+    tKeccak400Lane stateAsWords[nrLanes400];
 #endif
 
 #ifdef KeccakReference
-    displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state, nrLanes * sizeof(tKeccak400Lane) * 8);
+    displayStateAsBytes(1, "Input of permutation", (const unsigned char *)state, nrLanes400 * sizeof(tKeccak400Lane) * 8);
 #endif
 #if (PLATFORM_BYTE_ORDER == IS_LITTLE_ENDIAN)
     KeccakP400OnWords((tKeccak400Lane*)state, maxNrRounds400);
@@ -130,7 +121,7 @@ void KeccakP400_Permute_20rounds(void *state)
     fromWordsToBytes((unsigned char *)state, stateAsWords);
 #endif
 #ifdef KeccakReference
-    displayStateAsBytes(1, "State after permutation", (const unsigned char *)state, nrLanes * sizeof(tKeccak400Lane) * 8);
+    displayStateAsBytes(1, "State after permutation", (const unsigned char *)state, nrLanes400 * sizeof(tKeccak400Lane) * 8);
 #endif
 }
 
@@ -138,7 +129,7 @@ static void fromBytesToWords(tKeccak400Lane *stateAsWords, const unsigned char *
 {
     unsigned int i, j;
 
-    for(i=0; i<nrLanes; i++) {
+    for(i=0; i<nrLanes400; i++) {
         stateAsWords[i] = 0;
         for(j=0; j<sizeof(tKeccak400Lane); j++)
             stateAsWords[i] |= (tKeccak400Lane)(state[i*sizeof(tKeccak400Lane)+j]) << (8*j);
@@ -149,7 +140,7 @@ static void fromWordsToBytes(unsigned char *state, const tKeccak400Lane *stateAs
 {
     unsigned int i, j;
 
-    for(i=0; i<nrLanes; i++)
+    for(i=0; i<nrLanes400; i++)
         for(j=0; j<sizeof(tKeccak400Lane); j++)
             state[i*sizeof(tKeccak400Lane)+j] = (stateAsWords[i] >> (8*j)) & 0xFF;
 }
@@ -217,6 +208,8 @@ void KeccakP400RoundReference(tKeccak400Lane *A, unsigned int indexRound)
 }
 
 #if ( LIBSCARV_CONF_KECCAK_P400_ROUND_EXTERN )
+extern void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound);
+#else
 void KeccakP400Round(tKeccak400Lane *state, unsigned int indexRound)
 {
     KeccakP400RoundReference(state,indexRound);

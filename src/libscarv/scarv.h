@@ -17,9 +17,12 @@
 #include <scarv/hash/sha2/sha2_256.h>
 #include <scarv/hash/sha2/sha2_512.h>
 #endif
-#if ( LIBSCARV_CONF_KECCAK_ENABLE )
-#include <scarv/hash/keccak/KeccakP-400-SnP.h>
-#include <scarv/hash/keccak/KeccakP-1600-SnP.h>
+#if ( LIBSCARV_CONF_SHA3_ENABLE )
+#include <scarv/hash/sha3/sha3.h>
+#endif
+#if ( LIBSCARV_CONF_KECCAKP400_ENABLE )
+#include <scarv/hash/keccakp400/KeccakP-400-SnP.h>
+#include <scarv/hash/keccakp400/KeccakP-1600-SnP.h>
 #endif
 
 #if ( LIBSCARV_CONF_LIMB_ENABLE )

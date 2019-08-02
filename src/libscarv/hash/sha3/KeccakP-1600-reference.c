@@ -19,7 +19,7 @@ This implementation comes with KeccakP-1600-SnP.h in the same folder.
 Please refer to LowLevel.build for the exact list of other files it must be combined with.
 */
 
-#include <scarv/hash/keccak/KeccakP-1600-SnP.h>
+#include <scarv/hash/sha3/KeccakP-1600-SnP.h>
 
 #ifndef assert
     #define assert(EXPR)
@@ -82,12 +82,6 @@ static void fromBytesToWords(tKeccak1600Lane *stateAsWords, const unsigned char 
 static void fromWordsToBytes(unsigned char *state, const tKeccak1600Lane *stateAsWords);
 void KeccakP1600OnWords(tKeccak1600Lane *state, unsigned int nrRounds);
 void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound);
-static void theta(tKeccak1600Lane *A);
-static void rho(tKeccak1600Lane *A);
-static void pi(tKeccak1600Lane *A);
-static void chi(tKeccak1600Lane *A);
-static void iota(tKeccak1600Lane *A, unsigned int indexRound);
-
 void KeccakP1600_Permute_Nrounds(void *state, unsigned int nrounds)
 {
 #if (PLATFORM_BYTE_ORDER != IS_LITTLE_ENDIAN)
@@ -155,7 +149,7 @@ static void fromBytesToWords(tKeccak1600Lane *stateAsWords, const unsigned char 
 {
     unsigned int i, j;
 
-    for(i=0; i<nrLanes; i++) {
+    for(i=0; i<nrLanes1600; i++) {
         stateAsWords[i] = 0;
         for(j=0; j<(64/8); j++)
             stateAsWords[i] |= (tKeccak1600Lane)(state[i*(64/8)+j]) << (8*j);
@@ -166,7 +160,7 @@ static void fromWordsToBytes(unsigned char *state, const tKeccak1600Lane *stateA
 {
     unsigned int i, j;
 
-    for(i=0; i<nrLanes; i++)
+    for(i=0; i<nrLanes1600; i++)
         for(j=0; j<(64/8); j++)
             state[i*(64/8)+j] = (unsigned char)((stateAsWords[i] >> (8*j)) & 0xFF);
 }
@@ -235,6 +229,8 @@ void KeccakP1600RoundReference(tKeccak1600Lane *A, unsigned int indexRound)
 }
 
 #if ( LIBSCARV_CONF_KECCAK_P1600_ROUND_EXTERN )
+extern void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound);
+#else
 void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound)
 {
     KeccakP1600RoundReference(state,indexRound);

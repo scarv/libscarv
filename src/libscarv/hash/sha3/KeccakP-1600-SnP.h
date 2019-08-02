@@ -30,7 +30,7 @@ typedef unsigned long long UINT64;
 typedef UINT64 tKeccak1600Lane;
 
 #define maxNrRounds1600 24
-#define nrLanes 25
+#define nrLanes1600 25
 #define index(x, y) (((x)%5)+5*((y)%5))
 
 #define ROL64(a, offset) ((offset != 0) ? \
@@ -65,7 +65,7 @@ static const tKeccak1600Lane KeccakP1600RoundConstants[maxNrRounds1600] =
     0x8000000080008008,
 };
 
-static const unsigned int KeccakP1600RhoOffsets[nrLanes] =
+static const unsigned int KeccakP1600RhoOffsets[nrLanes1600] =
 {
   0,  // 0   *
   1,  // 1   

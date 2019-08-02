@@ -30,7 +30,7 @@ typedef unsigned short UINT16;
 typedef UINT16 tKeccak400Lane;
 
 #define maxNrRounds400 20
-#define nrLanes 25
+#define nrLanes400 25
 #define index(x, y) (((x)%5)+5*((y)%5))
 
 #define ROL16(a, offset) ((offset != 0) ? \
@@ -38,7 +38,7 @@ typedef UINT16 tKeccak400Lane;
      (((tKeccak400Lane)a) >> (sizeof(tKeccak400Lane)*8-offset))) : a)
 
 
-static const unsigned int KeccakP400RhoOffsets[nrLanes] =
+static const uint16_t KeccakP400RhoOffsets[nrLanes400] =
 {
      0,  1, 14, 12, 11,  4, 12,  6,  7,  4,  3, 10, 11,  9,  7,  9, 13, 15,
      5,  8,  2,  2, 13,  8, 14
