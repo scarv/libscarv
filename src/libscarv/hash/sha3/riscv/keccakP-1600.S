@@ -8,10 +8,6 @@
 #
 # Auxiliary storage 
 .data
-theta_c: .fill 40, 8, 0
-
-.align 8,0
-temp_a : .fill 200, 8, 0
 
 rho_off:
     .hword  0
@@ -119,7 +115,7 @@ KeccakP1600Round:
     # - 1 lane = 2 words = 8 bytes
     #
 
-    addi    sp, sp, -44
+    addi    sp, sp, -448
     sw      s3, 4(sp)
     sw      s4, 8(sp)
     sw      s5,16(sp)
@@ -132,7 +128,7 @@ KeccakP1600Round:
 
     #
     # Theta function preparation
-    la  a2, theta_c                         # a2 = &theta_c
+    addi a2, sp, 48                          # a2 = &theta_c
     mv  a3, a0                              # a3 = &A
     add a4, a2, 40                          # a4 = &theta_c[5]
 
@@ -167,7 +163,7 @@ KeccakP1600Round:
 
 
     la      a7, rho_off
-    la      a6, temp_a
+    addi    a6, sp, 248
     .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
         la      s0, mod5_lut
     .endif
@@ -379,7 +375,7 @@ KeccakP1600Round:
     .if ( LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP == 1 )
          lw s0,32(sp)
     .endif
-    addi    sp, sp, 44
+    addi    sp, sp, 448
 
     ret
 

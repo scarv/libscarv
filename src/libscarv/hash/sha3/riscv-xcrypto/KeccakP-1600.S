@@ -8,10 +8,6 @@
 #
 # Auxiliary storage 
 .data
-theta_c: .fill 40, 8, 0
-
-.align 8,0
-temp_a : .fill 200, 8, 0
 
 rho_off:
     .hword 64- 0
@@ -80,17 +76,14 @@ KeccakP1600Round:
     # - 1 lane = 2 words = 8 bytes
     #
 
-    addi    sp, sp, -44
-    sw      s3, 4(sp)
-    sw      s4, 8(sp)
-    sw      s5,16(sp)
-    sw      s6,20(sp)
-    sw      s7,24(sp)
-    sw      s2,28(sp)
+    addi    sp, sp, -416
+    sw      s4, 4(sp)
+    sw      s5, 8(sp)
+    sw      s2,12(sp)
 
     #
     # Theta function preparation
-    la  a2, theta_c                         # a2 = &theta_c
+    addi a2, sp, 16                         # a2 = &theta_c
     mv  a3, a0                              # a3 = &A
     add a4, a2, 40                          # a4 = &theta_c[5]
 
@@ -125,7 +118,7 @@ KeccakP1600Round:
 
 
     la      a7, rho_off
-    la      a6, temp_a
+    addi    a6, sp,  216                    # a6 = &tempa
     li      t0, 0                           # t0 = x = 0
     li      t2, 5
     addi    a2, a2, -40                     # a2 = &theta_c
@@ -255,13 +248,10 @@ KeccakP1600Round:
     #
     # Stack management
 
-    lw      s3, 4(sp)
-    lw      s4, 8(sp)
-    lw      s5,16(sp)
-    lw      s6,20(sp)
-    lw      s7,24(sp)
-    lw      s2,28(sp)
-    addi    sp, sp, 44
+    lw      s4, 4(sp)
+    lw      s5, 8(sp)
+    lw      s2,12(sp)
+    addi    sp, sp, 416
 
     ret
 
