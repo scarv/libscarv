@@ -36,7 +36,7 @@ endif
 
 ifeq "${HOST}" "docker"
 
-export DOCKER_IMAGE       = scarv/libscarv.riscv-xcrypto
+export DOCKER_IMAGE       = scarv/libscarv.riscv-xcrypto:0.1.0
 export DOCKER_FLAGS       = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
 
 endif
