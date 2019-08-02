@@ -31,6 +31,10 @@ Please refer to LowLevel.build for the exact list of other files it must be comb
 #define IS_LITTLE_ENDIAN    1234
 #define PLATFORM_BYTE_ORDER IS_LITTLE_ENDIAN
 
+void KeccakP1600_StaticInitialize()
+{
+    return;
+}
 
 /* ---------------------------------------------------------------- */
 
@@ -177,65 +181,8 @@ void KeccakP1600OnWords(tKeccak1600Lane *state, unsigned int nrRounds)
         KeccakP1600Round(state, i);
 }
 
-
-/*!
-@brief A reference implementation used to test the accelerated
-KeccakP1600Round function.
-*/
-void KeccakP1600RoundReference(tKeccak1600Lane *A, unsigned int indexRound)
-{
-    unsigned int x, y;
-    tKeccak1600Lane C[5];
-    tKeccak1600Lane tempA[25];
-    tKeccak1600Lane D;
-
-    // Theta / Rho / Pi
-
-    for(x=0; x<5; x++) {
-        C[x] = A[index(x, 0)] ^
-               A[index(x, 1)] ^
-               A[index(x, 2)] ^
-               A[index(x, 3)] ^
-               A[index(x, 4)] ;
-    }
-
-    for(x=0; x<5; x++) {
-        
-        D = ROL64(C[(x+1)%5], 1) ^ C[(x+4)%5];
-
-        for(y=0; y<5; y++) {
-
-            tempA[index(0*x+1*y, 2*x+3*y)] = 
-                ROL64 (
-                    A[index(x, y)] ^ D,
-                    KeccakP1600RhoOffsets[index(x, y)]
-                );
-        }
-    }
-
-    // Chi
-
-    for(y=0; y<5; y++) {
-        for(x=0; x<5; x++) {
-            A[index(x, y)] =
-                tempA[index(x, y)] ^ 
-                    ((~tempA[index(x+1, y)]) &
-                       tempA[index(x+2, y)]);
-        }
-    }
-
-    // Iota
-    A[index(0, 0)] ^= KeccakP1600RoundConstants[indexRound];
-}
-
-#if ( LIBSCARV_CONF_KECCAK_P1600_ROUND_EXTERN )
+//! Defined in one of the arch folders: native/riscv/riscv-xcrypto
 extern void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound);
-#else
-void KeccakP1600Round(tKeccak1600Lane *state, unsigned int indexRound)
-{
-    KeccakP1600RoundReference(state,indexRound);
-}
-#endif
 
 /* ---------------------------------------------------------------- */
 
@@ -257,4 +204,5 @@ void KeccakP1600_ExtractAndAddBytes(const void *state, const unsigned char *inpu
     for(i=0; i<length; i++)
         output[i] = input[i] ^ ((unsigned char *)state)[offset+i];
 }
+
 

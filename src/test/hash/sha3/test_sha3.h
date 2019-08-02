@@ -10,6 +10,6 @@
 
 #include "util.h"
 
-#include "scarv/hash/sha3/KeccakP-1600-SnP.h"
+#include "scarv/hash/sha3/sha3.h"
 
 #endif

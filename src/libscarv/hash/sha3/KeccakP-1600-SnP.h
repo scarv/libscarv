@@ -15,8 +15,8 @@ http://creativecommons.org/publicdomain/zero/1.0/
 Please refer to SnP-documentation.h for more details.
 */
 
-#ifndef _KeccakP_1600_SnP_h_
-#define _KeccakP_1600_SnP_h_
+#ifndef _LIBSCARV_KECCAKP_1600_SNP_H_
+#define _LIBSCARV_KECCAKP_1600_SNP_H_
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
@@ -94,6 +94,7 @@ static const unsigned int KeccakP1600RhoOffsets[nrLanes1600] =
  14   // 24  
 };
 
+void KeccakP1600_StaticInitialize();
 void KeccakP1600_Initialize(void *state);
 void KeccakP1600_AddByte(void *state, unsigned char data, unsigned int offset);
 void KeccakP1600_AddBytes(void *state, const unsigned char *data, unsigned int offset, unsigned int length);

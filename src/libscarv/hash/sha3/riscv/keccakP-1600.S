@@ -1,12 +1,18 @@
+/* Copyright (C) 2019 SCARV project <info@scarv.org>
+ *
+ * Use of this source code is restricted per the MIT license, a copy of which 
+ * can be found at https://opensource.org/licenses/MIT (or should be included 
+ * as LICENSE.txt within the associated archive or repository).
+ */
 
 #
 # Auxiliary storage 
 .data
 theta_c: .fill 40, 8, 0
-theta_d: .fill 40, 8, 0
-chi_aux: .fill 40, 8, 0
+
 .align 8,0
 temp_a : .fill 200, 8, 0
+
 rho_off:
     .hword  0
     .hword  1
@@ -33,6 +39,7 @@ rho_off:
     .hword 61
     .hword 56
     .hword 14
+
 .align 8,0
 round_consts:
     .dword 0x0000000000000001

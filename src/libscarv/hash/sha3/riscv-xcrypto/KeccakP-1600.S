@@ -1,39 +1,44 @@
+/* Copyright (C) 2019 SCARV project <info@scarv.org>
+ *
+ * Use of this source code is restricted per the MIT license, a copy of which 
+ * can be found at https://opensource.org/licenses/MIT (or should be included 
+ * as LICENSE.txt within the associated archive or repository).
+ */
 
 #
 # Auxiliary storage 
 .data
-
 theta_c: .fill 40, 8, 0
 
 .align 8,0
 temp_a : .fill 200, 8, 0
 
 rho_off:
-    .hword 64 -  0
-    .hword 64 -  1
-    .hword 64 - 62
-    .hword 64 - 28
-    .hword 64 - 27
-    .hword 64 - 36
-    .hword 64 - 44
-    .hword 64 -  6
-    .hword 64 - 55
-    .hword 64 - 20
-    .hword 64 -  3
-    .hword 64 - 10
-    .hword 64 - 43
-    .hword 64 - 25
-    .hword 64 - 39
-    .hword 64 - 41
-    .hword 64 - 45
-    .hword 64 - 15
-    .hword 64 - 21
-    .hword 64 -  8
-    .hword 64 - 18
-    .hword 64 -  2
-    .hword 64 - 61
-    .hword 64 - 56
-    .hword 64 - 14
+    .hword 64- 0
+    .hword 64- 1
+    .hword 64-62
+    .hword 64-28
+    .hword 64-27
+    .hword 64-36
+    .hword 64-44
+    .hword 64- 6
+    .hword 64-55
+    .hword 64-20
+    .hword 64- 3
+    .hword 64-10
+    .hword 64-43
+    .hword 64-25
+    .hword 64-39
+    .hword 64-41
+    .hword 64-45
+    .hword 64-15
+    .hword 64-21
+    .hword 64- 8
+    .hword 64-18
+    .hword 64- 2
+    .hword 64-61
+    .hword 64-56
+    .hword 64-14
 
 .align 8,0
 round_consts:
@@ -75,10 +80,13 @@ KeccakP1600Round:
     # - 1 lane = 2 words = 8 bytes
     #
 
-    addi    sp, sp, -16
-    sw      s4, 4(sp)
-    sw      s5, 8(sp)
-    sw      s2,12(sp)
+    addi    sp, sp, -44
+    sw      s3, 4(sp)
+    sw      s4, 8(sp)
+    sw      s5,16(sp)
+    sw      s6,20(sp)
+    sw      s7,24(sp)
+    sw      s2,28(sp)
 
     #
     # Theta function preparation
@@ -90,13 +98,13 @@ KeccakP1600Round:
         
         lw      t0,   0(a3)
         lw      t1,  40(a3)
-        lw      t2,  80(a3)
+        xor     t0, t0, t1
+        lw      t1,  80(a3)
         xor     t0, t0, t1
         lw      t1, 120(a3)
-        xor     t0, t0, t2
-        lw      t2, 160(a3)
         xor     t0, t0, t1
-        xor     t0, t0, t2
+        lw      t1, 160(a3)
+        xor     t0, t0, t1
         
         lw      t2,   4(a3)
         lw      t3,  44(a3)
@@ -128,39 +136,38 @@ KeccakP1600Round:
         
         li      t1, 0                       # t1 = y = 0
         
-        xc.sha3.x1 a3, a3, zero, 3          # a3 = (x+1)%5
+        xc.sha3.x1 a3, t0, zero, 3          
         add     a3, a2, a3                  # a3 = &theta_c[(x+1)%5]
 
         lw      t3, 0(a3)                   # 
         lw      t4, 4(a3)                   # t4,t3 = theta_c[(x+1)%5]
-
-        li      t5, 64-1
-        xc.mror (t4,t3), t4, t3, t5         # t4,t3 = theta_c[(x+1)%5] << 1
         
-        xc.sha3.x4 a3, a3, zero, 3          # a3 = (x+4)%5
+        li      a3, 63
+        xc.mror (t4,t3),t4,t3,a3
+        
+        xc.sha3.x4 a3, t0, zero, 3          
         add     a3, a2, a3                  # a3 = &theta_c[(x+4)%5]
 
         lw      t5, 0(a3)                   # 
         lw      t6, 4(a3)                   # t6,t5 = theta_c[(x+4)%5]
 
-        xor     t5, t4, t5                  # t6,t5 = (theta_c[(x+1)%5]<<<1)^
-        xor     t6, t3, t6                  #          theta_c[(x+4)%5]
+        xor     t5, t3, t5                  # t6,t5 = (theta_c[(x+1)%5]<<<1)^
+        xor     t6, t4, t6                  #          theta_c[(x+4)%5]
         
         .L1:
 
             xc.sha3.xy t3, t0, t1, 3        # t3 = index(x,y)
-
             add     t4, t3, a0              # t4 = &A[index(x,y)]
             lw      a4, 0(t4)               # 
-            lw      a5, 4(t4)               # a5,a4 = A[index(x,y)]
+            lw      a5, 4(t4)               # a4,a5 = A[index(x,y)]
 
-            xor     a4, a4, t5              # a5,a4 = A[index(x,y)] ^ D
+            xor     a4, a4, t5              # a4,a5 = A[index(x,y)] ^ D
             xor     a5, a5, t6              #
 
-            srli    t4, t3, 2               # Halfword align index(x,y)
+            srli    t4, t3, 3               # Halfword align index(x,y)
             xc.ldr.hu t4, a7(t4)            # t4 = rho_off[index(x,y)]
-
-            xc.mror (a5,a4), a5, a4, t4
+            
+            xc.mror (a5,a4),a5,a4,t4
 
             #
             # Store a5,a4 back to tempA[index(y,2x+3y)]
@@ -170,8 +177,8 @@ KeccakP1600Round:
             xc.sha3.yx t3, t0, t1, 3
             add     t4, t3, a6              # t4 = &a_temp[5((2x+3y)%5)+y]
 
-            sw      a5, 0(t4)               # a5,a4
-            sw      a4, 4(t4)               # a_temp[y + 5((2*x+3*y)%5)] =
+            sw      a4, 0(t4)               #   a5,a4
+            sw      a5, 4(t4)               # a_temp[y + 5((2*x+3*y)%5)] =
 
             addi    t1, t1, 1               # y += 1
             bltu    t1, t2, .L1
@@ -190,13 +197,13 @@ KeccakP1600Round:
 
         .L4:
             
-            xc.sha3.x1 t4, t0, t1, 3        # t4 = ((x+1)%5) + 5y
+            xc.sha3.x1 t4, t0, t1, 3        # t4 = (((x+1)%5) + 5y) << 3
             add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
 
             lw      a4, 0(t4)               # a5,a4 =a_temp[((x+1)%5) + 5y] 
             lw      a5, 4(t4)               # 
             
-            xc.sha3.x2 t4, t0, t1, 3        # t4 = ((x+2)%5) + 5y
+            xc.sha3.x2 t4, t0, t1, 3        # t4 = (((x+2)%5) + 5y) << 3
             add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
             
             lw      s4, 0(t4)               # a5,a4 =a_temp[((x+2)%5) + 5y] 
@@ -208,8 +215,8 @@ KeccakP1600Round:
             and     s4, s4, a4              # s5,s4 = ~X & Y
             and     s5, s5, a5              #
             
-            xc.sha3.xy s2, t0, t1, 3        # t4 = index(x,y)
-            add     t4, s2, a6              # t4 = &a_temp[((x) + 5y]
+            xc.sha3.xy s2, t0, t1, 3        # s2 = index(xy)
+            add     t4, s2, a6              # t4 = &a_temp[index(x,y)]
             
             lw      a4, 0(t4)               # a5,a4 =a_temp[((x)) + 5y] 
             lw      a5, 4(t4)               # 
@@ -248,10 +255,13 @@ KeccakP1600Round:
     #
     # Stack management
 
-    lw      s4, 4(sp)
-    lw      s5, 8(sp)
-    lw      s2,12(sp)
-    addi    sp, sp, 16
+    lw      s3, 4(sp)
+    lw      s4, 8(sp)
+    lw      s5,16(sp)
+    lw      s6,20(sp)
+    lw      s7,24(sp)
+    lw      s2,28(sp)
+    addi    sp, sp, 44
 
     ret
 
