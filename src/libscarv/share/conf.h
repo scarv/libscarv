@@ -209,6 +209,10 @@
 
 /* ------------------------------------------------------------------------- */
 
+/** Use an external, architecture-specific implementation of @p chacha20_process.
+  */
+#define LIBSCARV_CONF_CHACHA20_PROCESS_EXTERN    ${LIBSCARV_CONF_CHACHA20_PROCESS_EXTERN}
+
 /** Use an external, architecture-specific implementation of @p chacha20_block.
   */
 #define LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN      ${LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN}

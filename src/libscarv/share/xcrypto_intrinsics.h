@@ -24,8 +24,8 @@
 //
 
 #if defined(XCRYPTO_RV32) || defined(XCRYPTO_RV64)
-static inline   int8_t _xc_ldr_b (  int8_t* rs1, size_t rs2) {  int8_t rd; __asm__ ("xc.ldr.b  %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
-static inline  uint8_t _xc_ldr_bu( uint8_t* rs1, size_t rs2) { uint8_t rd; __asm__ ("xc.ldr.bu %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
+static inline  int32_t _xc_ldr_b (  int8_t* rs1, size_t rs2) { int32_t rd; __asm__ ("xc.ldr.b  %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
+static inline uint32_t _xc_ldr_bu( uint8_t* rs1, size_t rs2) {uint32_t rd; __asm__ ("xc.ldr.bu %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
 static inline  int32_t _xc_ldr_h ( int16_t* rs1, size_t rs2) { int32_t rd; __asm__ ("xc.ldr.h  %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
 static inline uint32_t _xc_ldr_hu(uint16_t* rs1, size_t rs2) {uint32_t rd; __asm__ ("xc.ldr.hu %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}
 static inline  int32_t _xc_ldr_w ( int32_t* rs1, size_t rs2) { int32_t rd; __asm__ ("xc.ldr.w  %0, %1(%2)" : "=r"(rd) : "r"(rs1) , "r"(rs2)); return rd;}

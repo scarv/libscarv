@@ -43,11 +43,15 @@ extern void chacha20_block( uint32_t* r, uint32_t* x );
 }
 #endif
 
+#if ( LIBSCARV_CONF_CHACHA20_PROCESS_EXTERN )
+extern void chacha20_process( chacha20_ctx_t* ctx, uint8_t* r, uint8_t* x, int l );
+#else
 void chacha20_process( chacha20_ctx_t* ctx, uint8_t* r, uint8_t* x, int l ) {
   chacha20_ctx_t t;
 
   for( int i = 0; i < ( l / 64 ); i++ ) {
-    chacha20_block( t.w, ctx->w ); ctx->w[ 12 ]++; // inc. counter in word 12 of state
+    chacha20_block( t.w, ctx->w );
+    ctx->w[ 12 ]++; // inc. counter in word 12 of state
 
     for( int j = 0; j < (          64 ); j++ ) {
       r[ 64 * i + j ] = x[ 64 * i + j ] ^ t.b[ j ];
@@ -57,13 +61,15 @@ void chacha20_process( chacha20_ctx_t* ctx, uint8_t* r, uint8_t* x, int l ) {
   if( ( l % 64 ) != 0 ) {
     int i = l / 64;
 
-    chacha20_block( t.w, ctx->w ); ctx->w[ 12 ]++; // inc. counter in word 12 of state
+    chacha20_block( t.w, ctx->w );
+    ctx->w[ 12 ]++; // inc. counter in word 12 of state
 
     for( int j = 0; j < ( l % 64 ); j++ ) {
       r[ 64 * i + j ] = x[ 64 * i + j ] ^ t.b[ j ];
     }
   }
 }
+#endif
 
 void chacha20_init( chacha20_ctx_t* ctx, uint8_t* k, uint8_t* counter, uint8_t* nonce ) {
   uint8_t* b = ctx->b;
