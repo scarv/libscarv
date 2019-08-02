@@ -27,7 +27,7 @@ export TEST_PREFIX        = ${RISCV}/bin/spike --isa=${ARCH_SUBSET} ${RISCV}/ris
 export TEST_SUFFIX        = | tail -n+2
 
 export CC_PATHS           =
-export CC_FLAGS           = -Wall -O3 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 
+export CC_FLAGS           = -Wall -O2 -march=${ARCH_SUBSET} -mabi=${ARCH_ABI} 
 export CC_LIBS            =
 
 endif
