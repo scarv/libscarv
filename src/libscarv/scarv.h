@@ -42,4 +42,8 @@
 #include <scarv/stream/chacha20/chacha20.h>
 #endif
 
+#if ( LIBSCARV_CONF_PRINCE_ENABLE )
+#include <scarv/stream/prince/prince.h>
+#endif
+
 #endif

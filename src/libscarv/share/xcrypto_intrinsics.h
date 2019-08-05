@@ -74,6 +74,15 @@ static inline int _xc_sha3_yx (int rs1, int rs2, char sh) {uint32_t rd; __asm__ 
 #endif // defined(XCRYPTO_RV32) || defined(XCRYPTO_RV64)
 
 //
+// Bitwise
+//
+
+#if defined(XCRYPTO_RV32) || defined(XCRYPTO_RV64)
+static inline uint32_t _xc_lut(int rd, int rs1, int rs2) {int out = rd; __asm__("xc.lut %0, %1, %2" : "=r"(out): "r"(rs1), "r"(rs2)); return out;}
+#endif // defined(XCRYPTO_RV32) || defined(XCRYPTO_RV64)
+
+
+//
 // Packed
 //
 

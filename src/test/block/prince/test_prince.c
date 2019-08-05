@@ -30,6 +30,8 @@ void put64h(uint64_t x) {
 
 int main(int argc, char ** argv) {
 
+    printf("import sys\n");
+
     for(int i = 0; i < num_prince_vectors; i++) {
 
         uint64_t plaintext = prince_test_vectors[i][0];
