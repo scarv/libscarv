@@ -26,7 +26,7 @@ static uint64_t prince_round_consts[] = {
 
 
 //! Prince forward SBOX
-#ifdef LIBSCARV_CONF_PRINCE_SBOX_EXTERN
+#if ( LIBSCARV_CONF_PRINCE_SBOX_EXTERN )
 extern uint64_t prince_sbox(const uint64_t s_in);
 #else
 static uint64_t prince_sbox(const uint64_t s_in){
@@ -48,10 +48,10 @@ static uint64_t prince_sbox(const uint64_t s_in){
 #endif
 
 //! Inverse prince SBOX
-#ifdef LIBSCARV_CONF_PRINCE_ISBOX_EXTERN
-extern uint64_t prince_inv_sbox(const uint64_t s_in);
+#if ( LIBSCARV_CONF_PRINCE_ISBOX_EXTERN )
+extern uint64_t prince_isbox(const uint64_t s_in);
 #else
-static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
+static uint64_t prince_isbox(const uint64_t s_inv_in){
   uint64_t s_inv_out = 0;
   const unsigned int isbox[] = {
     0xb, 0x7, 0x3, 0x2,
@@ -70,7 +70,7 @@ static uint64_t prince_inv_sbox(const uint64_t s_inv_in){
 #endif
 
 //! Galois field matrix multiplication
-#ifdef LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN
+#if ( LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN )
 extern uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]);
 #else
 static uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]){
@@ -85,7 +85,7 @@ static uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]){
 
 
 //! Matrix multiply step
-#ifdef LIBSCARV_CONF_PRINCE_MPRIME_EXTERN
+#if ( LIBSCARV_CONF_PRINCE_MPRIME_EXTERN )
 extern uint64_t prince_m_prime_layer(const uint64_t m_prime_in);
 #else
 static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
@@ -143,7 +143,7 @@ static uint64_t prince_core(uint64_t in, uint64_t k1) {
 
   uint64_t middle_round_s_out     = prince_sbox(round_input);
   uint64_t m_prime_out            = prince_m_prime_layer(middle_round_s_out);
-  uint64_t middle_round_s_inv_out = prince_inv_sbox(m_prime_out);
+  uint64_t middle_round_s_inv_out = prince_isbox(m_prime_out);
 
   round_input = middle_round_s_inv_out;  
 
@@ -152,7 +152,7 @@ static uint64_t prince_core(uint64_t in, uint64_t k1) {
     uint64_t m_inv_in       = round_input ^ k1 ^ prince_round_consts[round];
     uint64_t shift_rows_out = prince_shift_rows(m_inv_in,1);
     uint64_t m_prime_out    = prince_m_prime_layer(shift_rows_out);
-    uint64_t s_inv_out      = prince_inv_sbox(m_prime_out);
+    uint64_t s_inv_out      = prince_isbox(m_prime_out);
 
     round_input = s_inv_out;
 

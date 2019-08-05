@@ -20,42 +20,30 @@ prince_sbox:
 
     la t0, sbox
 
-    xc.gpr2xcr c0, a0
-    xc.gpr2xcr c1, a1
-
-    xc.ld.w c3, 0(t0)
-    xc.ld.w c4, 4(t0)
+    lw a3, 0(t0)
+    lw a4, 4(t0)
     
-    xc.lut  c0, c0, c3, c4
-    xc.lut  c1, c1, c3, c4
-    
-    xc.xcr2gpr a0, c0
-    xc.xcr2gpr a1, c1
+    xc.lut  a0, a3, a4
+    xc.lut  a1, a3, a4
 
     ret
 .endfunc
 
 
-.func   prince_inv_sbox
-.global prince_inv_sbox
-prince_inv_sbox:
+.func   prince_isbox
+.global prince_isbox
+prince_isbox:
     # 
     # a0/a1 - uint64_t s_in
     #
 
     la t0, inv_sbox
 
-    xc.gpr2xcr c0, a0
-    xc.gpr2xcr c1, a1
-
-    xc.ld.w c3, 0(t0)
-    xc.ld.w c4, 4(t0)
+    lw a3, 0(t0)
+    lw a4, 4(t0)
     
-    xc.lut    c0, c0, c3, c4
-    xc.lut    c1, c1, c3, c4
-    
-    xc.xcr2gpr a0, c0
-    xc.xcr2gpr a1, c1
+    xc.lut  a0, a3, a4
+    xc.lut  a1, a3, a4
 
     ret
 .endfunc
@@ -68,36 +56,28 @@ prince_gf_mul:
     # a1,a0 = in
     # a2    = uint16_t mat [16]
     #
-    
-    xc.gpr2xcr c0, zero         // Value to be returned.
-    xc.gpr2xcr c1, zero
-    xc.gpr2xcr c2, a0
-    addi       t1, a2, 32
 
+    li t0, 0                            # t0 = i
+    li t1, 16
+
+    li a3, 0                            # out = 0
+    
     // Loop through two iterations at a time.
     pgfmul_0:
 
-        xc.ld.hu c3,(0), 0(a2)
-        xc.ld.hu c6,(0), 2(a2)
+        xc.ldr.hu   t2, a2(t0)          # t2 = mat[i]
+        andi        t3, a0, 0x1         # t3 = in & 0x1
 
-        xc.ext    c4, c2, 0, 1  // Put 0'th bit of c2 in c4
-        xc.ext    c7, c2, 1, 1  // Put 1'th bit of c2 in c7
+        cmov        t3, t3, t2, zero    # t3 = t3 ? mat[i] : 0
 
-        xc.cmov.t c5, c3, c4
-        xc.cmov.f c5, c1, c4    // if c4, c5 = c3, else c5=0
-        
-        xc.cmov.t c8, c6, c7
-        xc.cmov.f c8, c1, c7    // if c7, c8 = c6, else c8=0
+        xor         a3, a3, t3          # out ^= t3
 
-        xc.bop    c0, c8, c5, 0x96 // XOR c0, c8 and c5. Result in c0.
+        srli        a0, a0, 1           # in >> 1
+        addi        t0, t0, 1           # i += 1
+        bltu        t0, t1, pgfmul_0
 
-        xc.psrl.i w, c2, c2, 2  // Shift down c0
-
-        addi a2, a2, 4
-        bltu a2, t1, pgfmul_0
-
-    xc.xcr2gpr a0, c0
-    mv         a1, zero
+    mv a0, a3
+    mv a1, zero
 
     ret
 .endfunc
