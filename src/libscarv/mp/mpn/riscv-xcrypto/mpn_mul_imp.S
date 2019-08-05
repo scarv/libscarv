@@ -24,6 +24,14 @@
 //
 // t0 =          l_r
 // t1 =            i
+// t2 =
+// t3 =
+//
+// t5 =
+// t6 =
+// t4 =
+// a6 =
+// a7 =
 
 #if ( LIBSCARV_CONF_MPN_MUL_OPERAND_SCANNING )	
 mpn_mul: # Auxilliary storage on the stack.
@@ -34,7 +42,7 @@ mpn_mul: # Auxilliary storage on the stack.
          beqz    t0, .mpn_mul_finish     # if len=0, finish
     
          # Clear the auxiliary result array
-         slli    t1, t0, 2               # t1 = size in bytes of R
+         slli    t1, t0, 2               # t1 = size of R
          sub     t2, sp, t1              # t2 = start of R
 .clear_r:
          sw      zero, 0(t2)         # r[t2] = 0
@@ -46,44 +54,41 @@ mpn_mul: # Auxilliary storage on the stack.
          beqz    a4, .mpn_mul_finish
          mv      t0, zero                # t0 = outer loop counter
 
-         slli    t5, a4, 2               # Word aligned l_y
-         slli    t6, a2, 2               # Word aligned l_x
-
 .mpn_mul_outer:
         
          beqz a2, .mpn_mul_outer_finish
          mv          t1, zero                # t1 = inner loop counter
-         xc.gpr2xcr  c7, zero                # C  = 0
+         mv          a7, zero                # C  = 0
             
          # Load inputs to MUL function
-         xc.ldr.w c2, t0, a3                 # c2 = y[j]
+         xc.ldr.w t5, a3(t0)                 # t5 = y[j]
         
 .mpn_mul_inner:
 
          # Load inputs to MUL function
-         xc.ldr.w c3, t1, a1             # c3 = x[i]
+         xc.ldr.w t6, a1(t1)             # t6 = x[i]
 
          add     t3, t0, t1              # t3 = i+j = t0+t1
-         xc.ldr.w c4, t2, t3             # c4 = R[j+i]
+         xc.ldr.w t4, t2(t3)             # t4 = R[j+i]
 
          # Compute (y[i] * x[i]) + R[i+j] + C
-         xc.mmul.3 (c6,c7), c2, c3, c7
-         xc.macc.1 (c6,c7), c4
+         xc.mmul.3 (a7,a6), t5, t6, a7
+         xc.macc.1 (a7,a6), a7, a6, t4
 
          # Store results back to carry and aux Result array
-         xc.str.w c6, t2, t3             # R[j+i] = low word 
+         xc.str.w a6, t2(t3)             # R[j+i] = low word 
 
-         addi    t1, t1, 4
-         blt     t1, t6, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
+         addi    t1, t1, 1
+         blt     t1, a2, .mpn_mul_inner  # if(i(t1) < l_x) goto inner loop
 
 .mpn_mul_outer_finish:
 
          # R[j+l_x] = c
-         add     t3, t0, t6
-         xc.str.w c7, t2, t3                 # R[j+l_x] = C
+         add     t3, t0, a2
+         xc.str.w a7, t2(t3)                 # R[j+l_x] = C
 
-         addi    t0, t0, 4
-         blt     t0, t5, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
+         addi    t0, t0, 1
+         blt     t0, a4, .mpn_mul_outer      # if(j(t0) < l_y) goto outer loop
 
 .mpn_mul_finish:
 
@@ -91,15 +96,14 @@ mpn_mul: # Auxilliary storage on the stack.
          mv  t0, t2          # src
          mv  t1, a0          # dst
          add t3, a2, a4
-         slli t3, t3, 2
          mv  t4, zero
 
 .mpn_cpy_back:
 
-         xc.ldr.w  c14, t4, t0
-         xc.str.w  c14, t4, t1
+         xc.ldr.w  t6, t0(t4)
+         xc.str.w  t6, t1(t4)
         
-         addi t4, t4, 4
+         addi t4, t4, 1
 
          blt  t4, t3, .mpn_cpy_back
     

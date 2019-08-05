@@ -35,6 +35,9 @@ void test_mpn_add( int trials, int l_min, int l_max ) {
 
     test_mpn_dump( "r", r, l_r );
 
+      printf( "l_x = %d\n", l_x);
+      printf( "l_y = %d\n", l_y);
+      printf( "l_r = %d\n", l_r);
       printf( "t = x + y                            " "\n"   );
     
       printf( "if ( r != t ) :                      " "\n"   );
