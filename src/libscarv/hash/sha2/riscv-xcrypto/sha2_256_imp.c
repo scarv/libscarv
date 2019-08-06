@@ -13,8 +13,8 @@
 #define SHA2_256_S2(a) ( _xc_sha256_s2(a) )
 #define SHA2_256_S3(a) ( _xc_sha256_s3(a) )
 
-#define SHA2_256_F0(a,b,c) ( ( a & b ) | ( ( a | b ) & c ) )
-#define SHA2_256_F1(a,b,c) ( c ^ ( a & ( b ^ c ) ) )
+#define SHA2_256_F0(a,b,c) ( _xc_bop(a,b,c,0) ) //((a&b) | ( (a|b) & c ) )
+#define SHA2_256_F1(a,b,c) ( _xc_bop(a,b,c,1) ) //(c ^ ( a & ( b ^ c ) ) )
 
 #define SHA2_256_R(a,b,c,d,e,f,g,h,w,k) {                               \
   uint32_t t_0 = SHA2_256_S3( e ) + SHA2_256_F1( e, f, g ) + h + w + k; \
@@ -26,6 +26,25 @@
 
 
 void sha2_256_comp( sha2_256_ctx_t* ctx, const uint8_t* x ) {
+
+  //
+  // b0 = F0 = (a & b) | ((a|b)&c)
+  // b1 = F1 = (c ^ (a & (b ^ c) ))
+  //
+  // A  B  C | b0  b1
+  // --------|----------
+  // 0  0  0 | 0   0
+  // 0  0  1 | 0   1
+  // 0  1  0 | 0   0
+  // 0  1  1 | 1   1
+  // 1  0  0 | 0   0
+  // 1  0  1 | 1   0
+  // 1  1  0 | 1   1
+  // 1  1  1 | 1   1
+  //
+  // b0 = 11101000 - 0xE8
+  // b1 = 11001010 - 0xCA
+  _xc_bop_setup(0xCAE80000);
 
   uint32_t a = ctx->H[ 0 ];
   uint32_t b = ctx->H[ 1 ];

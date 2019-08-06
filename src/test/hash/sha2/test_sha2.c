@@ -79,8 +79,8 @@ void test_sha2_512( int trials, int l_min, int l_max ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys, binascii, Crypto.Hash.SHA256 as SHA2_256, Crypto.Hash.SHA512 as SHA2_512" );
 
-  test_sha2_256( opt_trials, opt_data_min, opt_data_max );
-  test_sha2_512( opt_trials, opt_data_min, opt_data_max );
+  test_sha2_256( 1, opt_data_max, opt_data_max );
+  //test_sha2_512( opt_trials, opt_data_min, opt_data_max );
 
   test_fini();
 
