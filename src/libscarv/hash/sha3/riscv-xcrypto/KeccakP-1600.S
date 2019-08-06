@@ -183,6 +183,8 @@ KeccakP1600Round:
     
     # Chi
     
+    addi    t2, a6, 4                       # t2 = a6+4
+    addi    t3, a0, 4                       # t3 = a0+4
     li      t0, 0                           # t0 = x = 0
     li      t5, 5 
 
@@ -192,31 +194,26 @@ KeccakP1600Round:
 
         .L4:
             
-            xc.sha3.x1 t4, t0, t1, 3        # t4 = (((x+1)%5) + 5y) << 3
-            add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
+            xc.sha3.x1 t4, t0, t1, 1        # t4 = (((x+1)%5) + 5y) << 3
 
-            lw      a4, 0(t4)               # a5,a4 =a_temp[((x+1)%5) + 5y] 
-            lw      a5, 4(t4)               # 
+            xc.ldr.w   a4, a6(t4)           # a5,a4 =a_temp[((x+1)%5) + 5y] 
+            xc.ldr.w   a5, t2(t4)           # 
             
-            xc.sha3.x2 t4, t0, t1, 3        # t4 = (((x+2)%5) + 5y) << 3
-            add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
+            xc.sha3.x2 t4, t0, t1, 1        # t4 = (((x+2)%5) + 5y) << 3
             
-            lw      s4, 0(t4)               # s5,s4 = a_temp[((x+2)%5) + 5y] 
-            lw      s5, 4(t4)               # 
+            xc.ldr.w   s4, a6(t4)           # s5,s4 = a_temp[((x+2)%5) + 5y] 
+            xc.ldr.w   s5, t2(t4)           # 
             
-            xc.sha3.xy s2, t0, t1, 3        # s2 = index(xy)
-            add     t4, s2, a6              # t4 = &a_temp[index(x,y)]
+            xc.sha3.xy s2, t0, t1, 1        # s2 = index(xy)
             
-            lw      t6, 0(t4)               # a7,t6 =a_temp[index(x,y)] 
-            lw      a7, 4(t4)               # 
+            xc.ldr.w   t6, a6(s2)           # a7,t6 =a_temp[index(x,y)] 
+            xc.ldr.w   a7, t2(s2)           # 
 
             xc.bop  t6, a4, s4, 0          //
             xc.bop  a7, a5, s5, 0          //
             
-            add     t4, s2, a0              # t4 = &A[((x) + 5y]
-            
-            sw      t6, 0(t4)               # A[t4] = a7,t6
-            sw      a7, 4(t4)               # 
+            xc.str.w   t6, a0(s2)           # A[t4] = a7,t6
+            xc.str.w   a7, t3(s2)           # 
             
             addi    t1, t1, 1               # y += 1
             bltu    t1, t5, .L4
