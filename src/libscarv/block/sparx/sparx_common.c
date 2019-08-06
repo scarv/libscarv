@@ -1,6 +1,12 @@
 
 #include "scarv/block/sparx/sparx_common.h"
 
+#if ( LIBSCARV_CONF_SPARX_L_EXTERN == 1 )
+
+// See architecture specific folders.
+
+#else // ( LIBSCARV_CONF_SPARX_L_EXTERN == 0 )
+
 void sparx_L_2(uint16_t * x)
 {
     uint16_t tmp = SPARX_ROTL((x[0] ^ x[1]), 8);
@@ -51,3 +57,4 @@ void sparx_L_4_inv(uint16_t * x)
     x[6] ^= x[0] ^ tmp;
     x[7] ^= x[3] ^ tmp;
 }
+#endif // ( LIBSCARV_CONF_SPARX_L_EXTERN == 1 )

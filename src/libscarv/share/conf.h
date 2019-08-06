@@ -235,6 +235,12 @@
   */
 #define LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       ${LIBSCARV_CONF_PRINCE_MPRIME_EXTERN}
 
+/* ------------------------------------------------------------------------- */
+
+/** Use an external, architecture-specific implementation of the sparx L* functions.
+  */
+#define LIBSCARV_CONF_SPARX_L_EXTERN             ${LIBSCARV_CONF_SPARX_L_EXTERN}
+
 /* ========================================================================= */
 
 /** Capture whether or not XCrypto implementation supports class 1   instructions.

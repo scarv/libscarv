@@ -45,12 +45,12 @@ void test_sparx_64_128( int trials, int l_min, int l_max ) {
     test_sparx_dump("m1", (uint8_t*)ciphertext, 8);
 
     printf("if c0 != c1:\n");
-    printf("    print('Encryption Error:')\n");
+    printf("    print('64_128 Encryption Error:')\n");
     printf("    print('c   = %%s' %% (binascii.b2a_hex(c0)))\n");
     printf("    print('   != %%s' %% (binascii.b2a_hex(c1)))\n");
     printf("    sys.exit(1)\n");
     printf("if m0 != m1:\n");
-    printf("    print('Decryption Error:')\n");
+    printf("    print('64_128 Decryption Error:')\n");
     printf("    print('m   = %%s' %% (binascii.b2a_hex(m0)))\n");
     printf("    print('   != %%s' %% (binascii.b2a_hex(m1)))\n");
     printf("    sys.exit(1)\n");
@@ -90,6 +90,17 @@ void test_sparx_128_128( int trials, int l_min, int l_max ) {
     );
     
     test_sparx_dump("m1", (uint8_t*)ciphertext, 8);
+    
+    printf("if c0 != c1:\n");
+    printf("    print('128_128 Encryption Error:')\n");
+    printf("    print('c   = %%s' %% (binascii.b2a_hex(c0)))\n");
+    printf("    print('   != %%s' %% (binascii.b2a_hex(c1)))\n");
+    printf("    sys.exit(1)\n");
+    printf("if m0 != m1:\n");
+    printf("    print('128_128 Decryption Error:')\n");
+    printf("    print('m   = %%s' %% (binascii.b2a_hex(m0)))\n");
+    printf("    print('   != %%s' %% (binascii.b2a_hex(m1)))\n");
+    printf("    sys.exit(1)\n");
 }
 
 
@@ -128,6 +139,17 @@ void test_sparx_128_256( int trials, int l_min, int l_max ) {
     );
     
     test_sparx_dump("m1", (uint8_t*)ciphertext, 8);
+   
+    printf("if c0 != c1:\n");
+    printf("    print('128_256 Encryption Error:')\n");
+    printf("    print('c   = %%s' %% (binascii.b2a_hex(c0)))\n");
+    printf("    print('   != %%s' %% (binascii.b2a_hex(c1)))\n");
+    printf("    sys.exit(1)\n");
+    printf("if m0 != m1:\n");
+    printf("    print('128_256 Decryption Error:')\n");
+    printf("    print('m   = %%s' %% (binascii.b2a_hex(m0)))\n");
+    printf("    print('   != %%s' %% (binascii.b2a_hex(m1)))\n");
+    printf("    sys.exit(1)\n");
 }
 
 
