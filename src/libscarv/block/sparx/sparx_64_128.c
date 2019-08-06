@@ -73,6 +73,11 @@ void sparx_64_128_encrypt(uint16_t * x, uint16_t k[][2*sparx_64_128_ROUNDS])
 {
     uint8_t s, r, b;
 
+    #if ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV_XCRYPTO )
+        // Setup bop instruction for 3-input XOR
+        _xc_bop_setup(0x96960000);
+    #endif
+
     s=0; b=0; r=0;
     for (s=0 ; s<sparx_64_128_STEPS ; s++)
     {

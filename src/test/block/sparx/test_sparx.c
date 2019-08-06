@@ -75,16 +75,19 @@ void test_sparx_128_128( int trials, int l_min, int l_max ) {
     test_sparx_dump("m0", (uint8_t*)plaintext, 8);
     test_sparx_dump("c0", (uint8_t*)ciphertext, 8);
 
+    printf("# Key Schedule:\n");
     MEASURE(
         sparx_128_128_key_schedule(ks, key);
     );
 
+    printf("# Key Encrypt:\n");
     MEASURE (
         sparx_128_128_encrypt(plaintext, ks);
     );
     
     test_sparx_dump("c1", (uint8_t*)plaintext, 8);
     
+    printf("# Key Decrypt:\n");
     MEASURE (
         sparx_128_128_decrypt(ciphertext, ks);
     );
@@ -124,16 +127,19 @@ void test_sparx_128_256( int trials, int l_min, int l_max ) {
     test_sparx_dump("m0", (uint8_t*)plaintext, 8);
     test_sparx_dump("c0", (uint8_t*)ciphertext, 8);
 
+    printf("# Key Schedule:\n");
     MEASURE(
         sparx_128_256_key_schedule(ks, key);
     );
 
+    printf("# Key Encrypt:\n");
     MEASURE (
         sparx_128_256_encrypt(plaintext, ks);
     );
     
     test_sparx_dump("c1", (uint8_t*)plaintext, 8);
     
+    printf("# Key Decrypt:\n");
     MEASURE (
         sparx_128_256_decrypt(ciphertext, ks);
     );
