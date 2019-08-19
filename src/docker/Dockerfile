@@ -6,9 +6,10 @@
 
 FROM ubuntu
 
+ARG BRANCH
 ARG DATE
 
-LABEL maintainer="SCARV project <info@scarv.org>" date="${DATE}" url="https://github.com/scarv/libscarv"
+LABEL maintainer="SCARV project <info@scarv.org>" url="https://github.com/scarv/libscarv" branch="${BRANCH}" date="${DATE}" 
 
 COPY ./requirements.txt /tmp/requirements.txt
 

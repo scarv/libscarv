@@ -36,8 +36,17 @@ endif
 
 ifeq "${HOST}" "docker"
 
-export DOCKER_IMAGE       = scarv/libscarv.riscv-xcrypto:0.1.0
-export DOCKER_FLAGS       = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
+       BRANCH       = $(shell git branch | grep '*' | cut --characters=3-)
+
+ifeq "${BRANCH}" "master"
+export DOCKER_REPO  = scarv/libscarv.${ARCH}
+export DOCKER_TAG   = master
+export DOCKER_FLAGS = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
+else
+export DOCKER_REPO  = scarv/libscarv.${ARCH}
+export DOCKER_TAG   = $(shell echo ${BRANCH} | cut --delimiter='/' --fields=3)
+export DOCKER_FLAGS = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
+endif
 
 endif
 

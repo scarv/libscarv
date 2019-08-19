@@ -6,8 +6,17 @@
 
 # =============================================================================
 
-DOCKER_IMAGE = scarv/libscarv.${ARCH}
-DOCKER_TAGS  = latest 0.1.0
+BRANCH      = $(shell git branch | grep '*' | cut --characters=3-)
+
+ifeq "${BRANCH}" "master"
+DOCKER_REPO = scarv/libscarv.${ARCH}
+DOCKER_TAG  = master
+else
+DOCKER_REPO = scarv/libscarv.${ARCH}
+DOCKER_TAG  = $(shell echo ${BRANCH} | cut --delimiter='/' --fields=3)
+endif
+
+DATE        = $(shell date -u +'%d/%m/%Y-%H:%M:%SZ')
 
 ${REPO_HOME}/build/${ARCH}/docker/Dockerfile       : ${REPO_HOME}/src/docker/Dockerfile ${REPO_HOME}/src/docker/${ARCH}/Dockerfile.in
 	@m4 --include="${REPO_HOME}/src/docker/${ARCH}" ${<} > ${@}
@@ -31,15 +40,15 @@ ${CLEAN_PATHS} :
 # =============================================================================
 
 build : ${BUILD_PATHS} ${BUILD_FILES}
-	@docker build $(foreach TAG,${DOCKER_TAGS},--tag ${DOCKER_IMAGE}:${TAG}) --build-arg DATE="$(shell date -u +'%d/%m/%Y-%H:%M:%SZ')" ${REPO_HOME}/build/${ARCH}/docker
+	@docker build --tag ${DOCKER_REPO}:${DOCKER_TAG} --build-arg BRANCH="${BRANCH}" --build-arg DATE="${DATE}" ${REPO_HOME}/build/${ARCH}/docker
 
 clean : ${CLEAN_PATHS}
-	@docker images | grep ${DOCKER_IMAGE} | tr --squeeze-repeats ' ' | cut --delimiter=' ' --fields=3 | uniq | xargs --no-run-if-empty docker rmi --force && rm --force --recursive ${BUILD_PATHS}
+	@docker images | grep ${DOCKER_REPO} | grep ${DOCKER_TAG} | tr --squeeze-repeats ' ' | cut --delimiter=' ' --fields=3 | uniq | xargs --no-run-if-empty docker rmi --force && rm --force --recursive ${BUILD_PATHS}
 
 push  :
-	@$(foreach TAG,${DOCKER_TAGS},docker push ${DOCKER_IMAGE}:${TAG} ;)
+	@docker push ${DOCKER_REPO}:${DOCKER_TAG}
 
 pull  :
-	@$(foreach TAG,${DOCKER_TAGS},docker pull ${DOCKER_IMAGE}:${TAG} ;)
+	@docker pull ${DOCKER_REPO}:${DOCKER_TAG}
 
 # =============================================================================
