@@ -1,61 +1,55 @@
+// Copyright (C) 2019 SCARV project <info@scarv.org>
+// 
+// Use of this source code is restricted per the MIT license, a copy of which 
+// can be found at https://opensource.org/licenses/MIT (or should be included 
+// as LICENSE.txt within the associated archive or repository).
+// 
 
 .data 
 .align 4
-sbox:               # Forward SBOX for prince
-    .word 0x19ca23fb        # 7..0
-    .word 0x4d5e0876        # 15..8
+sbox:               // Forward SBOX for prince
+    .word 0x19ca23fb        // 7..0
+    .word 0x4d5e0876        // 15..8
 
-inv_sbox:           # Inverse SBOX for prince
-    .word 0x98df237b        # 7..0
-    .word 0x1ce5046a        # 15..8
+inv_sbox:           // Inverse SBOX for prince
+    .word 0x98df237b        // 7..0
+    .word 0x1ce5046a        // 15..8
 
 .text
 
 .func   prince_sbox
 .global prince_sbox
 prince_sbox:
-    # 
-    # a0/a1 - uint64_t s_in
-    #
+    // 
+    // a0/a1 - uint64_t s_in
+    //
 
     la t0, sbox
 
-    xc.gpr2xcr c0, a0
-    xc.gpr2xcr c1, a1
-
-    xc.ld.w c3, 0(t0)
-    xc.ld.w c4, 4(t0)
+    lw a3, 0(t0)
+    lw a4, 4(t0)
     
-    xc.lut  c0, c0, c3, c4
-    xc.lut  c1, c1, c3, c4
-    
-    xc.xcr2gpr a0, c0
-    xc.xcr2gpr a1, c1
+    xc.lut  a0, a4, a3
+    xc.lut  a1, a4, a3
 
     ret
 .endfunc
 
 
-.func   prince_inv_sbox
-.global prince_inv_sbox
-prince_inv_sbox:
-    # 
-    # a0/a1 - uint64_t s_in
-    #
+.func   prince_isbox
+.global prince_isbox
+prince_isbox:
+    // 
+    // a0/a1 - uint64_t s_in
+    //
 
     la t0, inv_sbox
 
-    xc.gpr2xcr c0, a0
-    xc.gpr2xcr c1, a1
-
-    xc.ld.w c3, 0(t0)
-    xc.ld.w c4, 4(t0)
+    lw a3, 0(t0)
+    lw a4, 4(t0)
     
-    xc.lut    c0, c0, c3, c4
-    xc.lut    c1, c1, c3, c4
-    
-    xc.xcr2gpr a0, c0
-    xc.xcr2gpr a1, c1
+    xc.lut  a0, a4, a3
+    xc.lut  a1, a4, a3
 
     ret
 .endfunc
@@ -64,40 +58,32 @@ prince_inv_sbox:
 .func   prince_gf_mul
 .global prince_gf_mul
 prince_gf_mul:
-    #
-    # a1,a0 = in
-    # a2    = uint16_t mat [16]
-    #
-    
-    xc.gpr2xcr c0, zero         // Value to be returned.
-    xc.gpr2xcr c1, zero
-    xc.gpr2xcr c2, a0
-    addi       t1, a2, 32
+    //
+    // a1,a0 = in
+    // a2    = uint16_t mat [16]
+    //
 
+    li t0, 0                            // t0 = i
+    li t1, 16
+
+    li a3, 0                            // out = 0
+    
     // Loop through two iterations at a time.
     pgfmul_0:
 
-        xc.ld.hu c3,(0), 0(a2)
-        xc.ld.hu c6,(0), 2(a2)
+        xc.ldr.hu   t2, a2(t0)          // t2 = mat[i]
+        andi        t3, a0, 0x1         // t3 = in & 0x1
 
-        xc.ext    c4, c2, 0, 1  // Put 0'th bit of c2 in c4
-        xc.ext    c7, c2, 1, 1  // Put 1'th bit of c2 in c7
+        cmov        t3, t3, t2, zero    // t3 = t3 ? mat[i] : 0
 
-        xc.cmov.t c5, c3, c4
-        xc.cmov.f c5, c1, c4    // if c4, c5 = c3, else c5=0
-        
-        xc.cmov.t c8, c6, c7
-        xc.cmov.f c8, c1, c7    // if c7, c8 = c6, else c8=0
+        xor         a3, a3, t3          // out ^= t3
 
-        xc.bop    c0, c8, c5, 0x96 // XOR c0, c8 and c5. Result in c0.
+        srli        a0, a0, 1           // in >> 1
+        addi        t0, t0, 1           // i += 1
+        bltu        t0, t1, pgfmul_0
 
-        xc.psrl.i w, c2, c2, 2  // Shift down c0
-
-        addi a2, a2, 4
-        bltu a2, t1, pgfmul_0
-
-    xc.xcr2gpr a0, c0
-    mv         a1, zero
+    mv a0, a3
+    mv a1, zero
 
     ret
 .endfunc

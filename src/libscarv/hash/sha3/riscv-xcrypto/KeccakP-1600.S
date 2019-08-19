@@ -81,6 +81,12 @@ KeccakP1600Round:
     sw      s5, 8(sp)
     sw      s2,12(sp)
 
+    //  Setup xc.bop
+    //  - b1 = 96 = a ^ b ^ c
+    //  - b0 = 9A = a ^ (~b & c)
+    lui     a2, 0x96D20
+    csrw    uxcrypto, a2
+
     #
     # Theta function preparation
     addi a2, sp, 16                         # a2 = &theta_c
@@ -91,23 +97,19 @@ KeccakP1600Round:
         
         lw      t0,   0(a3)
         lw      t1,  40(a3)
-        xor     t0, t0, t1
-        lw      t1,  80(a3)
-        xor     t0, t0, t1
+        lw      t2,  80(a3)
+        xc.bop  t0, t1, t2, 1
         lw      t1, 120(a3)
-        xor     t0, t0, t1
-        lw      t1, 160(a3)
-        xor     t0, t0, t1
+        lw      t2, 160(a3)
+        xc.bop  t0, t1, t2, 1
         
         lw      t2,   4(a3)
         lw      t3,  44(a3)
-        xor     t2, t2, t3
-        lw      t3,  84(a3)
-        xor     t2, t2, t3
-        lw      t3, 124(a3)
-        xor     t2, t2, t3
+        lw      t1,  84(a3)
+        xc.bop  t2, t1, t3, 1
+        lw      t1, 124(a3)
         lw      t3, 164(a3)
-        xor     t2, t2, t3
+        xc.bop  t2, t1, t3, 1
 
         sw      t0,   0(a2)
         sw      t2,   4(a2)
@@ -181,6 +183,8 @@ KeccakP1600Round:
     
     # Chi
     
+    addi    t2, a6, 4                       # t2 = a6+4
+    addi    t3, a0, 4                       # t3 = a0+4
     li      t0, 0                           # t0 = x = 0
     li      t5, 5 
 
@@ -190,37 +194,26 @@ KeccakP1600Round:
 
         .L4:
             
-            xc.sha3.x1 t4, t0, t1, 3        # t4 = (((x+1)%5) + 5y) << 3
-            add     t4, t4, a6              # t4 = &a_temp[((x+1)%5) + 5y]
+            xc.sha3.x1 t4, t0, t1, 1        # t4 = (((x+1)%5) + 5y) << 3
 
-            lw      a4, 0(t4)               # a5,a4 =a_temp[((x+1)%5) + 5y] 
-            lw      a5, 4(t4)               # 
+            xc.ldr.w   a4, a6(t4)           # a5,a4 =a_temp[((x+1)%5) + 5y] 
+            xc.ldr.w   a5, t2(t4)           # 
             
-            xc.sha3.x2 t4, t0, t1, 3        # t4 = (((x+2)%5) + 5y) << 3
-            add     t4, t4, a6              # t4 = &a_temp[((x+2)%5) + 5y]
+            xc.sha3.x2 t4, t0, t1, 1        # t4 = (((x+2)%5) + 5y) << 3
             
-            lw      s4, 0(t4)               # a5,a4 =a_temp[((x+2)%5) + 5y] 
-            lw      s5, 4(t4)               # 
+            xc.ldr.w   s4, a6(t4)           # s5,s4 = a_temp[((x+2)%5) + 5y] 
+            xc.ldr.w   s5, t2(t4)           # 
+            
+            xc.sha3.xy s2, t0, t1, 1        # s2 = index(xy)
+            
+            xc.ldr.w   t6, a6(s2)           # a7,t6 =a_temp[index(x,y)] 
+            xc.ldr.w   a7, t2(s2)           # 
 
-            not     a4, a4
-            not     a5, a5
-
-            and     s4, s4, a4              # s5,s4 = ~X & Y
-            and     s5, s5, a5              #
+            xc.bop  t6, a4, s4, 0          //
+            xc.bop  a7, a5, s5, 0          //
             
-            xc.sha3.xy s2, t0, t1, 3        # s2 = index(xy)
-            add     t4, s2, a6              # t4 = &a_temp[index(x,y)]
-            
-            lw      a4, 0(t4)               # a5,a4 =a_temp[((x)) + 5y] 
-            lw      a5, 4(t4)               # 
-            
-            xor     a4, s4, a4              # s5,s4 = ~X & Y
-            xor     a5, s5, a5              #
-            
-            add     t4, s2, a0              # t4 = &A[((x) + 5y]
-            
-            sw      a4, 0(t4)               # A[t4] = a5,a4
-            sw      a5, 4(t4)               # 
+            xc.str.w   t6, a0(s2)           # A[t4] = a7,t6
+            xc.str.w   a7, t3(s2)           # 
             
             addi    t1, t1, 1               # y += 1
             bltu    t1, t5, .L4

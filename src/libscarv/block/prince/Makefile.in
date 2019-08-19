@@ -1,0 +1,17 @@
+# Copyright (C) 2019 SCARV project <info@scarv.org>
+#
+# Use of this source code is restricted per the MIT license, a copy of which 
+# can be found at https://opensource.org/licenses/MIT (or should be included 
+# as LICENSE.txt within the associated archive or repository).
+
+ID       = block/prince
+
+PATHS    = ${REPO_HOME}/src/libscarv/${ID}
+PATHS   += ${REPO_HOME}/src/libscarv/${ID}/${ARCH}
+
+HEADERS  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.h))
+SOURCES  = $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.c))
+SOURCES += $(foreach PATH,${PATHS},$(wildcard ${PATH}/*.S))
+
+$(eval $(call build,${ID},${PATHS},${HEADERS},${SOURCES}))
+

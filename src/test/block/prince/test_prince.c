@@ -2,12 +2,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "test_util.h"
-#include "scarv/prince/prince.h"
+#include "util.h"
+#include "scarv/block/prince/prince.h"
 
-const uint32_t num_prince_vectors = 4;
-
-extern uint64_t prince_gf_mul(const uint64_t in, const uint16_t mat[16]);
+const int num_prince_vectors = 5;
 
 //! Known I/O vectors for prince.
 uint64_t prince_test_vectors[5][4] = {
@@ -32,12 +30,17 @@ void put64h(uint64_t x) {
 
 int main(int argc, char ** argv) {
 
+    printf("import sys\n");
+
     for(int i = 0; i < num_prince_vectors; i++) {
 
         uint64_t plaintext = prince_test_vectors[i][0];
         uint64_t k0        = prince_test_vectors[i][1];
         uint64_t k1        = prince_test_vectors[i][2];
         uint64_t ciphertext= prince_test_vectors[i][3];
+
+        uint64_t enc_result= 0;
+        uint64_t dec_result= 0;
 
         printf("# ----- Prince %d / %d --------\n", i,num_prince_vectors);
 
@@ -46,16 +49,9 @@ int main(int argc, char ** argv) {
         printf("k1        = "); put64h(k1        ); printf("\n");
         printf("ciphertext= "); put64h(ciphertext); printf("\n");
 
-        uint32_t count_c = test_util_rdcycle();
-        uint32_t count_i = test_util_rdinstret();
-
-        uint64_t enc_result = prince_enc(plaintext, k0, k1);
-
-        count_c = test_util_rdcycle()  - count_c;
-        count_i = test_util_rdinstret()- count_i;
-
-        printf("# cycles = %lu\n", count_c);
-        printf("# instrs = %lu\n", count_i);
+        MEASURE (
+            enc_result = prince_enc(plaintext, k0, k1);
+        );
 
         printf("enc_result= "); put64h(enc_result); printf("\n");
 
@@ -68,16 +64,9 @@ int main(int argc, char ** argv) {
             printf("sys.exit(1)\n");
         }
 
-        count_c = test_util_rdcycle();
-        count_i = test_util_rdinstret();
-
-        uint64_t dec_result = prince_dec(ciphertext, k0, k1);
-
-        count_c = test_util_rdcycle()  - count_c;
-        count_i = test_util_rdinstret()- count_i;
-
-        printf("# cycles = %lu\n", count_c);
-        printf("# instrs = %lu\n", count_i);
+        MEASURE(
+            dec_result = prince_dec(ciphertext, k0, k1);
+        );
 
         printf("dec_result= "); put64h(dec_result); printf("\n");
 

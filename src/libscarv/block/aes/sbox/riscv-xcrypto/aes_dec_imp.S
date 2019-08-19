@@ -22,50 +22,50 @@
 // a1 =  uint8_t* c
 // a2 =  uint8_t* k
 //
-// t0 = i
+// a6 = i
 	
-aes_dec: AES_LDM         c0, c1, c2, c3, a1
+aes_dec: AES_LDM         t0, t1, t2, t3, a1
 
          addi a2, a2,  16 * 10
-         AES_LDM         c4, c5, c6, c7, a2
-         AES_DEC_RND_KEY c0, c1, c2, c3, c4, c5, c6, c7
+         AES_LDM         t4, t5, t6, a7, a2
+         AES_DEC_RND_KEY t0, t1, t2, t3, t4, t5, t6, a7
 
-         li t0, 9
+         li a6, 9
 
-.l0:     xc.aessub.dec   c4, c0, c3
-         xc.aessub.dec   c5, c1, c0
-         xc.aessub.dec   c6, c2, c1
-         xc.aessub.dec   c7, c3, c2
+.l0:     xc.aessub.dec   t4, t0, t3
+         xc.aessub.dec   t5, t1, t0
+         xc.aessub.dec   t6, t2, t1
+         xc.aessub.dec   a7, t3, t2
 
-         xc.aesmix.dec   c0, c4, c6
-         xc.aesmix.dec   c1, c5, c7
-         xc.aesmix.dec   c2, c6, c4
-         xc.aesmix.dec   c3, c7, c5
-
-         addi a2, a2, -16
-         AES_LDM         c4, c5, c6, c7, a2
-         AES_DEC_RND_KEY c0, c1, c2, c3, c4, c5, c6, c7
-
-         addi t0, t0, -1
-         bgtz t0, .l0
-
-         xc.aessub.dec   c4, c2, c1
-         xc.aessub.dec   c5, c3, c2
-         xc.aessub.dec   c6, c0, c3
-         xc.aessub.dec   c7, c1, c0
-
-         xc.ins          c1, c4, 0, 16
-         xc.ins          c2, c5, 0, 16
-         xc.ins          c4, c6, 0, 16
-         xc.ins          c5, c7, 0, 16
-         xc.ins          c6, c1, 0, 16
-         xc.ins          c7, c2, 0, 16
+         xc.aesmix.dec   t0, t4, t6
+         xc.aesmix.dec   t1, t5, a7
+         xc.aesmix.dec   t2, t6, t4
+         xc.aesmix.dec   t3, a7, t5
 
          addi a2, a2, -16
-         AES_LDM         c0, c1, c2, c3, a2
-         AES_DEC_RND_KEY c0, c1, c2, c3, c4, c5, c6, c7
+         AES_LDM         t4, t5, t6, a7, a2
+         AES_DEC_RND_KEY t0, t1, t2, t3, t4, t5, t6, a7
 
-         AES_STM         c0, c1, c2, c3, a0
+         addi a6, a6, -1
+         bgtz a6, .l0
+
+         xc.aessub.dec   t4, t2, t1
+         xc.aessub.dec   t5, t3, t2
+         xc.aessub.dec   t6, t0, t3
+         xc.aessub.dec   a7, t1, t0
+
+         or              t1, t1, t4
+         or              t2, t2, t5
+         or              t4, t4, t6
+         or              t5, t5, a7
+         or              t6, t6, t1
+         or              a7, a7, t2
+
+         addi a2, a2, -16
+         AES_LDM         t0, t1, t2, t3, a2
+         AES_DEC_RND_KEY t0, t1, t2, t3, t4, t5, t6, a7
+
+         AES_STM         t0, t1, t2, t3, a0
          
          ret
 

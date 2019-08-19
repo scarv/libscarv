@@ -217,6 +217,30 @@
   */
 #define LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN      ${LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN}
 
+/* ------------------------------------------------------------------------- */
+
+/** Use an external, architecture-specific implementation of @p prince_sbox.
+  */
+#define LIBSCARV_CONF_PRINCE_SBOX_EXTERN         ${LIBSCARV_CONF_PRINCE_SBOX_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_isbox.
+  */
+#define LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        ${LIBSCARV_CONF_PRINCE_ISBOX_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_gf_mul.
+  */
+#define LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       ${LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_m_prime_layer.
+  */
+#define LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       ${LIBSCARV_CONF_PRINCE_MPRIME_EXTERN}
+
+/* ------------------------------------------------------------------------- */
+
+/** Use an external, architecture-specific implementation of the sparx L* functions.
+  */
+#define LIBSCARV_CONF_SPARX_L_EXTERN             ${LIBSCARV_CONF_SPARX_L_EXTERN}
+
 /* ========================================================================= */
 
 /** Capture whether or not XCrypto implementation supports class 1   instructions.
