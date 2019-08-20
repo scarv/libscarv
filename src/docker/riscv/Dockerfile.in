@@ -19,7 +19,7 @@ RUN apt-get --assume-yes --quiet install make autoconf automake autotools-dev bc
  && git submodule update --init --recursive \
  && ./configure --prefix=${RISCV} --with-arch=rv32imac --with-abi=ilp32 \
  && make \
- && mv ./build/build-gdb-newlib/gnulib/confdir3/confdir3 ./bugfix && rm --force --recursive ./bugfix \
+ && mv ./build-gdb-newlib/gdb/build-gnulib/confdir3/confdir3 ./bugfix && rm --force --recursive ./bugfix \
  && cd .. \
  && rm --force --recursive ./riscv-gnu-toolchain \
  && git clone https://github.com/riscv/riscv-tools.git \
