@@ -3,6 +3,7 @@
 
 #include <scarv/share/conf.h>
 #include <scarv/share/util.h>
+#include <scarv/share/version.h>
 
 #if ( LIBSCARV_CONF_AES_ENABLE )
 #include <scarv/block/aes/aes_enc.h>
