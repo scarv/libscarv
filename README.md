@@ -35,7 +35,7 @@ benchmark.*
 ├── build                     - working directory for build
 ├── conf                      - global, architecture-specific configuration
 └── src                       
-    ├── docker                - source code for containerised host environments
+    ├── docker                - source code for containerised build contexts
     ├── libscarv              - source code for library
     │   ├─ block                - block ciphers
     │   ├─ hash                 - hash functions
@@ -133,14 +133,14 @@ benchmark.*
 
    2. Optionally,
       select the
-      host environment
+      build context
       by setting the environment variable
-      `HOST`
+      `CONTEXT`
       appropriately,
       e.g., via
 
       ```sh
-      export HOST="native"
+      export CONTEXT="native"
       ```
   
       or just accept the default (per [`${REPO_HOME}/Makefile`](./Makefile)).
@@ -151,14 +151,14 @@ benchmark.*
       and
       library content (i.e., the set of kernels included)
       by setting the environment variables
-      `ARCHS`
+      `ARCH`
       and
       `KERNELS`
       appropriately,
       e.g., via
 
       ```sh
-      export ARCHS="riscv"
+      export ARCH="riscv"
       export KERNELS="block/aes hash/sha*"
       ```
 
@@ -327,15 +327,15 @@ benchmark.*
 #### The `libscarv` build system
 
 - The 
-  `HOST`
+  `CONTEXT`
   environment variable specifies the
-  host environment
+  build context
   within which the build process is executed:
 
-  | Host              | Description                                                                             |
-  | :---------------- | :-------------------------------------------------------------------------------------- |
-  | `native`          | The default, native host environment                                                    |
-  | `docker`          | A containerised host environment, offered by an architecture-specific Docker image      |
+  | Context           | Description                                                                     |
+  | :---------------- | :------------------------------------------------------------------------------ |
+  | `native`          | The default, native build context                                               |
+  | `docker`          | A containerised build context, offered by an architecture-specific Docker image |
 
   Note that:
 
@@ -359,9 +359,9 @@ benchmark.*
     tool-chain.
 
 - The 
-  `ARCHS`
-  environment variable specifies a list of 
-  target architectures
+  `ARCH`
+  environment variable specifies the
+  target architecture
   to consider, identifiers for which are one of the following:
   
   | Architecture      | Description                                                                             |
@@ -436,7 +436,7 @@ benchmark.*
   - the configuration header file
     [`${REPO_HOME}/src/libscarv/share/conf.h`](./src/libscarv/share/conf.h)
     is populated using the configuration file, plus automatically
-    generated content stemming from `${ARCHS}` and `${KERNELS}`; 
+    generated content stemming from `${ARCH}` and `${KERNELS}`; 
     it houses some documentation for each configuration symbol,
 
   - configuration symbols are made available in the source code via

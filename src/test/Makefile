@@ -4,8 +4,6 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/${ARCH}.mk
-
 # =============================================================================
 
 # For each built file type, map source path into build path so as to allow
@@ -55,8 +53,6 @@ endef
 
 # =============================================================================
 
-ifeq "${HOST}" "native"
-
 # Initialise BUILD_X for each built file type, then include the per kernel 
 # build configurations to populate them.
 
@@ -87,8 +83,7 @@ ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
 
-# Define targets to drive build process: for the native host environment,
-# this basically means building all the built files identified.
+# Define targets to drive build process.
 
 build    : ${BUILD_PATHS} ${BUILD_TARGETS}
 
@@ -98,26 +93,5 @@ generate : build          ${BUILD_SCRIPTS}
 
 validate : build generate ${BUILD_RESULTS}
 	@( cat ${REPO_HOME}/build/${ARCH}/test/*.log | grep 'fail' ) || true
-
-endif
-
-# =============================================================================
-
-ifeq "${HOST}" "docker"
-
-# Define targets to drive build process: for the Docker host environment,
-# this basically means deferring, i.e., using make, wrt. the same target,
-# within said environment.
-
-build    :
-	@$(call docker,${@}-test)
-clean    :
-	@$(call docker,${@}-test)
-generate :
-	@$(call docker,${@}-test)
-validate :
-	@$(call docker,${@}-test)
-
-endif
 
 # =============================================================================

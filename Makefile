@@ -10,11 +10,11 @@ endif
 
 # =============================================================================
 
-# Provide default values for HOST, ARCHS, and KERNELS.
+# Provide default values for CONTEXT, ARCH, and KERNELS.
 
-export HOST    ?= native
+export CONTEXT ?= native
 
-export ARCHS   ?= native
+export ARCH    ?= native
 export KERNELS ?= block/* hash/* mp/* stream/*
 
 # Perform a (limited) expansion of wildcards in KERNELS.
@@ -23,12 +23,24 @@ export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefi
 
 # =============================================================================
 
+# TODO
+
+ifeq "${CONTEXT}" "docker"
+include ${REPO_HOME}/conf/${ARCH}.mk_docker
+
+%          :
+	@  docker run --rm --volume "${REPO_HOME}:/mnt/scarv/libscarv" --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/libscarv" --env CONTEXT="native" --env ARCH="${ARCH}" --env KERNELS="${KERNELS}" ${DOCKER_FLAGS} ${DOCKER_REPO}:${DOCKER_TAG} ${*}
+endif
+
+ifeq "${CONTEXT}" "native"
+include ${REPO_HOME}/conf/${ARCH}.mk_native
+
 %-docker   :
-	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/docker"   ${*} ;)
+	@make --directory="${REPO_HOME}/src/docker"   ${*}
 %-libscarv :
-	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/libscarv" ${*} ;)
+	@make --directory="${REPO_HOME}/src/libscarv" ${*}
 %-test     :
-	@$(foreach ARCH,${ARCHS},ARCH="${ARCH}" make --directory="${REPO_HOME}/src/test"     ${*} ;)
+	@make --directory="${REPO_HOME}/src/test"     ${*}
 
 venv  : ${REPO_HOME}/requirements.txt
 	@${REPO_HOME}/bin/venv.sh
@@ -38,5 +50,6 @@ doc   : ${REPO_HOME}/Doxyfile
 
 clean :
 	@rm --force --recursive ${REPO_HOME}/build/*
+endif
 
 # =============================================================================

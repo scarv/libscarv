@@ -4,8 +4,6 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/${ARCH}.mk
-
 # =============================================================================
 
 # For each built file type, map source path into build path so as to allow
@@ -101,8 +99,6 @@ $(foreach KERNEL,$(call kernel_enum),$(eval export $(addprefix LIBSCARV_CONF_,$(
 
 # =============================================================================
 
-ifeq "${HOST}" "native"
-
 # Initialise BUILD_X for each built file type, then include the per kernel 
 # build configurations to populate them.
 
@@ -136,28 +132,10 @@ ${BUILD_PATHS} :
 ${CLEAN_PATHS} :
 	@rm --force --recursive ${@}
 
-# Define targets to drive build process: for the native host environment,
-# this basically means building all the built files identified.
+# Define targets to drive build process.
 
 build : ${BUILD_PATHS} ${BUILD_HEADERS} ${BUILD_OBJECTS} ${BUILD_DUMPS} ${BUILD_TARGETS}
 
 clean : ${CLEAN_PATHS}
-
-endif
-
-# =============================================================================
-
-ifeq "${HOST}" "docker"
-
-# Define targets to drive build process: for the Docker host environment,
-# this basically means deferring, i.e., using make, wrt. the same target,
-# within said environment.
-
-build :
-	@$(call docker,${@}-libscarv)
-clean :
-	@$(call docker,${@}-libscarv)
-
-endif
 
 # =============================================================================
