@@ -13,6 +13,7 @@ endif
 # Provide default values for HOST, ARCHS, and KERNELS.
 
 export HOST    ?= native
+
 export ARCHS   ?= native
 export KERNELS ?= block/* hash/* mp/* stream/*
 
