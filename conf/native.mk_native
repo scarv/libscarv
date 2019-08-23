@@ -21,6 +21,4 @@ export CC_PATHS           =
 export CC_FLAGS           = -Wall -O3
 export CC_LIBS            =
 
-endif
-
 # =============================================================================

@@ -17,7 +17,7 @@ RUN apt-get --assume-yes --quiet update \
  && apt-get --assume-yes --quiet install apt-utils gettext-base gosu sudo python3 python3-pip python3-venv \
  && pip3                         install -r /tmp/requirements.txt
 
-include(`Dockerfile.in')
+INCLUDE
 
 COPY ./entrypoint.sh /usr/sbin/entrypoint.sh
 RUN chmod 755 /usr/sbin/entrypoint.sh

@@ -19,7 +19,7 @@ endif
 DATE        = $(shell date -u +'%d/%m/%Y-%H:%M:%SZ')
 
 ${REPO_HOME}/build/${ARCH}/docker/Dockerfile       : ${REPO_HOME}/src/docker/Dockerfile ${REPO_HOME}/src/docker/${ARCH}/Dockerfile.in
-	@m4 --include="${REPO_HOME}/src/docker/${ARCH}" ${<} > ${@}
+	@sed -e '/INCLUDE/{r ${REPO_HOME}/src/docker/${ARCH}/Dockerfile.in' -e 'd}' ${<} > ${@}
 ${REPO_HOME}/build/${ARCH}/docker/entrypoint.sh    : ${REPO_HOME}/src/docker/entrypoint.sh
 	@cp ${<} ${@}
 ${REPO_HOME}/build/${ARCH}/docker/requirements.txt : ${REPO_HOME}/requirements.txt
