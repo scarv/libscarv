@@ -23,13 +23,22 @@ export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefi
 
 # =============================================================================
 
-# TODO
+# Define targets to drive build process, depending on CONTEXT (i.e., on the 
+# selected build context):
+#
+# 1. for the Docker build context, defer everything to the Docker container 
+#    (i.e., execute make on the same target *within* the container), or
+# 2. for the native build context, 
+#
+#    - deal with specific "global" targets (e.g., wrt. the Python virtual 
+#      environment or documentation), or
+#    - defer to the appropriate sub-Makefile for everything else.
 
 ifeq "${CONTEXT}" "docker"
 include ${REPO_HOME}/conf/${ARCH}.mk_docker
 
 %          :
-	@  docker run --rm --volume "${REPO_HOME}:/mnt/scarv/libscarv" --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/libscarv" --env CONTEXT="native" --env ARCH="${ARCH}" --env KERNELS="${KERNELS}" ${DOCKER_FLAGS} ${DOCKER_REPO}:${DOCKER_TAG} ${*}
+	@docker run --rm --volume "${REPO_HOME}:/mnt/scarv/libscarv" --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/libscarv" --env CONTEXT="native" --env ARCH="${ARCH}" --env KERNELS="${KERNELS}" ${DOCKER_FLAGS} ${DOCKER_REPO}:${DOCKER_TAG} ${*}
 endif
 
 ifeq "${CONTEXT}" "native"
