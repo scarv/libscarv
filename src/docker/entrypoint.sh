@@ -24,6 +24,6 @@ groupadd --gid ${DOCKER_GID} ${DOCKER_USER} ; useradd --gid ${DOCKER_GID} --uid 
 
 cd /mnt/scarv/libscarv ; source ./bin/conf.sh
 
-exec /usr/sbin/gosu ${DOCKER_USER} make --directory="${REPO_HOME}" ${@}
+exec /usr/sbin/gosu ${DOCKER_USER} bash --login -c "make --directory=${REPO_HOME} ${@}"
 
 # =============================================================================

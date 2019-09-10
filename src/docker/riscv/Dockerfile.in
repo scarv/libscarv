@@ -4,6 +4,8 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+# =============================================================================
+
 # The build seems to trigger an existing bug, see, e.g., [1], related to the 
 # maximum path length supported by the underlying file system: we'll create 
 # a path that cannot then be removed.  The fix is simple: we just relocate a 
@@ -28,3 +30,5 @@ RUN apt-get --assume-yes --quiet install make autoconf automake autotools-dev bc
  && ./build-rv32ima.sh \
  && cd .. \
  && rm --force --recursive ./riscv-tools
+
+# =============================================================================
