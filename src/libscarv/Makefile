@@ -6,6 +6,12 @@
 
 # =============================================================================
 
+# Include the per target architecture configuration for tool-chain.
+
+include ${REPO_HOME}/conf/${ARCH}.mk_toolchain
+
+# -----------------------------------------------------------------------------
+
 # For each built file type, map source path into build path so as to allow
 # totally out-of-tree build.
 
@@ -120,8 +126,7 @@ BUILD_FILES   += ${BUILD_DUMPS}
 
 BUILD_PATHS    = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 
-# Define targets for built files not otherwise catered for, e.g., via the
-# invocation of build function by the kernel build configurations.
+# Define targets for built files not otherwise catered for.
 
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
 	@${TOOL_PREFIX}ar rcs ${@} ${^}

@@ -21,5 +21,4 @@ include(`Dockerfile.in')
 
 COPY ./entrypoint.sh /usr/sbin/entrypoint.sh
 RUN chmod 755 /usr/sbin/entrypoint.sh
-
 ENTRYPOINT [ "/usr/sbin/entrypoint.sh" ]

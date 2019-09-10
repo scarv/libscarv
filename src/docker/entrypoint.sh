@@ -6,6 +6,8 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+# =============================================================================
+
 if [ -z "${DOCKER_USER}" ] ; then
   DOCKER_USER="scarv"
 fi 
@@ -18,4 +20,10 @@ fi
 
 groupadd --gid ${DOCKER_GID} ${DOCKER_USER} ; useradd --gid ${DOCKER_GID} --uid ${DOCKER_UID} --no-user-group --create-home --shell /bin/bash ${DOCKER_USER}
 
-exec /usr/sbin/gosu ${DOCKER_USER} make --directory /mnt/scarv/libscarv ${@}
+# -----------------------------------------------------------------------------
+
+cd /mnt/scarv/libscarv ; source ./bin/conf.sh
+
+exec /usr/sbin/gosu ${DOCKER_USER} make --directory="${REPO_HOME}" ${@}
+
+# =============================================================================
