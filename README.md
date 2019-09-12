@@ -35,14 +35,14 @@ benchmark.*
 ├── build                  - working directory for build
 ├── conf                   - global, architecture-specific configuration
 └── src                       
-    ├── docker             - source code for associated containers
-    ├── libscarv           - source code for library
+    ├── docker             - source code for containers
+    ├── libscarv           - source code for libscarv library
     │   ├─ block             - block ciphers
     │   ├─ hash              - hash functions
     │   ├─ mp                - multi-precision integer arithmetic
     │   ├─ share             - shared functions, macros, etc.
     │   └─ stream            - stream ciphers
-    └── test               - source code for test suite
+    └── test               - source code for libscarv test suite
         ├─ block             - block ciphers
         ├─ hash              - hash functions
         ├─ mp                - multi-precision integer arithmetic
@@ -98,11 +98,13 @@ benchmark.*
         [Doxygen](http://www.doxygen.nl)
         documentation generation system.
 
+      thus supporting a native build context,
       and/or
 
    2. install the 
       [Docker](https://www.docker.com)
-      container platform.
+      container platform,
+      thus supporting a Docker build context.
 
 2. Execute
 
@@ -173,13 +175,13 @@ benchmark.*
    common tasks, e.g.,
 
    | Command                  | Description
-   | :----------------------- | :------------------------------------------------------------------------ |
-   | `make doc`               | build the [Doxygen](http://www.doxygen.nl)-based documentation            |
-   | `make    build-libscarv` | build    the library                                                      |
-   | `make    build-test``    | build    the test suite                                                   |
-   | `make generate-test``    | generate the test suite (i.e., produce meta-program from test executable) |
-   | `make generate-test``    | validate the test suite (i.e., execute meta-program)                      |
-   | `make    clean`          | clean-up (e.g., remove everything built in `${REPO_HOME}/build`)          |
+   | :----------------------- | :----------------------------------------------------------------------------------- |
+   | `make doc`               | build the [Doxygen](http://www.doxygen.nl)-based documentation                       |
+   | `make    build-libscarv` | build    the `libscarv` library                                                      |
+   | `make    build-test``    | build    the `libscarv` test suite                                                   |
+   | `make generate-test``    | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
+   | `make generate-test``    | validate the `libscarv` test suite (i.e., execute meta-program)                      |
+   | `make    clean`          | clean-up (e.g., remove everything built in `${REPO_HOME}/build`)                     |
 
 <!--- -------------------------------------------------------------------- --->
 
