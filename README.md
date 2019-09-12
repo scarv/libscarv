@@ -56,7 +56,8 @@ benchmark.*
 
 1. Either
 
-   1. install associated pre-requisites, e.g.,
+   1. provide a native build context by installing 
+      associated pre-requisites, e.g.,
 
       - a suitable
         compiler 
@@ -97,14 +98,13 @@ benchmark.*
       - the
         [Doxygen](http://www.doxygen.nl)
         documentation generation system.
-
-      thus supporting a native build context,
+      
       and/or
 
-   2. install the 
+   2. provide a Docker build context by installing 
+      the 
       [Docker](https://www.docker.com)
-      container platform,
-      thus supporting a Docker build context.
+      container platform.
 
 2. Execute
 
@@ -178,9 +178,9 @@ benchmark.*
    | :----------------------- | :----------------------------------------------------------------------------------- |
    | `make doc`               | build the [Doxygen](http://www.doxygen.nl)-based documentation                       |
    | `make    build-libscarv` | build    the `libscarv` library                                                      |
-   | `make    build-test``    | build    the `libscarv` test suite                                                   |
-   | `make generate-test``    | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
-   | `make generate-test``    | validate the `libscarv` test suite (i.e., execute meta-program)                      |
+   | `make    build-test`     | build    the `libscarv` test suite                                                   |
+   | `make generate-test`     | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
+   | `make generate-test`     | validate the `libscarv` test suite (i.e., execute meta-program)                      |
    | `make    clean`          | clean-up (e.g., remove everything built in `${REPO_HOME}/build`)                     |
 
 <!--- -------------------------------------------------------------------- --->
