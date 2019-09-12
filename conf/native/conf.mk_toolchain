@@ -6,11 +6,17 @@
 
 # =============================================================================
 
-export LIBSCARV_CONF_AES_TYPE                   = sbox
+export TOOL_PREFIX_TARGET =
+export TOOL_PREFIX_VENDOR =
+export TOOL_PREFIX_ABI    =
 
-# -----------------------------------------------------------------------------
+export TOOL_PREFIX        = ${TOOL_PREFIX_TARGET}${TOOL_PREFIX_VENDOR}${TOOL_PREFIX_ABI}
 
-export LIBSCARV_CONF_MPZ_MAX_LIMBS              = ( 1024 / BITSOF( limb_t ) ) + 2
-export LIBSCARV_CONF_MRZ_MAX_LIMBS              = ( 1024 / BITSOF( limb_t ) ) + 2
+export TEST_PREFIX        = 
+export TEST_SUFFIX        = 
+
+export CC_PATHS           =
+export CC_FLAGS           = -Wall -O3
+export CC_LIBS            =
 
 # =============================================================================

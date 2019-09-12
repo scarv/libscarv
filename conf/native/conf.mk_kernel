@@ -4,12 +4,12 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/share.conf
-
 # =============================================================================
 
-export LIBSCARV_CONF_AES_ENC_EXTERN             = 1
-export LIBSCARV_CONF_AES_DEC_EXTERN             = 1
+export LIBSCARV_CONF_AES_TYPE                   = sbox
+
+export LIBSCARV_CONF_AES_ENC_EXTERN             = 0
+export LIBSCARV_CONF_AES_DEC_EXTERN             = 0
 
 export LIBSCARV_CONF_AES_DEC_EQUIV              = 0
 
@@ -37,25 +37,28 @@ export LIBSCARV_CONF_SHA2_512_COMP_EXTERN       = 0
 
 # -----------------------------------------------------------------------------
 
-export LIBSCARV_CONF_KECCAK_P400_ROUND_EXTERN   = 1
+export LIBSCARV_CONF_KECCAK_P400_ROUND_EXTERN   = 0
 export LIBSCARV_CONF_KECCAK_P400_INDEX_PRECOMP  = 0
 
-export LIBSCARV_CONF_KECCAK_P1600_ROUND_EXTERN  = 1
+export LIBSCARV_CONF_KECCAK_P1600_ROUND_EXTERN  = 0
 export LIBSCARV_CONF_KECCAK_P1600_INDEX_PRECOMP = 0
 
 # -----------------------------------------------------------------------------
+
+export LIBSCARV_CONF_MPZ_MAX_LIMBS              = ( 1024 / BITSOF( limb_t ) ) + 2
+export LIBSCARV_CONF_MRZ_MAX_LIMBS              = ( 1024 / BITSOF( limb_t ) ) + 2
   
-export LIBSCARV_CONF_MPN_ADD_EXTERN             = 1
-export LIBSCARV_CONF_MPN_SUB_EXTERN             = 1
+export LIBSCARV_CONF_MPN_ADD_EXTERN             = 0
+export LIBSCARV_CONF_MPN_SUB_EXTERN             = 0
 export LIBSCARV_CONF_MPN_MUL_EXTERN             = 0
 
 export LIBSCARV_CONF_MRZ_RED_EXTERN             = 0
 export LIBSCARV_CONF_MRZ_MUL_EXTERN             = 0
 
-export LIBSCARV_CONF_MPN_ADD_GUARD              = 1
-export LIBSCARV_CONF_MPN_ADD_UNROLL             = 0
-export LIBSCARV_CONF_MPN_SUB_GUARD              = 1
-export LIBSCARV_CONF_MPN_SUB_UNROLL             = 0
+export LIBSCARV_CONF_MPN_ADD_GUARD              = 0
+export LIBSCARV_CONF_MPN_ADD_UNROLL             = 1
+export LIBSCARV_CONF_MPN_SUB_GUARD              = 0
+export LIBSCARV_CONF_MPN_SUB_UNROLL             = 1
 export LIBSCARV_CONF_MPN_MUL_OPERAND_SCANNING   = 1
 export LIBSCARV_CONF_MPN_MUL_PRODUCT_SCANNING   = 0
 

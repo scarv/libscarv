@@ -4,20 +4,10 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
-include ${REPO_HOME}/conf/share.mk_docker
-
 # =============================================================================
 
-       BRANCH       = $(shell git branch | grep '*' | cut --characters=3-)
-
-ifeq "${BRANCH}" "master"
-export DOCKER_REPO  = scarv/libscarv.${ARCH}
-export DOCKER_TAG   = master
+export DOCKER_REPO  = scarv/libscarv.$(subst /,-,${ARCH})
+export DOCKER_TAG   = ${REPO_VERSION}
 export DOCKER_FLAGS = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
-else
-export DOCKER_REPO  = scarv/libscarv.${ARCH}
-export DOCKER_TAG   = $(shell echo ${BRANCH} | cut --delimiter='/' --fields=3)
-export DOCKER_FLAGS = --env RISCV_XCRYPTO="/opt/riscv-xcrypto"
-endif
 
 # =============================================================================

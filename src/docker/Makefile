@@ -6,20 +6,8 @@
 
 # =============================================================================
 
-BRANCH      = $(shell git branch | grep '*' | cut --characters=3-)
-
-ifeq "${BRANCH}" "master"
-DOCKER_REPO = scarv/libscarv.${ARCH}
-DOCKER_TAG  = master
-else
-DOCKER_REPO = scarv/libscarv.${ARCH}
-DOCKER_TAG  = $(shell echo ${BRANCH} | cut --delimiter='/' --fields=3)
-endif
-
-DATE        = $(shell date -u +'%d/%m/%Y-%H:%M:%SZ')
-
-${REPO_HOME}/build/${ARCH}/docker/Dockerfile       : ${REPO_HOME}/src/docker/Dockerfile ${REPO_HOME}/src/docker/${ARCH}/Dockerfile.in
-	@m4 --include="${REPO_HOME}/src/docker" --include="${REPO_HOME}/src/docker/${ARCH}" ${<} > ${@}
+${REPO_HOME}/build/${ARCH}/docker/Dockerfile       : ${REPO_HOME}/src/docker/Dockerfile
+	@m4 --include="${REPO_HOME}/src/docker" --include="${REPO_HOME}/conf/${ARCH}" ${<} > ${@}
 ${REPO_HOME}/build/${ARCH}/docker/entrypoint.sh    : ${REPO_HOME}/src/docker/entrypoint.sh
 	@cp ${<} ${@}
 ${REPO_HOME}/build/${ARCH}/docker/requirements.txt : ${REPO_HOME}/requirements.txt
@@ -40,7 +28,7 @@ ${CLEAN_PATHS} :
 # =============================================================================
 
 build : ${BUILD_PATHS} ${BUILD_FILES}
-	@docker build --tag ${DOCKER_REPO}:${DOCKER_TAG} --build-arg BRANCH="${BRANCH}" --build-arg DATE="${DATE}" ${REPO_HOME}/build/${ARCH}/docker
+	@docker build --tag ${DOCKER_REPO}:${DOCKER_TAG} --build-arg DATE="$(shell date -u +'%d/%m/%Y-%H:%M:%SZ')" ${REPO_HOME}/build/${ARCH}/docker
 
 clean : ${CLEAN_PATHS}
 	@docker images | grep ${DOCKER_REPO} | grep ${DOCKER_TAG} | tr --squeeze-repeats ' ' | cut --delimiter=' ' --fields=3 | uniq | xargs --no-run-if-empty docker rmi --force && rm --force --recursive ${BUILD_PATHS}

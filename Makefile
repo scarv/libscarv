@@ -25,7 +25,7 @@ export KERNELS := $(patsubst ${REPO_HOME}/src/libscarv/%,%,$(wildcard $(addprefi
 # it supports a) the Docker build context outright, plus b) any Docker-based 
 # targets within the native build context.
 
-include ${REPO_HOME}/conf/${ARCH}.mk_docker
+include ${REPO_HOME}/conf/${ARCH}/conf.mk_docker
 
 # =============================================================================
 
