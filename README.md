@@ -219,7 +219,7 @@ benchmark.*
   - The top-level directory for a given kernel
     (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}`)
     houses
-    an architecture-agnostic implementation.  
+    an architecture-agnostic implementation.
     This implementation may be either 
 
     - incomplete,
@@ -328,8 +328,8 @@ benchmark.*
     clear motivation.  Use of
     [Travis CI](https://travis-ci.com)
     as a
-    [https://en.wikipedia.org/wiki/Continuous_integration](continuous integration)
-    provided places a time-limit on the build process; this limit is
+    [continuous integration](https://en.wikipedia.org/wiki/Continuous_integration)
+    platform places a time-limit on the build process; this limit is
     too small to also build bespoke tool-chains (e.g., for XCrypto),
     a problem which is addressed by using a pre-built, containerised 
     tool-chain.
