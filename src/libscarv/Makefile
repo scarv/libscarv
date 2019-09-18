@@ -6,7 +6,7 @@
 
 # =============================================================================
 
-# Include the per target architecture configuration for build tool-chain.
+# Include the per target architecture configuration for tool-chain.
 
 include ${REPO_HOME}/conf/${ARCH}/conf.mk_toolchain
 

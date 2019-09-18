@@ -150,7 +150,7 @@ benchmark.*
       export CONTEXT="native"
       ```
   
-      or just accept the default (per [`${REPO_HOME}/Makefile`](./Makefile)).
+      or just accept the default(s) per [`${REPO_HOME}/Makefile`](./Makefile).
 
    3. Optionally, 
       select the
@@ -169,7 +169,7 @@ benchmark.*
       export KERNELS="block/aes hash/sha*"
       ```
 
-      or just accept the default (per [`${REPO_HOME}/Makefile`](./Makefile)).
+      or just accept the default(s) per [`${REPO_HOME}/Makefile`](./Makefile).
 
 4. Use targets in the top-level `Makefile` to drive a set of
    common tasks, e.g.,
@@ -315,24 +315,26 @@ benchmark.*
 
   Note that:
 
-  - Each architecture-specific Docker image is built using 
-    the content housed in
-    [`${REPO_HOME}/src/docker`](./src/docker).
-    However, **there is no need to do this manually**: a pre-built 
-    image can (and will) be pulled from
-    [Docker Hub](https://cloud.docker.com/u/scarv)
-    by the build process as needed.
-
-  - It is somewhat reasonable to view this aspect of the build system 
-    as over-engineered.  In a sense it is, but, equally, there *is* a
-    clear motivation.  Use of
+  - Up to a point, it is reasonable to view this mechanism as somewhat
+    over-engineered.  In a sense it is, but, equally, there *are* some
+    important motivations for supporting it.
+    For example, use of
     [Travis CI](https://travis-ci.com)
     as a
     [continuous integration](https://en.wikipedia.org/wiki/Continuous_integration)
-    platform places a time-limit on the build process; this limit is
-    too small to also build bespoke tool-chains (e.g., for XCrypto),
-    a problem which is addressed by using a pre-built, containerised 
-    tool-chain.
+    platform places a time-limit on the build process.  This limit is
+    too short to allow bespoke tool-chains (e.g., for XCrypto) to be
+    built, a problem which is addressed by using a pre-built, i.e.,
+    containerised, alternative.
+
+  - Each architecture-specific Docker image is built using 
+    the content housed in
+    [`${REPO_HOME}/src/docker`](./src/docker).
+    However,
+    *there is no need to do this manually*: 
+    a pre-built image can (and will) be pulled from
+    [Docker Hub](https://cloud.docker.com/u/scarv)
+    by the build process as needed.
 
 - The 
   `ARCH`
@@ -396,14 +398,16 @@ benchmark.*
       one could use
       `hash/*`.
 
-- Each target architecture demands two configuration files:
+- Each target architecture requires several configuration files:
 
-  1. `${REPO_HOME}/conf/${ARCH}.mk`,
-     which specifies configuration wrt. the build process
-     (e.g., options that control the toolchain),
-  2. `${REPO_HOME}/conf/${ARCH}.conf`,
-     which specifies configuration wrt. the library
-     (i.e., options that control features in the source code).
+  1. `${REPO_HOME}/conf/${ARCH}/Dockerfile.in`,
+     which specifies a build script                        for the Docker build context,
+  2. `${REPO_HOME}/conf/${ARCH}/conf.mk_docker`,
+     which specifies configuration, to the build system, about the Docker build context,
+  3. `${REPO_HOME}/conf/${ARCH}/conf.mk_kernel`
+     which specifies configuration, to the build system, about the kernel and hence library,
+  4. `${REPO_HOME}/conf/${ARCH}/conf.mk_toolchain`
+     which specifies configuration, to the build system, about the tool-chain used to build the library and test suite.
 
 - A given kernel implementation *may* be configurable via the second 
   class of configuration file, st. a *family* of implementations can 
@@ -441,8 +445,7 @@ benchmark.*
 
 ## Acknowledgements
 
-This work has been supported in part by EPSRC via grant 
-[EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1),
-under the [RISE](http://www.ukrise.org) programme.
+This work has been supported in part
+by EPSRC via grant [EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1) (under the [RISE](http://www.ukrise.org) programme).
 
 <!--- -------------------------------------------------------------------- --->
