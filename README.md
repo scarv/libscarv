@@ -398,7 +398,9 @@ benchmark.*
       one could use
       `hash/*`.
 
-- Each target architecture requires several configuration files:
+- Each 
+  target architecture 
+  requires several configuration files:
 
   1. `${REPO_HOME}/conf/${ARCH}/Dockerfile.in`,
      which specifies a build script                        for the Docker build context,
