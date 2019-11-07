@@ -177,6 +177,7 @@ benchmark.*
    | Command                  | Description
    | :----------------------- | :----------------------------------------------------------------------------------- |
    | `make doc`               | build the [Doxygen](http://www.doxygen.nl)-based documentation                       |
+   | `make venv`              | build the Python [virtual environment](https://docs.python.org/library/venv.html)    |
    | `make    build-libscarv` | build    the `libscarv` library                                                      |
    | `make    build-test`     | build    the `libscarv` test suite                                                   |
    | `make generate-test`     | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
