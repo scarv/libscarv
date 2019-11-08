@@ -4,6 +4,10 @@
 # can be found at https://opensource.org/licenses/MIT (or should be included 
 # as LICENSE.txt within the associated archive or repository).
 
+ifndef REPO_HOME
+  $(error "execute 'source ./bin/conf.sh' to configure environment")
+endif
+
 # =============================================================================
 
 # Include the per target architecture configuration for tool-chain.
