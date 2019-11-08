@@ -7,6 +7,9 @@
 ifndef REPO_HOME
   $(error "execute 'source ./bin/conf.sh' to configure environment")
 endif
+ifndef REPO_VERSION
+  $(error "execute 'source ./bin/conf.sh' to configure environment")
+endif
 
 # =============================================================================
 
