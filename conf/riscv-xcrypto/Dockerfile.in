@@ -19,7 +19,7 @@ RUN apt-get --assume-yes --quiet install make autoconf automake autotools-dev bc
  && git clone https://github.com/scarv/riscv-tools.git \
  && cd ./riscv-tools \
  && git submodule update --init --recursive \
- && ./build-rv32imaxc.sh \
+ && ./build-xcrypto.sh \
  && mv ./riscv-gnu-toolchain/build/build-gdb-newlib/gnulib/confdir3/confdir3 ./bugfix && rm --force --recursive ./bugfix \
  && cd .. \
  && rm --force --recursive ./riscv-tools

@@ -309,10 +309,10 @@ benchmark.*
   build context
   within which the build process is executed:
 
-  | Context           | Description                                                                     |
-  | :---------------- | :------------------------------------------------------------------------------ |
-  | `native`          | The default, native build context                                               |
-  | `docker`          | A containerised build context, offered by an architecture-specific Docker image |
+  | Context                      | Description                                                                             |
+  | :--------------------------- | :-------------------------------------------------------------------------------------- |
+  | `native`                     | The default, native build context                                                       |
+  | `docker`                     | A containerised build context, offered by an architecture-specific Docker image         |
 
   Note that:
 
@@ -343,11 +343,11 @@ benchmark.*
   target architecture
   to consider, identifiers for which are one of the following:
   
-  | Architecture      | Description                                                                             |
-  | :---------------- | :-------------------------------------------------------------------------------------- |
-  | `native`          | Architecture-agnostic: whatever the default, native GCC targets                         |
-  | `riscv`           | Architecture-specific: RISC-V RV32IMAC                                                  |
-  | `riscv-xcrypto`   | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
+  | Architecture                 | Description                                                                             |
+  | :--------------------------- | :-------------------------------------------------------------------------------------- |
+  | `native`                     | Architecture-agnostic: whatever the default, native GCC targets                         |
+  | `riscv`                      | Architecture-specific: RISC-V RV32IMAC                                                  |
+  | `riscv-xcrypto`              | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
  
 - The
   `KERNELS`
