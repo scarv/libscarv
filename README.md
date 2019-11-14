@@ -7,7 +7,7 @@
 
 <!--- -------------------------------------------------------------------- --->
 
-*Acting as a component part of the
+*Acting as a component part of the wider
 [SCARV](https://www.scarv.org)
 project,
 `libscarv` is a library of cryptographic reference implementations for 
