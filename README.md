@@ -52,7 +52,7 @@ benchmark.*
 
 <!--- -------------------------------------------------------------------- --->
 
-## Quickstart
+## Quickstart (with more detail in the [wiki](https://github.com/scarv/libscarv/wiki))
 
 1. Either
 
@@ -109,23 +109,23 @@ benchmark.*
 2. Execute
 
    ```sh
-   git clone https://github.com/scarv/libscarv.git
+   git clone https://github.com/scarv/libscarv.git ./libscarv
    cd ./libscarv
    source ./bin/conf.sh
    ```
 
    to clone and initialise the repository,
    then configure the environment;
-   for example, you should find that the environment variable
+   for example, you should find that the
    `REPO_HOME`
-   is set appropriately.
+   environment variable is set appropriately.
 
 3. Perform various preparatory steps:
 
    1. Create and populate a suitable Python
       [virtual environment](https://docs.python.org/library/venv.html)
       based on 
-      [`${REPO_HOME}/requirements.txt`](./requirements.txt) 
+      `${REPO_HOME}/requirements.txt`
       by executing
    
       ```sh
@@ -141,35 +141,33 @@ benchmark.*
    2. Optionally,
       select the
       build context
-      by setting the environment variable
+      by setting the 
       `CONTEXT`
-      appropriately,
-      e.g., via
+      environment variable  appropriately, e.g., via
 
       ```sh
       export CONTEXT="native"
       ```
   
-      or just accept the default(s) per [`${REPO_HOME}/Makefile`](./Makefile).
+      or just accept the default(s) per `${REPO_HOME}/Makefile`.
 
    3. Optionally, 
       select the
       target architecture
       and
       library content (i.e., the set of kernels included)
-      by setting the environment variables
+      by setting the
       `ARCH`
       and
       `KERNELS`
-      appropriately,
-      e.g., via
+      environment variables appropriately, e.g., via
 
       ```sh
       export ARCH="riscv"
       export KERNELS="block/aes hash/sha*"
       ```
 
-      or just accept the default(s) per [`${REPO_HOME}/Makefile`](./Makefile).
+      or just accept the default(s) per `${REPO_HOME}/Makefile`.
 
 4. Use targets in the top-level `Makefile` to drive a set of
    common tasks, e.g.,
@@ -183,266 +181,6 @@ benchmark.*
    | `make generate-test`     | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
    | `make generate-test`     | validate the `libscarv` test suite (i.e., execute meta-program)                      |
    | `make    clean`          | clean-up (e.g., remove everything built in `${REPO_HOME}/build`)                     |
-
-<!--- -------------------------------------------------------------------- --->
-
-## Notes
-
-#### The `libscarv` library
-
-- The `libscarv` library is a set of individual kernels; 
-  the associated             implementation is housed in
-
-  ```sh
-  ${REPO_HOME}/src/libscarv/${KERNEL}
-  ```
-
-  and built by providing
-
-  ```sh
-  ${REPO_HOME}/src/libscarv/${KERNEL}/Makefile.in
-  ```
-  
-  for the build system to include.
-
-- The directory housing a kernel implementation is structured per
-
-  ```sh
-  ${REPO_HOME}/src/libscarv/${KERNEL}
-  ${REPO_HOME}/src/libscarv/${KERNEL}/native
-  ${REPO_HOME}/src/libscarv/${KERNEL}/riscv
-  ${REPO_HOME}/src/libscarv/${KERNEL}/riscv-xcrypto
-  ```
- 
-  i.e., there are sub-directories for *each* target architecture.
-  Note that:
-
-  - The top-level directory for a given kernel
-    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}`)
-    houses
-    an architecture-agnostic implementation.
-    This implementation may be either 
-
-    - incomplete,
-      meaning it *must* be combined with supporting,
-      architecture-specific functionality
-      (i.e., cannot be used as a stand-alone kernel),
-    -   complete, 
-      meaning it *may*  be combined with supporting,
-      architecture-specific functionality
-      (i.e., can    be used as a stand-alone kernel).
-
-  - *If* supporting, architecture-specific functionality is used,
-    the target architecture (sub-)directory
-    (i.e., `${REPO_HOME}/src/libscarv/${KERNEL}/${ARCH}`)
-    houses it.
-
-  - Within a given target architecture (sub-)directory,
-
-    - `X_imp.S` captures the architecture-specific implementation
-      of some functionality `X`,
-    - `macro.S` captures macros that support said implementation(s).
-
-#### The `libscarv` test suite
-
-- Forming part of a larger test suite, each kernel has an associated
-  test driver;
-  the associated test driver implementation is housed in
-
-  ```sh
-  ${REPO_HOME}/src/test/${KERNEL}
-  ```
-
-  and built by providing
-
-  ```sh
-  ${REPO_HOME}/src/test/${KERNEL}/Makefile.in
-  ```
-  
-  for the build system to include.
-
-- For a given kernel, the test process is essentially:
-
-  1. build the test driver, producing a test executable
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/bin/test_${KERNEL}
-     ```
-
-  2. execute the test executable, an thereby generate a Python-based
-     validation (meta-)program
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.py
-     ```
-
-  3. execute the validation (meta-)program, producing output into
-
-     ```sh
-     ${REPO_HOME}/build/${ARCH}/test/test_${KERNEL}.log
-     ```
-
-     Essentially this means using Python (or appropriate library for
-     it) as a 
-     [test oracle](https://en.wikipedia.org/wiki/Test_oracle)
-     if/where need be.
-
-  The test strategy used depends on the kernel: some use randomised 
-  testing, whereas others fixed, hard-coded test vectors.
-
-- Note that for the 
-  `riscv` 
-  and `
-  riscv-xcrypto` 
-  target architectures, execution of the test executable implies
-  *simulation* via a suitable version of Spike, i.e., either
-  [`riscv/riscv-isa-sim`](https://github.com/riscv/riscv-isa-sim)
-  or
-  [`scarv/riscv-isa-sim`](https://github.com/scarv/riscv-isa-sim),
-  as supported by the proxy kernel.
-
-#### The `libscarv` build system
-
-- The 
-  `CONTEXT`
-  environment variable specifies the
-  build context
-  within which the build process is executed:
-
-  | Context                      | Description                                                                             |
-  | :--------------------------- | :-------------------------------------------------------------------------------------- |
-  | `native`                     | The default, native build context                                                       |
-  | `docker`                     | A containerised build context, offered by an architecture-specific Docker image         |
-
-  Note that:
-
-  - Up to a point, it is reasonable to view this mechanism as somewhat
-    over-engineered.  In a sense it is, but, equally, there *are* some
-    important motivations for supporting it.
-    For example, use of
-    [Travis CI](https://travis-ci.com)
-    as a
-    [continuous integration](https://en.wikipedia.org/wiki/Continuous_integration)
-    platform places a time-limit on the build process.  This limit is
-    too short to allow bespoke tool-chains (e.g., for XCrypto) to be
-    built, a problem which is addressed by using a pre-built, i.e.,
-    containerised, alternative.
-
-  - Each architecture-specific Docker image is built using 
-    the content housed in
-    [`${REPO_HOME}/src/docker`](./src/docker).
-    However,
-    *there is no need to do this manually*: 
-    a pre-built image can (and will) be pulled from
-    [Docker Hub](https://cloud.docker.com/u/scarv)
-    by the build process as needed.
-
-- The 
-  `ARCH`
-  environment variable specifies the
-  target architecture
-  to consider, identifiers for which are one of the following:
-  
-  | Architecture                 | Description                                                                             |
-  | :--------------------------- | :-------------------------------------------------------------------------------------- |
-  | `native`                     | Architecture-agnostic: whatever the default, native GCC targets                         |
-  | `riscv`                      | Architecture-specific: RISC-V RV32IMAC                                                  |
-  | `riscv-xcrypto`              | Architecture-specific: RISC-V RV32IMAC plus [XCrypto](https://github.com/scarv/xcrypto) |
- 
-- The
-  `KERNELS`
-  environment variable specifies a list of
-  kernels
-  to consider, identifiers for which are one of the following:
-  
-  | Kernel            | Variant  | Description                                                                             | native  | riscv | riscv-xcrypto |
-  | :---------------- | :------- | :-------------------------------------------------------------------------------------- | :------ | :---- | :------------ |
-  | `block/aes`       | `sbox`   |                                                                                         | o       | x     | o             |
-  | `block/aes`       | `packed` |                                                                                         | o       | x     | x             |
-  | `block/aes`       | `ttable` |                                                                                         | o       | x     | x             |
-  | `block/prince`    |          |                                                                                         | o       | x     | x             |
-  | `block/sparx`     |          |                                                                                         | o       | x     | x             |
-  | `hash/keccak`     |          |                                                                                         | o       | x     | x             |
-  | `hash/sha1`       |          |                                                                                         | o       | x     | x             |
-  | `hash/sha2`       |          |                                                                                         | o       | x     | x             |
-  | `mp/limb`         |          |                                                                                         | o       | x     | x             |
-  | `mp/mpn`          |          |                                                                                         | o       | o     | o             |
-  | `mp/mpz`          |          |                                                                                         | o       | x     | x             |
-  | `mp/mrz`          |          |                                                                                         | o       | x     | x             |
-  | `stream/chacha20` |          |                                                                                         | o       | x     | o             |
-
-  Note that:
-
-  - The variant column 
-    toward the  left-hand side of the table
-    highlights where a major variant of a given kernel 
-    is available:
-    the variant is selected via configuration symbols for said kernel,
-    vs. being classed a separate kernel.
-
-  - The         columns
-    toward the right-hand side of the table 
-    highlight  where specific support for a given target architecture
-    is available:
-    `o` means an architecture-specific (typically assembly language) implementation is available,
-    whereas
-    `x` means an architecture-agnostic (typically C)                 implementation is available.
-
-  - A *limited* form of wildcard are supported: for example,
-
-    - rather than 
-      `hash/sha1 hash/sha2`,
-      one could use
-      `hash/sha*`,
-    - rather than 
-      `hash/keccak hash/sha1 hash/sha2`,
-      one could use
-      `hash/*`.
-
-- Each 
-  target architecture 
-  requires several configuration files:
-
-  1. `${REPO_HOME}/conf/${ARCH}/Dockerfile.in`,
-     which specifies a build script                        for the Docker build context,
-  2. `${REPO_HOME}/conf/${ARCH}/conf.mk_docker`,
-     which specifies configuration, to the build system, about the Docker build context,
-  3. `${REPO_HOME}/conf/${ARCH}/conf.mk_kernel`
-     which specifies configuration, to the build system, about the kernel and hence library,
-  4. `${REPO_HOME}/conf/${ARCH}/conf.mk_toolchain`
-     which specifies configuration, to the build system, about the tool-chain used to build the library and test suite.
-
-- A given kernel implementation *may* be configurable via the second 
-  class of configuration file, st. a *family* of implementations can 
-  be selected between: 
-
-  - the configuration header file
-    [`${REPO_HOME}/src/libscarv/share/conf.h`](./src/libscarv/share/conf.h)
-    is populated using the configuration file, plus automatically
-    generated content stemming from `${ARCH}` and `${KERNELS}`; 
-    it houses some documentation for each configuration symbol,
-
-  - configuration symbols are made available in the source code via
-    application of the
-    [C pre-processor](https://en.wikipedia.org/wiki/C_preprocessor),
-    and follow a standard namespace, i.e.,
-
-    ```
-    LIBSCARV_CONF_${KERNEL}_${FUNCTION}_${PROPERTY}
-    ```
-
-    with some standard(ish) properties including the following:
-
-    | Property  | Description                                                                                                                        |
-    | :-------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-    |  `ENABLE` |  enables (i.e., includes) functionality (assuming default is to disable it)                                                        |
-    | `DISABLE` | disables (i.e., excludes) functionality (assuming default is to  enable it)                                                        |
-    | `PRECOMP` | support functionality via pre-computation                                                                                          |
-    |  `EXTERN` | uses a architecture-specific (typically assembly language) vs. architecture-agnostic (typically C) implementation of functionality |
-
-  - if a kernel cannot support a given configuration symbol, it must
-    produce an error: it should be impossible to build the library 
-    using a configuration that would cause it to (silently) fail.
 
 <!--- -------------------------------------------------------------------- --->
 
