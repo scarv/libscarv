@@ -105,6 +105,9 @@ static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
 #endif
 
 //! Shift rows step
+#if ( LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN )
+extern uint64_t prince_shift_rows(const uint64_t in, int inverse);
+#else
 static uint64_t prince_shift_rows(const uint64_t in, int inverse){
   const uint64_t row_mask = 0xF000F000F000F000;
 
@@ -122,6 +125,7 @@ static uint64_t prince_shift_rows(const uint64_t in, int inverse){
   }
   return shift_rows_out;
 }
+#endif
   
 
 /*!

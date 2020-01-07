@@ -88,3 +88,17 @@ prince_gf_mul:
     ret
 .endfunc
 
+.func   prince_shift_rows
+.global prince_shift_rows
+prince_shift_rows:
+
+    // TODO
+
+    li t0, 1000
+    .l0:
+        addi t0, t0, -1
+        bnez t0, .l0
+
+    ret
+.endfunc
+
