@@ -104,6 +104,7 @@ static uint64_t prince_m_prime_layer(const uint64_t m_prime_in){
 }
 #endif
 
+
 //! Shift rows step
 #if ( LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN )
 extern uint64_t prince_shift_rows(const uint64_t in, int inverse);
@@ -168,6 +169,9 @@ static uint64_t prince_core(uint64_t in, uint64_t k1) {
 
 }
 
+#if ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV_XCRYPTO )
+extern uint64_t prince_enc_kp0(uint64_t in);
+#endif
 
 /*!
 @brief perform a single encryption of a prince block.
@@ -176,13 +180,21 @@ static uint64_t prince_core(uint64_t in, uint64_t k1) {
 */
 uint64_t prince_enc(uint64_t in, uint64_t k0, uint64_t k1) {
 
-    uint64_t k0p      = ((k0 >> 1) | (k0 << 63)) ^ (k0 >> 63);
+    uint64_t k0p;
+    
+    #if ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV_XCRYPTO )
+    k0p = prince_enc_kp0(k0);
+    #else
+    k0p = ((k0 >> 1) | (k0 << 63)) ^ (k0 >> 63);
+    #endif
 
     uint64_t core_in  = in ^ k0;
 
     uint64_t core_out = prince_core(core_in, k1);
 
-    return   core_out ^ k0p;
+    uint64_t result   = core_out ^ k0p;
+
+    return   result;
 
 }
 
@@ -195,8 +207,14 @@ uint64_t prince_enc(uint64_t in, uint64_t k0, uint64_t k1) {
 uint64_t prince_dec(uint64_t in, uint64_t k0, uint64_t k1) {
 
     uint64_t alpha    = 0xc0ac29b7c97c50dd;
+    
+    uint64_t k0p;
 
-    uint64_t k0p      = ((k0 >> 1) | (k0 << 63)) ^ (k0 >> 63);
+    #if ( LIBSCARV_CONF_ARCH == LIBSCARV_CONF_ARCH_RISCV_XCRYPTO )
+    k0p = prince_enc_kp0(k0);
+    #else
+    k0p = ((k0 >> 1) | (k0 << 63)) ^ (k0 >> 63);
+    #endif
 
     uint64_t core_in  = in ^ k0p;
 

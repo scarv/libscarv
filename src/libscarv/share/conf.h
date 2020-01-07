@@ -227,6 +227,10 @@
   */
 #define LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        ${LIBSCARV_CONF_PRINCE_ISBOX_EXTERN}
 
+/** Use an external, architecture-specific implementation of @p prince_shift_rows.
+  */
+#define LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN    ${LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN}
+
 /** Use an external, architecture-specific implementation of @p prince_gf_mul.
   */
 #define LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       ${LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN}

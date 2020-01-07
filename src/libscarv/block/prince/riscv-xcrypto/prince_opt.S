@@ -92,13 +92,58 @@ prince_gf_mul:
 .global prince_shift_rows
 prince_shift_rows:
 
-    // TODO
+    li  t0, 0xF000F000                  // row_mask
 
-    li t0, 1000
-    .l0:
-        addi t0, t0, -1
-        bnez t0, .l0
+    // i = 0
+    and t1, t0, a0                      // row = in & smask
+    and t2, t0, a1                      // (t2,t1) = in
 
+    // i = 1
+    srli t0, t0, 4                      // row_mask >> 4
+    and t3, t0, a0                      // in_lo & smask
+    and t4, t0, a1                      // in_hi & smask
+
+    li  a3, 16
+    li  a4, 48
+    cmov a5, a2, a3, a4                 // a3 = inverse ? 16 : 48
+    xc.mror (t4,t3), t4, t3, a5         // (t4,t3) >>> a3
+
+    or  t1, t3, t1
+    or  t2, t4, t2
+
+    // i  = 2
+    srli t0, t0, 4                      // row_mask >> 4
+    and t3, t0, a0                      // in_lo & smask
+    and t4, t0, a1                      // in_hi & smask
+
+    li  a5, 32
+    xc.mror (t4,t3), t4, t3, a5         // (t4,t3) >>> a5
+
+    or  t1, t3, t1
+    or  t2, t4, t2
+
+    // i=3
+    srli t0, t0, 4                      // row_mask >> 4
+    and t3, t0, a0                      // in_lo & smask
+    and t4, t0, a1                      // in_hi & smask
+
+    cmov a5, a2, a4, a3                 // a5 = inverse ? 48 : 16
+    xc.mror (t4,t3), t4, t3, a5         // (t4,t3) >>> a5
+
+    or  a0, t3, t1
+    or  a1, t4, t2
+
+    ret
+.endfunc
+
+.func   prince_enc_kp0
+.global prince_enc_kp0
+prince_enc_kp0:
+    li   a3, 1 
+    xc.mror (a1,a0), a1, a0, a3     // a1,a0 = a1,a0 >> 1
+    srli a3, a1, 30                 // a3 == kp0 >> 63
+    andi a3, a3, 0x1
+    xor  a0, a0, a3
     ret
 .endfunc
 
