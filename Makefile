@@ -42,10 +42,14 @@ include ${REPO_HOME}/conf/${ARCH}/conf.mk_docker
 #    - deal with various specific, global targets (e.g., documentation), or
 #    - defer to the appropriate sub-Makefile for everything else.
 
+# -----------------------------------------------------------------------------
+
 ifeq "${CONTEXT}" "docker"
 %          :
 	@docker run --rm --volume "${REPO_HOME}:/mnt/scarv/libscarv" --env DOCKER_GID="$(shell id --group)" --env DOCKER_UID="$(shell id --user)" --env REPO_HOME="/mnt/scarv/libscarv" --env CONTEXT="native" --env ARCH="${ARCH}" --env KERNELS="${KERNELS}" ${DOCKER_FLAGS} ${DOCKER_REPO}:${DOCKER_TAG} ${*}
 endif
+
+# -----------------------------------------------------------------------------
 
 ifeq "${CONTEXT}" "native"
 %-docker   :
@@ -54,8 +58,6 @@ ifeq "${CONTEXT}" "native"
 	@make --directory="${REPO_HOME}/src/libscarv" ${*}
 %-test     :
 	@make --directory="${REPO_HOME}/src/test"     ${*}
-
-# -----------------------------------------------------------------------------
 
 venv     : ${REPO_HOME}/requirements.txt
 	@${REPO_HOME}/bin/venv.sh
