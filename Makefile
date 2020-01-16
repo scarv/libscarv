@@ -55,13 +55,15 @@ ifeq "${CONTEXT}" "native"
 %-test     :
 	@make --directory="${REPO_HOME}/src/test"     ${*}
 
-venv  : ${REPO_HOME}/requirements.txt
+# -----------------------------------------------------------------------------
+
+venv     : ${REPO_HOME}/requirements.txt
 	@${REPO_HOME}/bin/venv.sh
 
-doc   : ${REPO_HOME}/Doxyfile
+doxygen  : ${REPO_HOME}/Doxyfile
 	@doxygen ${<}
 
-clean :
+spotless :
 	@rm --force --recursive ${REPO_HOME}/build/*
 endif
 
