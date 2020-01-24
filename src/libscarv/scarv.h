@@ -9,6 +9,16 @@
 #include <scarv/block/aes/aes_enc.h>
 #include <scarv/block/aes/aes_dec.h>
 #endif
+#if ( LIBSCARV_CONF_SM4_ENABLE )
+#include <scarv/block/sm4/sm4_enc.h>
+#include <scarv/block/sm4/sm4_dec.h>
+#endif
+#if ( LIBSCARV_CONF_PRINCE_ENABLE )
+#include <scarv/block/prince/prince.h>
+#endif
+#if ( LIBSCARV_CONF_SPARX_ENABLE )
+#include <scarv/block/sparx/sparx.h>
+#endif
 
 #if ( LIBSCARV_CONF_SHA1_ENABLE )
 #include <scarv/hash/sha1/sha1.h>
@@ -40,10 +50,6 @@
 
 #if ( LIBSCARV_CONF_CHACHA20_ENABLE )
 #include <scarv/stream/chacha20/chacha20.h>
-#endif
-
-#if ( LIBSCARV_CONF_PRINCE_ENABLE )
-#include <scarv/stream/prince/prince.h>
 #endif
 
 #endif
