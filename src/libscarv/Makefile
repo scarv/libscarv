@@ -54,7 +54,7 @@ $(call map_header,${1},${2},${3},${4},${5}) : ${3}
 endef
 define rule_object
 $(call map_object,${1},${2},${3},${4},${5}) : ${3}
-	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -c -o $${@} $${<}
+	$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -c -o $${@} $${<}
 endef
 define rule_dump
 $(call map_dump,  ${1},${2},${3},${4},${5}) : ${5} : %.o
@@ -136,7 +136,7 @@ BUILD_PATHS    = $(sort $(foreach FILE,${BUILD_FILES},$(dir ${FILE})))
 # Define targets for built files not otherwise catered for.
 
 ${BUILD_TARGETS} : %.a : ${BUILD_OBJECTS}
-	@${TOOL_PREFIX}ar rcs ${@} ${^}
+	${TOOL_PREFIX}ar rcs ${@} ${^}
 
 ${BUILD_PATHS} :
 	@mkdir --parents ${@}

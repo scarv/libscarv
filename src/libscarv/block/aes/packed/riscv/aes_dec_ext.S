@@ -4,7 +4,6 @@
 .extern AES_DEC_SBOX
 .extern AES_MULX
 	
-#if LIBSCARV_CONF_AES_ROUND_PACK
 	
 .section .text
 .global aes_dec
@@ -75,4 +74,3 @@ lw      s1,4(sp)
 addi    sp,sp,20
 ret
 
-#endif

@@ -6,7 +6,7 @@
 
 # =============================================================================
 
-export LIBSCARV_CONF_AES_TYPE                   = sbox
+export LIBSCARV_CONF_AES_TYPE                   = packed
 
 export LIBSCARV_CONF_AES_ENC_EXTERN             = 1
 export LIBSCARV_CONF_AES_DEC_EXTERN             = 1

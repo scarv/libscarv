@@ -179,7 +179,7 @@ benchmark.*
    | `make    build-libscarv` | build    the `libscarv` library                                                      |
    | `make    build-test`     | build    the `libscarv` test suite                                                   |
    | `make generate-test`     | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
-   | `make generate-test`     | validate the `libscarv` test suite (i.e., execute meta-program)                      |
+   | `make validate-test`     | validate the `libscarv` test suite (i.e., execute meta-program)                      |
    | `make    clean`          | clean-up (e.g., remove everything built in `${REPO_HOME}/build`)                     |
 
 <!--- -------------------------------------------------------------------- --->
