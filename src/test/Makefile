@@ -50,7 +50,7 @@ endef
 
 define build
 $(call map_target,$(notdir ${1}).elf) : ${3} ${4} 
-	$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -L $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
+	@$${TOOL_PREFIX}gcc $${CC_DIRS} $${CC_FLAGS} $$(addprefix -I ,${2}) -I $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/include -L $$(strip $${REPO_HOME})/build/$$(strip $${ARCH})/lib -o $${@} ${4} $${CC_LIBS} -lscarv 
 
 $(call map_target,$(notdir ${1}).dis) : $(call map_target,$(notdir ${1}).elf)
 	@$${TOOL_PREFIX}objdump -d $${<} > $${@} 
