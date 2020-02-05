@@ -57,11 +57,6 @@ aes_dec: AES_LDM         t0, t1, t2, t3, a1
          xc.aessub.dec   t6, t0, t3
          xc.aessub.dec   a7, t1, t0
 
-         //mv t0, t4
-         //mv t1, t5
-         //mv t2, t6
-         //mv t3, a7
-
          and    a5, t6, a3          // a5 =  X, X, 0, 5
          and    a6, t4, a4          // a6 = 15,10, X, X
          or     t0, a5, a6          // t0 = 15,10, 0, 5
