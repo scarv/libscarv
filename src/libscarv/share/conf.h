@@ -29,6 +29,15 @@
 /** Capture whether or not block/aes       kernel is enabled (i.e., supported).
   */
 #define LIBSCARV_CONF_AES_ENABLE                 ${LIBSCARV_CONF_AES_ENABLE}
+/** Capture whether or not block/sm4       kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_SM4_ENABLE                 ${LIBSCARV_CONF_SM4_ENABLE}
+/** Capture whether or not block/sm4       kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_PRINCE_ENABLE              ${LIBSCARV_CONF_PRINCE_ENABLE}
+/** Capture whether or not block/prince    kernel is enabled (i.e., supported).
+  */
+#define LIBSCARV_CONF_SPARX_ENABLE               ${LIBSCARV_CONF_SPARX_ENABLE}
 
 /** Capture whether or not hash/sha1       kernel is enabled (i.e., supported).
   */
@@ -126,6 +135,54 @@
 
 /* ------------------------------------------------------------------------- */
 
+/** Use an external, architecture-specific implementation of @p sm4_enc.
+  */
+#define LIBSCARV_CONF_SM4_ENC_EXTERN             ${LIBSCARV_CONF_SM4_ENC_EXTERN}
+/** Use an external, architecture-specific implementation of @p sm4_dec.
+  */
+#define LIBSCARV_CONF_SM4_DEC_EXTERN             ${LIBSCARV_CONF_SM4_DEC_EXTERN}
+
+/** Evolve round key in a forward direction (i.e., the starting point is the first round key).
+  */
+#define LIBSCARV_CONF_SM4_KEY_EVOLVE_FWD         ${LIBSCARV_CONF_SM4_KEY_EVOLVE_FWD}
+/** Evolve round key in a reverse direction (i.e., the starting point is the last  round key).
+  */
+#define LIBSCARV_CONF_SM4_KEY_EVOLVE_REV         ${LIBSCARV_CONF_SM4_KEY_EVOLVE_REV}
+/** Pre-compute round      keys (rather than evolve from starting point).
+  */
+#define LIBSCARV_CONF_SM4_KEY_PRECOMP            ${LIBSCARV_CONF_SM4_KEY_PRECOMP}
+
+/* ------------------------------------------------------------------------- */
+
+/** Use an external, architecture-specific implementation of @p prince_sbox.
+  */
+#define LIBSCARV_CONF_PRINCE_SBOX_EXTERN         ${LIBSCARV_CONF_PRINCE_SBOX_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_isbox.
+  */
+#define LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        ${LIBSCARV_CONF_PRINCE_ISBOX_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_shift_rows.
+  */
+#define LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN    ${LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_gf_mul.
+  */
+#define LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       ${LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN}
+
+/** Use an external, architecture-specific implementation of @p prince_m_prime_layer.
+  */
+#define LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       ${LIBSCARV_CONF_PRINCE_MPRIME_EXTERN}
+
+
+/* ------------------------------------------------------------------------- */
+
+/** Use an external, architecture-specific implementation of the sparx L* functions.
+  */
+#define LIBSCARV_CONF_SPARX_L_EXTERN             ${LIBSCARV_CONF_SPARX_L_EXTERN}
+
+/* ------------------------------------------------------------------------- */
+
 /** Use an external, architecture-specific implementation of @p sha1_comp.
   */
 #define LIBSCARV_CONF_SHA1_COMP_EXTERN           ${LIBSCARV_CONF_SHA1_COMP_EXTERN}
@@ -216,34 +273,6 @@
 /** Use an external, architecture-specific implementation of @p chacha20_block.
   */
 #define LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN      ${LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN}
-
-/* ------------------------------------------------------------------------- */
-
-/** Use an external, architecture-specific implementation of @p prince_sbox.
-  */
-#define LIBSCARV_CONF_PRINCE_SBOX_EXTERN         ${LIBSCARV_CONF_PRINCE_SBOX_EXTERN}
-
-/** Use an external, architecture-specific implementation of @p prince_isbox.
-  */
-#define LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        ${LIBSCARV_CONF_PRINCE_ISBOX_EXTERN}
-
-/** Use an external, architecture-specific implementation of @p prince_shift_rows.
-  */
-#define LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN    ${LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN}
-
-/** Use an external, architecture-specific implementation of @p prince_gf_mul.
-  */
-#define LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       ${LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN}
-
-/** Use an external, architecture-specific implementation of @p prince_m_prime_layer.
-  */
-#define LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       ${LIBSCARV_CONF_PRINCE_MPRIME_EXTERN}
-
-/* ------------------------------------------------------------------------- */
-
-/** Use an external, architecture-specific implementation of the sparx L* functions.
-  */
-#define LIBSCARV_CONF_SPARX_L_EXTERN             ${LIBSCARV_CONF_SPARX_L_EXTERN}
 
 /* ========================================================================= */
 

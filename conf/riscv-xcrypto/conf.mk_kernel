@@ -28,6 +28,30 @@ export LIBSCARV_CONF_AES_RND_UNROLL             = 1
 
 # -----------------------------------------------------------------------------
 
+export LIBSCARV_CONF_SM4_ENC_EXTERN             = 0
+export LIBSCARV_CONF_SM4_DEC_EXTERN             = 0
+
+export LIBSCARV_CONF_SM4_ENC_EXP_STEP_EXTERN    = 0
+export LIBSCARV_CONF_SM4_DEC_EXP_STEP_EXTERN    = 0
+
+export LIBSCARV_CONF_SM4_KEY_EVOLVE_FWD         = 1
+export LIBSCARV_CONF_SM4_KEY_EVOLVE_REV         = 0
+export LIBSCARV_CONF_SM4_KEY_PRECOMP            = 1
+
+# -----------------------------------------------------------------------------
+
+export LIBSCARV_CONF_PRINCE_SBOX_EXTERN         = 1
+export LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        = 1
+export LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN    = 1
+export LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       = 1
+export LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       = 0
+
+# -----------------------------------------------------------------------------
+
+export LIBSCARV_CONF_SPARX_L_EXTERN             = 1
+
+# -----------------------------------------------------------------------------
+
 export LIBSCARV_CONF_SHA1_COMP_EXTERN           = 0
 
 # -----------------------------------------------------------------------------
@@ -69,18 +93,6 @@ export LIBSCARV_CONF_MRZ_MUL_CIOS               = 1
 
 export LIBSCARV_CONF_CHACHA20_PROCESS_EXTERN    = 1
 export LIBSCARV_CONF_CHACHA20_BLOCK_EXTERN      = 1
-
-# -----------------------------------------------------------------------------
-
-export LIBSCARV_CONF_PRINCE_SBOX_EXTERN         = 1
-export LIBSCARV_CONF_PRINCE_ISBOX_EXTERN        = 1
-export LIBSCARV_CONF_PRINCE_SHIFTROWS_EXTERN    = 1
-export LIBSCARV_CONF_PRINCE_GF_MUL_EXTERN       = 1
-export LIBSCARV_CONF_PRINCE_MPRIME_EXTERN       = 0
-
-# -----------------------------------------------------------------------------
-
-export LIBSCARV_CONF_SPARX_L_EXTERN             = 1
 
 # =============================================================================
 
