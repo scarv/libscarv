@@ -94,7 +94,7 @@ void test_aes_dec( int trials ) {
 int main( int argc, char* argv[] ) {
   test_init( argc, argv, "sys, binascii, Crypto.Cipher.AES as AES" );
 
-//test_aes_enc( opt_trials );
+  test_aes_enc( opt_trials );
   test_aes_dec( opt_trials );
 
   test_fini();
