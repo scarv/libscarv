@@ -1,9 +1,7 @@
-sudo: required
 dist: cosmic
-before_install:
-- sudo apt-get --quiet update 
-install:
-- sudo apt-get --quiet install docker.io
+sudo: required
+services:
+- docker
 script:
 - source ./bin/conf.sh 
 - CONTEXT="docker" ARCH="native"        KERNELS="mp/* stream/*" make clean build-libscarv build-test generate-test validate-test
