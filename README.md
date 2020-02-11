@@ -34,20 +34,22 @@ benchmark.*
 ├── bin                    - scripts (e.g., environment configuration)
 ├── build                  - working directory for build
 ├── conf                   - global, architecture-specific configuration
+├── extern                 - external resources (e.g., submodules)
+│   └── wiki                 - submodule: scarv/libscarv.wiki
 └── src                       
     ├── docker             - source code for containers
-    ├── libscarv           - source code for libscarv library
-    │   ├─ block             - block ciphers
-    │   ├─ hash              - hash functions
-    │   ├─ mp                - multi-precision integer arithmetic
-    │   ├─ share             - shared functions, macros, etc.
-    │   └─ stream            - stream ciphers
-    └── test               - source code for libscarv test suite
-        ├─ block             - block ciphers
-        ├─ hash              - hash functions
-        ├─ mp                - multi-precision integer arithmetic
-        ├─ share             - shared functions, macros, etc.
-        └─ stream            - stream ciphers
+    ├── libscarv           - source code for library
+    │   ├── block            - block ciphers
+    │   ├── hash             - hash functions
+    │   ├── mp               - multi-precision integer arithmetic
+    │   ├── share            - shared functions, macros, etc.
+    │   └── stream           - stream ciphers
+    └── test               - source code for test suite
+        ├── block            - block ciphers
+        ├── hash             - hash functions
+        ├── mp               - multi-precision integer arithmetic
+        ├── share            - shared functions, macros, etc.
+        └── stream           - stream ciphers
 ```
 
 <!--- -------------------------------------------------------------------- --->
