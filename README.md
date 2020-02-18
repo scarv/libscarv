@@ -189,7 +189,7 @@ benchmark.*
 ## Questions?
 
 - use the
-  [groups.io](https://groups.io)-based [discussion group](https://groups.io/g/scarv-libscarv),
+  [groups.io](https://groups.io)-based [discussion group](https://scarv.groups.io/g/libscarv),
 - raise an
   [issue](https://github.com/scarv/libscarv/issues),
 - raise a
