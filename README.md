@@ -186,9 +186,23 @@ benchmark.*
 
 <!--- -------------------------------------------------------------------- --->
 
+## Questions?
+
+- use the
+  [groups.io](https://groups.io)-based [discussion group](https://groups.io/g/scarv-libscarv),
+- raise an
+  [issue](https://github.com/scarv/libscarv/issues),
+- raise a
+  [pull request]https://github.com/scarv/libscarv/pulls),
+- drop us an
+  [email](mailto:info@scarv.org?subject=libscarv).
+
+<!--- -------------------------------------------------------------------- --->
+
 ## Acknowledgements
 
 This work has been supported in part
-by EPSRC via grant [EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1) (under the [RISE](http://www.ukrise.org) programme).
+by EPSRC via grant 
+[EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1) (under the [RISE](http://www.ukrise.org) programme).
 
 <!--- -------------------------------------------------------------------- --->
