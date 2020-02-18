@@ -193,7 +193,7 @@ benchmark.*
 - raise an
   [issue](https://github.com/scarv/libscarv/issues),
 - raise a
-  [pull request]https://github.com/scarv/libscarv/pulls),
+  [pull request](https://github.com/scarv/libscarv/pulls),
 - drop us an
   [email](mailto:info@scarv.org?subject=libscarv).
 
