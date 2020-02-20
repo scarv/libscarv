@@ -113,6 +113,7 @@ benchmark.*
    ```sh
    git clone https://github.com/scarv/libscarv.git ./libscarv
    cd ./libscarv
+   git submodule update --init --recursive
    source ./bin/conf.sh
    ```
 
