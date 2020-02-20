@@ -3,7 +3,7 @@ sudo: required
 services:
 - docker
 script:
-- source ./bin/conf.sh 
+- . ./bin/conf.sh 
 - CONTEXT="docker" ARCH="native"        KERNELS="mp/* stream/*" make spotless build-libscarv build-test generate-test validate-test
 - CONTEXT="docker" ARCH="riscv"         KERNELS="mp/* stream/*" make spotless build-libscarv build-test generate-test validate-test
 - CONTEXT="docker" ARCH="riscv-xcrypto" KERNELS="mp/* stream/*" make spotless build-libscarv build-test generate-test validate-test
