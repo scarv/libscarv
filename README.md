@@ -182,7 +182,7 @@ benchmark.*
    | `make generate-test`      | generate the `libscarv` test suite (i.e., produce meta-program from test executable) |
    | `make validate-test`      | validate the `libscarv` test suite (i.e., execute meta-program)                      |
    | `make venv`               | build the Python [virtual environment](https://docs.python.org/library/venv.html)    |
-   | `make doxygen`            | build the       [Doxygen](http://www.doxygen.nl)-based documentation                 |
+   | `make doxygen`            | build the [Doxygen](http://www.doxygen.nl)-based documentation                       |
    | `make spotless`           | remove *everything* built in `${REPO_HOME}/build`                                    |
 
 <!--- -------------------------------------------------------------------- --->
@@ -204,6 +204,6 @@ benchmark.*
 
 This work has been supported in part
 by EPSRC via grant 
-[EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1) (under the [RISE](http://www.ukrise.org) programme).
+[EP/R012288/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/R012288/1) (under the [RISE](https://www.ukrise.org) programme).
 
 <!--- -------------------------------------------------------------------- --->
